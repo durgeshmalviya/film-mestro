@@ -1,0 +1,14 @@
+# robots.txt for https://maestrofilms.in
+
+# Allow all search engines to crawl the main content
+User-agent: *
+Disallow: /admin/
+Disallow: /login/
+Disallow: /private/
+Disallow: /cgi-bin/
+
+# Sitemap location
+Sitemap: https://maestrofilms.in/sitemap.xml
+
+ 
+
