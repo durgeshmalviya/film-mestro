@@ -28,28 +28,28 @@ export default function MaestroFilms() {
   const slides = [
     {
       left: 'https://i.ibb.co/rKjZyrPC/qwe.jpg',
-      right: 'https://i.ibb.co/4RRd3Nsz/DSC09933-Enhanced-NR-1.jpg',
+      right: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/banner/front%20page%201.jpg',
       title: 'Maestro',
       subtitle: 'Films',
       tagline: 'Cinematic Excellence from Bhopal',
     },
     {
       left: 'https://i.ibb.co/DHm0Xs8v/Img10.jpg',
-      right: 'https://i.ibb.co/jkTxyFs7/image.jpg',
+      right: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/banner/Img13.jpg',
       title: 'Maestro',
       subtitle: 'Films',
       tagline: 'Stories That Move You',
     },
     {
       left: 'https://i.ibb.co/HDF4dS09/front-page-1.jpg',
-      right: 'https://i.ibb.co/jkTxyFs7/image.jpg',
+      right: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/banner/Img14.jpg',
       title: 'Maestro',
       subtitle: 'Films',
       tagline: 'Cinematic Excellence from Bhopal',
     },
     {
       left: 'https://i.ibb.co/DHm0Xs8v/Img10.jpg',
-      right: 'https://i.ibb.co/PZNnnv4K/Img12.jpg',
+      right: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/banner/DSC09952-Enhanced-NR_3.jpg',
       title: 'Maestro',
       subtitle: 'Films',
       tagline: 'Stories That Move You',
@@ -652,7 +652,7 @@ export default function MaestroFilms() {
             <div className="relative reveal order-2 md:order-1">
               <div className="relative h-72 md:h-full min-h-[420px] rounded-sm overflow-hidden shadow-2xl group">
                 <img
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&h=1000&fit=crop"
+                  src="https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/banner/front%20page%201.jpg"
                   alt="Contact"
                   className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
                   loading="lazy"
