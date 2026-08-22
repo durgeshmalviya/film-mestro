@@ -7,9 +7,10 @@ import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Footer from '../components/Footer';
+
 export default function MaestroFilms() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -24,11 +25,9 @@ export default function MaestroFilms() {
     message: '',
   });
 
-
-  
   const slides = [
-    {      left: 'https://i.ibb.co/rKjZyrPC/qwe.jpg',
-    
+    {
+      left: 'https://i.ibb.co/rKjZyrPC/qwe.jpg',
       right: 'https://i.ibb.co/4RRd3Nsz/DSC09933-Enhanced-NR-1.jpg',
       title: 'Maestro',
       subtitle: 'Films',
@@ -42,7 +41,7 @@ export default function MaestroFilms() {
       tagline: 'Stories That Move You',
     },
     {
-  left: ' https://i.ibb.co/HDF4dS09/front-page-1.jpg',
+      left: 'https://i.ibb.co/HDF4dS09/front-page-1.jpg',
       right: 'https://i.ibb.co/jkTxyFs7/image.jpg',
       title: 'Maestro',
       subtitle: 'Films',
@@ -50,7 +49,7 @@ export default function MaestroFilms() {
     },
     {
       left: 'https://i.ibb.co/DHm0Xs8v/Img10.jpg',
-      right: ' https://i.ibb.co/PZNnnv4K/Img12.jpg',
+      right: 'https://i.ibb.co/PZNnnv4K/Img12.jpg',
       title: 'Maestro',
       subtitle: 'Films',
       tagline: 'Stories That Move You',
@@ -100,27 +99,29 @@ export default function MaestroFilms() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) entry.target.classList.add('animate-in');
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
     );
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => { goToNext(); }, 6000);
+    const interval = setInterval(() => {
+      goToNext();
+    }, 6000);
     return () => clearInterval(interval);
-  }, [slides.length,isTransitioning]);
+  }, [slides.length, isTransitioning]);
 
   useEffect(() => {
     if (modalVideo && modalRef.current) {
-      modalRef.current.play();
+      modalRef.current.play().catch(() => {});
     }
   }, [modalVideo]);
 
@@ -129,7 +130,7 @@ export default function MaestroFilms() {
       if (isTransitioning || index === currentSlide) return;
       setIsTransitioning(true);
       setCurrentSlide(index);
-      setTimeout(() => setIsTransitioning(false), 800);
+      setTimeout(() => setIsTransitioning(false), 900);
     },
     [currentSlide, isTransitioning]
   );
@@ -169,32 +170,49 @@ export default function MaestroFilms() {
         @import url('https://fonts.googleapis.com/css2?family=Allura&family=Poppins:wght@200;300;400;500;600;700&display=swap');
         .font-script { font-family: 'Allura', cursive; }
         .font-body { font-family: 'Poppins', sans-serif; }
+
+        /* Premium smooth reveals */
         .reveal {
           opacity: 0;
-          transform: translateY(24px);
-          transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+          transform: translateY(28px) translateZ(0);
+          transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                      transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+          will-change: opacity, transform;
         }
         .reveal.animate-in {
           opacity: 1;
-          transform: translateY(0);
+          transform: translateY(0) translateZ(0);
         }
+
         @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
+          0%, 100% { transform: translateY(0px) translateZ(0); }
+          50% { transform: translateY(-10px) translateZ(0); }
         }
-        .animate-float { animation: float 5s ease-in-out infinite; }
+        .animate-float {
+          animation: float 5.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+          will-change: transform;
+        }
+
         @keyframes fadeInScale {
-          from { opacity: 0; transform: scale(1.08); }
-          to { opacity: 1; transform: scale(1); }
+          from { opacity: 0; transform: scale(1.06) translateZ(0); }
+          to { opacity: 1; transform: scale(1) translateZ(0); }
         }
-        .hero-image-anim { animation: fadeInScale 1.2s ease-out forwards; }
+        .hero-image-anim {
+          animation: fadeInScale 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          will-change: transform, opacity;
+        }
+
+        /* Ultra-smooth hover lift */
         .hover-lift {
-          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+          transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                      box-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+          will-change: transform;
         }
         .hover-lift:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
+          transform: translateY(-8px) translateZ(0);
+          box-shadow: 0 24px 48px -14px rgba(0, 0, 0, 0.28);
         }
+
         .carousel-progress {
           animation: progress 6s linear forwards;
         }
@@ -202,32 +220,34 @@ export default function MaestroFilms() {
           from { width: 0%; }
           to { width: 100%; }
         }
+
+        /* Swiper bullets & nav – buttery */
         .editorial-swiper .swiper-pagination-bullet,
         .productions-swiper .swiper-pagination-bullet {
           background: #9ca3af;
-          opacity: 0.5;
+          opacity: 0.45;
           width: 8px;
           height: 8px;
-          transition: all 0.3s ease;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .editorial-swiper .swiper-pagination-bullet-active,
         .productions-swiper .swiper-pagination-bullet-active {
           background: #2a2a2a;
           opacity: 1;
-          transform: scale(1.2);
+          transform: scale(1.25);
         }
         .editorial-swiper .swiper-button-next,
         .editorial-swiper .swiper-button-prev,
         .productions-swiper .swiper-button-next,
         .productions-swiper .swiper-button-prev {
           color: #2a2a2a;
-          width: 36px;
-          height: 36px;
-          background: rgba(255,255,255,0.8);
-          backdrop-filter: blur(4px);
+          width: 38px;
+          height: 38px;
+          background: rgba(255,255,255,0.85);
+          backdrop-filter: blur(8px);
           border-radius: 50%;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-          transition: all 0.3s ease;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .editorial-swiper .swiper-button-next:hover,
         .editorial-swiper .swiper-button-prev:hover,
@@ -235,7 +255,7 @@ export default function MaestroFilms() {
         .productions-swiper .swiper-button-prev:hover {
           background: #2a2a2a;
           color: white;
-          transform: scale(1.1);
+          transform: scale(1.12);
         }
         .editorial-swiper .swiper-button-next::after,
         .editorial-swiper .swiper-button-prev::after,
@@ -244,53 +264,81 @@ export default function MaestroFilms() {
           font-size: 14px;
           font-weight: bold;
         }
+
+        /* Image & video rendering – buttery smooth */
+        img, video {
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+          transform: translateZ(0);
+          image-rendering: -webkit-optimize-contrast;
+        }
+
+        /* Smooth video container */
+        .video-smooth {
+          will-change: transform;
+        }
       `}</style>
 
       {/* ============ VIDEO MODAL ============ */}
-      {modalVideo && (
-        <div
-          className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-8"
-          onClick={closeModal}
-        >
-          <button
+      <AnimatePresence>
+        {modalVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-8"
             onClick={closeModal}
-            className="absolute top-6 right-6 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300 group"
           >
-            <X className="w-6 h-6 text-white group-hover:rotate-90 transition-transform duration-300" />
-          </button>
-          <div
-            className="w-full max-w-6xl aspect-video relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <video
-              ref={modalRef}
-              src={modalVideo}
-              className="w-full h-full object-contain rounded-sm"
-              controls
-              autoPlay
-              playsInline
-            />
-          </div>
-        </div>
-      )}
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              onClick={closeModal}
+              className="absolute top-6 right-6 z-10 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300 group"
+            >
+              <X className="w-6 h-6 text-white group-hover:rotate-90 transition-transform duration-400" />
+            </motion.button>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full max-w-6xl aspect-video relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <video
+                ref={modalRef}
+                src={modalVideo}
+                className="w-full h-full object-contain rounded-sm"
+                controls
+                autoPlay
+                playsInline
+                preload="auto"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ============ HERO CAROUSEL ============ */}
       <section className="relative w-full h-screen overflow-hidden bg-[#2a2420]">
-        <div className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex justify-between items-center transition-all duration-500 ${scrolled ? 'bg-[#f5f1ed]/95 backdrop-blur-md shadow-md py-4' : 'bg-transparent'}`}>
-          <div className={`text-sm md:text-base font-body font-light tracking-[0.25em] uppercase transition-colors duration-300 ${scrolled ? 'text-[#2a2a2a]' : 'text-white'}`}>
+        <div className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex justify-between items-center transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] ${scrolled ? 'bg-[#f5f1ed]/95 backdrop-blur-md shadow-md py-4' : 'bg-transparent'}`}>
+          <div className={`text-sm md:text-base font-body font-light tracking-[0.25em] uppercase transition-colors duration-500 ${scrolled ? 'text-[#2a2a2a]' : 'text-white'}`}>
             Maestro Films
           </div>
           <button className="w-7 h-5 flex flex-col justify-between cursor-pointer z-50 relative" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <span className={`w-full h-[1.5px] transition-all duration-300 ${scrolled ? 'bg-[#2a2a2a]' : 'bg-white'} ${isMenuOpen ? 'rotate-45 translate-y-[9px]' : ''}`} />
-            <span className={`w-full h-[1.5px] transition-all duration-300 ${scrolled ? 'bg-[#2a2a2a]' : 'bg-white'} ${isMenuOpen ? 'opacity-0' : 'opacity-100'}`} />
-            <span className={`w-full h-[1.5px] transition-all duration-300 ${scrolled ? 'bg-[#2a2a2a]' : 'bg-white'} ${isMenuOpen ? '-rotate-45 -translate-y-[9px]' : ''}`} />
+            <span className={`w-full h-[1.5px] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${scrolled ? 'bg-[#2a2a2a]' : 'bg-white'} ${isMenuOpen ? 'rotate-45 translate-y-[9px]' : ''}`} />
+            <span className={`w-full h-[1.5px] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${scrolled ? 'bg-[#2a2a2a]' : 'bg-white'} ${isMenuOpen ? 'opacity-0' : 'opacity-100'}`} />
+            <span className={`w-full h-[1.5px] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${scrolled ? 'bg-[#2a2a2a]' : 'bg-white'} ${isMenuOpen ? '-rotate-45 -translate-y-[9px]' : ''}`} />
           </button>
         </div>
 
-        <div className={`fixed inset-0 bg-[#1a1410] z-40 flex items-center justify-center transition-all duration-500 ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
+        <div className={`fixed inset-0 bg-[#1a1410] z-40 flex items-center justify-center transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
           <nav className="text-center space-y-6">
             {['Portfolio', 'About', 'Productions', 'Contact'].map((item) => (
-              <a key={item} href={`/${item.toLowerCase()}`} onClick={() => setIsMenuOpen(false)} className="block text-3xl md:text-5xl font-body font-light text-white hover:text-[#c4a882] transition-colors duration-300 tracking-wide">
+              <a key={item} href={`/${item.toLowerCase()}`} onClick={() => setIsMenuOpen(false)} className="block text-3xl md:text-5xl font-body font-light text-white hover:text-[#c4a882] transition-colors duration-400 tracking-wide">
                 {item}
               </a>
             ))}
@@ -298,17 +346,37 @@ export default function MaestroFilms() {
         </div>
 
         {slides.map((slide, index) => (
-          <div key={index} className={`absolute inset-0 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] ${index === currentSlide ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-105'}`}>
+          <div
+            key={index}
+            className={`absolute inset-0 transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              index === currentSlide ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-[1.04]'
+            }`}
+          >
             <div className="absolute left-0 top-0 w-full md:w-1/2 h-full hidden md:block overflow-hidden">
-              <img src={slide.left} alt="Maestro Films" className="w-full h-full object-cover hero-image-anim" />
+              <img
+                src={slide.left}
+                alt="Maestro Films"
+                className="w-full h-full object-cover hero-image-anim"
+                loading={index === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
               <div className="absolute inset-0 bg-black/30" />
             </div>
             <div className="absolute right-0 top-0 w-full md:w-1/2 h-full overflow-hidden">
-              <img src={slide.right} alt="Maestro Films" className="w-full h-full object-cover hero-image-anim" style={{ animationDelay: '0.15s' }} />
+              <img
+                src={slide.right}
+                alt="Maestro Films"
+                className="w-full h-full object-cover hero-image-anim"
+                style={{ animationDelay: '0.12s' }}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
               <div className="absolute inset-0 bg-black/20" />
             </div>
             <div className="absolute inset-0 flex items-center justify-center z-10 bg-gradient-to-b from-black/20 via-transparent to-black/30">
-              <div className={`text-center text-white px-4 transition-all duration-1000 ${index === currentSlide ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+              <div className={`text-center text-white px-4 transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                index === currentSlide ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              }`}>
                 <h1 className="font-script text-6xl md:text-8xl mb-0 leading-none drop-shadow-2xl animate-float">{slide.title}</h1>
                 <p className="font-body font-bold text-2xl md:text-4xl tracking-[0.15em] mb-3 drop-shadow-lg uppercase">{slide.subtitle}</p>
                 <p className="text-xs md:text-sm font-light tracking-[0.2em] uppercase drop-shadow-md opacity-90 font-body">{slide.tagline}</p>
@@ -317,17 +385,23 @@ export default function MaestroFilms() {
           </div>
         ))}
 
-        <button onClick={goToPrev} className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center transition-all duration-300 group shadow-lg">
-          <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-white group-hover:-translate-x-0.5 transition-transform" />
+        <button onClick={goToPrev} className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] group shadow-lg">
+          <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-white group-hover:-translate-x-0.5 transition-transform duration-300" />
         </button>
-        <button onClick={goToNext} className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center transition-all duration-300 group shadow-lg">
-          <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-white group-hover:translate-x-0.5 transition-transform" />
+        <button onClick={goToNext} className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] group shadow-lg">
+          <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-white group-hover:translate-x-0.5 transition-transform duration-300" />
         </button>
 
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3">
           <div className="flex gap-2.5">
             {slides.map((_, index) => (
-              <button key={index} onClick={() => goToSlide(index)} className={`relative w-2 h-2 md:w-2.5 md:h-2.5 rounded-full transition-all duration-500 ${index === currentSlide ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/70'}`}>
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`relative w-2 h-2 md:w-2.5 md:h-2.5 rounded-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  index === currentSlide ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/70'
+                }`}
+              >
                 {index === currentSlide && <span className="absolute inset-0 rounded-full bg-white/30 animate-ping" />}
               </button>
             ))}
@@ -338,12 +412,14 @@ export default function MaestroFilms() {
         </div>
 
         <div className="absolute bottom-1/2 left-5 md:left-8 z-20 transform translate-y-1/2 hidden md:block">
-          <button className="px-6 py-2.5 bg-black/40 hover:bg-black/60 backdrop-blur-sm rounded-full border border-white/20 text-white text-[11px] font-body font-light tracking-[0.2em] uppercase transition-all duration-300 shadow-lg hover:shadow-xl hover:tracking-[0.25em]">
-          <a href='/about' >portfolio</a></button>
+          <button className="px-6 py-2.5 bg-black/40 hover:bg-black/60 backdrop-blur-sm rounded-full border border-white/20 text-white text-[11px] font-body font-light tracking-[0.2em] uppercase transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-lg hover:shadow-xl hover:tracking-[0.25em]">
+            <a href='/about'>portfolio</a>
+          </button>
         </div>
         <div className="absolute bottom-1/2 right-5 md:right-8 z-20 transform translate-y-1/2 hidden md:block">
-          <button className="px-6 py-2.5 bg-black/40 hover:bg-black/60 backdrop-blur-sm rounded-full border border-white/20 text-white text-[11px] font-body font-light tracking-[0.2em] uppercase transition-all duration-300 shadow-lg hover:shadow-xl hover:tracking-[0.25em]">
-            <a href='#contact' >contact us</a></button>
+          <button className="px-6 py-2.5 bg-black/40 hover:bg-black/60 backdrop-blur-sm rounded-full border border-white/20 text-white text-[11px] font-body font-light tracking-[0.2em] uppercase transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-lg hover:shadow-xl hover:tracking-[0.25em]">
+            <a href='#contact'>contact us</a>
+          </button>
         </div>
 
         <div className="absolute bottom-20 left-0 right-0 flex justify-center gap-3 md:hidden z-20 px-6">
@@ -361,10 +437,10 @@ export default function MaestroFilms() {
               <h2 className="font-body text-3xl md:text-5xl font-light text-[#2a2a2a] leading-tight">Recent <span className="font-normal">Editorials</span></h2>
             </div>
             <div className="flex items-center gap-3">
-              <div className="swiper-custom-prev-editorial w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-300 cursor-pointer shadow-sm">
+              <div className="swiper-custom-prev-editorial w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm">
                 <ChevronLeft size={16} />
               </div>
-              <div className="swiper-custom-next-editorial w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-300 cursor-pointer shadow-sm">
+              <div className="swiper-custom-next-editorial w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm">
                 <ChevronRight size={16} />
               </div>
             </div>
@@ -376,8 +452,8 @@ export default function MaestroFilms() {
               spaceBetween={16}
               slidesPerView={1}
               loop={true}
-              speed={800}
-              autoplay={{ delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }}
+              speed={900}
+              autoplay={{ delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true }}
               pagination={{ clickable: true }}
               navigation={{ prevEl: '.swiper-custom-prev-editorial', nextEl: '.swiper-custom-next-editorial' }}
               breakpoints={{ 640: { slidesPerView: 2, spaceBetween: 20 }, 1024: { slidesPerView: 3, spaceBetween: 24 } }}
@@ -386,10 +462,16 @@ export default function MaestroFilms() {
               {editorials.map((item, i) => (
                 <SwiperSlide key={i}>
                   <div className="group relative h-[400px] md:h-[520px] rounded-sm overflow-hidden cursor-pointer shadow-lg hover-lift">
-                    <img src={item.img} alt={item.title} className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-106" />
-                    <div className={`absolute inset-0 bg-gradient-to-t   opacity-20 group-hover:opacity-10 transition-opacity duration-500`} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                    <img
+                      src={item.img}
+                      alt={item.title}
+                      className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-t opacity-20 group-hover:opacity-10 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]`} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                    <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]">
                       <p className="text-white/70 text-[10px] tracking-[0.2em] uppercase font-body font-light mb-1">Editorial</p>
                       <h3 className="text-white text-xl font-body font-light">{item.title}</h3>
                     </div>
@@ -411,7 +493,9 @@ export default function MaestroFilms() {
               <p className="text-xs md:text-sm text-gray-600 leading-relaxed font-body font-light max-w-lg">
                 Each editorial begins as a whisper—an idea, a glance, a mood waiting to be revealed. Through our images, we chase the fleeting, the honest, and the elegantly imperfect.
               </p>
-              <button className="mt-6 px-6 py-2.5 border border-gray-400 text-gray-700 font-body font-light text-[11px] tracking-[0.15em] uppercase hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-300 shadow-sm hover:shadow-md">learn more</button>
+              <button className="mt-6 px-6 py-2.5 border border-gray-400 text-gray-700 font-body font-light text-[11px] tracking-[0.15em] uppercase hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-sm hover:shadow-md">
+                learn more
+              </button>
             </div>
             <div className="hidden md:flex justify-end reveal">
               <div className="w-28 h-28 border border-[#8b7355]/30 rounded-full flex items-center justify-center animate-float">
@@ -436,10 +520,10 @@ export default function MaestroFilms() {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="swiper-custom-prev-prod w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-300 cursor-pointer shadow-sm">
+              <div className="swiper-custom-prev-prod w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm">
                 <ChevronLeft size={16} />
               </div>
-              <div className="swiper-custom-next-prod w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-300 cursor-pointer shadow-sm">
+              <div className="swiper-custom-next-prod w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm">
                 <ChevronRight size={16} />
               </div>
             </div>
@@ -451,8 +535,8 @@ export default function MaestroFilms() {
               spaceBetween={16}
               slidesPerView={1}
               loop={true}
-              speed={800}
-              autoplay={{ delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }}
+              speed={900}
+              autoplay={{ delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true }}
               pagination={{ clickable: true }}
               navigation={{ prevEl: '.swiper-custom-prev-prod', nextEl: '.swiper-custom-next-prod' }}
               breakpoints={{ 640: { slidesPerView: 2, spaceBetween: 20 }, 1024: { slidesPerView: 3, spaceBetween: 24 } }}
@@ -461,14 +545,14 @@ export default function MaestroFilms() {
               {productions.map((item, i) => (
                 <SwiperSlide key={i}>
                   <div
-                    className="group relative h-[400px] md:h-[520px] rounded-md overflow-hidden cursor-pointer shadow-lg hover-lift"
+                    className="group relative h-[400px] md:h-[520px] rounded-md overflow-hidden cursor-pointer shadow-lg hover-lift video-smooth"
                     onClick={() => openModal(item.video)}
                   >
                     <div className="relative w-full aspect-[9/16] overflow-hidden rounded-md">
                       <video
                         src={item.video}
                         poster={item.poster}
-                        className="absolute inset-0 w-full h-full p-1 object-cover"
+                        className="absolute inset-0 w-full h-full p-1 object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
                         muted
                         loop
                         autoPlay
@@ -476,7 +560,7 @@ export default function MaestroFilms() {
                         preload="metadata"
                       />
                     </div>
-                    <div className={`absolute inset-0 bg-gradient-to-t ${item.color} opacity-10 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none`} />
+                    <div className={`absolute inset-0 bg-gradient-to-t ${item.color} opacity-10 group-hover:opacity-10 transition-opacity duration-600 pointer-events-none`} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
 
                     {/* Bottom Label */}
@@ -492,72 +576,74 @@ export default function MaestroFilms() {
         </div>
       </section>
 
-        {/* ============ ABOUT US ============ */}
-       {/* ============ ABOUT US ============ */}
-<section id="about" className="py-10 md:py-14 px-4 md:px-6 bg-[#f5f1ed]">
-  <div className="max-w-7xl mx-auto">
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-center">
-      {/* Text Content */}
-      <div className="reveal">
-        <h2 className="font-body text-4xl md:text-6xl font-light text-[#2a2a2a] leading-none mb-1">
-          ABOUT
-        </h2>
-        <h3 className="font-script text-4xl md:text-6xl text-[#2a2a2a] mb-6 md:mb-8 -mt-1 ml-1">
-          Us
-        </h3>
-        <div className="space-y-3 max-w-md">
-          <p className="text-gray-600 leading-relaxed font-body font-light text-sm md:text-[15px]">
-            <span className="font-script text-2xl text-[#8b7355] mr-1">M</span>
-            aestro Films is an independent film production house focused on
-            commercial and editorial work.
-          </p>
-          <p className="text-gray-600 leading-relaxed font-body font-light text-sm md:text-[15px]">
-            We collaborate with brands, stylists, and visionaries to craft visual
-            narratives that are emotionally driven and timeless.
-          </p>
+      {/* ============ ABOUT US ============ */}
+      <section id="about" className="py-10 md:py-14 px-4 md:px-6 bg-[#f5f1ed]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-center">
+            {/* Text Content */}
+            <div className="reveal">
+              <h2 className="font-body text-4xl md:text-6xl font-light text-[#2a2a2a] leading-none mb-1">
+                ABOUT
+              </h2>
+              <h3 className="font-script text-4xl md:text-6xl text-[#2a2a2a] mb-6 md:mb-8 -mt-1 ml-1">
+                Us
+              </h3>
+              <div className="space-y-3 max-w-md">
+                <p className="text-gray-600 leading-relaxed font-body font-light text-sm md:text-[15px]">
+                  <span className="font-script text-2xl text-[#8b7355] mr-1">M</span>
+                  aestro Films is an independent film production house focused on
+                  commercial and editorial work.
+                </p>
+                <p className="text-gray-600 leading-relaxed font-body font-light text-sm md:text-[15px]">
+                  We collaborate with brands, stylists, and visionaries to craft visual
+                  narratives that are emotionally driven and timeless.
+                </p>
+              </div>
+            </div>
+
+            {/* Collage Image Grid */}
+            <div className="reveal">
+              <div className="grid grid-cols-2 gap-2.5 md:gap-3">
+                {/* Top full-width image */}
+                <div className="col-span-2 relative h-40 md:h-60 overflow-hidden rounded-sm shadow-md hover-lift group">
+                  <img
+                    src="https://6a8930a197833836f65581d4.imgix.net/sandbox/onepic.jpeg"
+                    alt="Production"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                </div>
+
+                {/* Bottom left */}
+                <div className="relative h-36 md:h-44 overflow-hidden rounded-sm shadow-md hover-lift group">
+                  <img
+                    src="https://6a8930a197833836f65581d4.imgix.net/sandbox/twpic.jpeg"
+                    alt="Production"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                </div>
+
+                {/* Bottom right */}
+                <div className="relative h-36 md:h-44 overflow-hidden rounded-sm shadow-md hover-lift group">
+                  <img
+                    src="https://6a8930a197833836f65581d4.imgix.net/sandbox/thrpic.jpeg"
+                    alt="Production"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-
-      {/* Collage Image Grid */}
-      <div className="reveal">
-        <div className="grid grid-cols-2 gap-2.5 md:gap-3">
-          {/* Top full-width image */}
-          <div className="col-span-2 relative h-40 md:h-60 overflow-hidden rounded-sm shadow-md hover-lift group">
-            <img
-              src="https://6a8930a197833836f65581d4.imgix.net/sandbox/onepic.jpeg"
-              alt="Production"
-              className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
-
-          {/* Bottom left */}
-          <div className="relative h-36 md:h-44 overflow-hidden rounded-sm shadow-md hover-lift group">
-            <img
-              src="https://6a8930a197833836f65581d4.imgix.net/sandbox/twpic.jpeg"
-              alt="Production"
-              className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
-
-          {/* Bottom right */}
-          <div className="relative h-36 md:h-44 overflow-hidden rounded-sm shadow-md hover-lift group">
-            <img
-              src="https://6a8930a197833836f65581d4.imgix.net/sandbox/thrpic.jpeg"
-              alt="Production"
-              className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
-
- 
-    
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* ============ CONTACT SECTION ============ */}
       <section id="contact" className="py-10 md:py-14 px-4 md:px-6 bg-white">
@@ -565,7 +651,13 @@ export default function MaestroFilms() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-stretch">
             <div className="relative reveal order-2 md:order-1">
               <div className="relative h-72 md:h-full min-h-[420px] rounded-sm overflow-hidden shadow-2xl group">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&h=1000&fit=crop" alt="Contact" className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-106" />
+                <img
+                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&h=1000&fit=crop"
+                  alt="Contact"
+                  className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 z-10">
                   <h2 className="font-body text-3xl md:text-5xl font-light text-white leading-none mb-1">Let's</h2>
@@ -576,14 +668,50 @@ export default function MaestroFilms() {
             <div className="order-1 md:order-2 flex items-center reveal">
               <form onSubmit={handleFormSubmit} className="w-full space-y-6 md:space-y-8">
                 <div>
-                  <input type="text" name="fullName" value={formData.fullName} onChange={handleFormChange} placeholder="full name" required className="w-full bg-transparent border-b border-gray-400 py-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-[#2a2a2a] transition-all duration-300 font-body font-light text-sm tracking-wide" />
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleFormChange}
+                    placeholder="full name"
+                    required
+                    className="w-full bg-transparent border-b border-gray-400 py-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] font-body font-light text-sm tracking-wide"
+                  />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-                  <input type="email" name="email" value={formData.email} onChange={handleFormChange} placeholder="email" required className="w-full bg-transparent border-b border-gray-400 py-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-[#2a2a2a] transition-all duration-300 font-body font-light text-sm tracking-wide" />
-                  <input type="tel" name="phone" value={formData.phone} onChange={handleFormChange} placeholder="phone" className="w-full bg-transparent border-b border-gray-400 py-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-[#2a2a2a] transition-all duration-300 font-body font-light text-sm tracking-wide" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleFormChange}
+                    placeholder="email"
+                    required
+                    className="w-full bg-transparent border-b border-gray-400 py-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] font-body font-light text-sm tracking-wide"
+                  />
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleFormChange}
+                    placeholder="phone"
+                    className="w-full bg-transparent border-b border-gray-400 py-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] font-body font-light text-sm tracking-wide"
+                  />
                 </div>
-                <textarea name="message" value={formData.message} onChange={handleFormChange} placeholder="message" rows={3} required className="w-full bg-transparent border-b border-gray-400 py-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-[#2a2a2a] transition-all duration-300 resize-none font-body font-light text-sm tracking-wide" />
-                <button type="submit" className="mt-2 px-8 py-3 bg-[#2a2a2a] text-white font-body font-medium hover:bg-[#1a1a1a] transition-all duration-300 rounded-sm text-xs tracking-wider uppercase shadow-lg hover:shadow-xl hover:-translate-y-0.5">Send Message</button>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleFormChange}
+                  placeholder="message"
+                  rows={3}
+                  required
+                  className="w-full bg-transparent border-b border-gray-400 py-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] resize-none font-body font-light text-sm tracking-wide"
+                />
+                <button
+                  type="submit"
+                  className="mt-2 px-8 py-3 bg-[#2a2a2a] text-white font-body font-medium hover:bg-[#1a1a1a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] rounded-sm text-xs tracking-wider uppercase shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                >
+                  Send Message
+                </button>
               </form>
             </div>
           </div>
