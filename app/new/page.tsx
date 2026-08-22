@@ -387,7 +387,7 @@ export default function MaestroFilms() {
                 <SwiperSlide key={i}>
                   <div className="group relative h-[400px] md:h-[520px] rounded-sm overflow-hidden cursor-pointer shadow-lg hover-lift">
                     <img src={item.img} alt={item.title} className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-106" />
-                    <div className={`absolute inset-0 bg-gradient-to-t ${item.color} opacity-20 group-hover:opacity-10 transition-opacity duration-500`} />
+                    <div className={`absolute inset-0 bg-gradient-to-t   opacity-20 group-hover:opacity-10 transition-opacity duration-500`} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
                       <p className="text-white/70 text-[10px] tracking-[0.2em] uppercase font-body font-light mb-1">Editorial</p>
@@ -492,38 +492,72 @@ export default function MaestroFilms() {
         </div>
       </section>
 
-      {/* ============ ABOUT US ============ */}
-      <section id="about" className="py-10 md:py-14 px-4 md:px-6 bg-[#f5f1ed]">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-center">
-            <div className="reveal">
-              <h2 className="font-body text-4xl md:text-6xl font-light text-[#2a2a2a] leading-none mb-1">ABOUT</h2>
-              <h3 className="font-script text-4xl md:text-6xl text-[#2a2a2a] mb-6 md:mb-8 -mt-1 ml-1">Us</h3>
-              <div className="space-y-3 max-w-md">
-                <p className="text-gray-600 leading-relaxed font-body font-light text-sm md:text-[15px]">
-                  <span className="font-script text-2xl text-[#8b7355] mr-1">M</span>aestro Films is an independent film production house focused on commercial and editorial work.
-                </p>
-                <p className="text-gray-600 leading-relaxed font-body font-light text-sm md:text-[15px]">
-                  We collaborate with brands, stylists, and visionaries to craft visual narratives that are emotionally driven and timeless.
-                </p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2.5 md:gap-3 reveal">
-              {[
-                'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&h=500&fit=crop',
-                'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&h=500&fit=crop',
-                'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&h=500&fit=crop',
-                'https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?w=400&h=500&fit=crop',
-              ].map((img, i) => (
-                <div key={i} className="relative h-36 md:h-44 overflow-hidden rounded-sm shadow-md hover-lift group">
-                  <img src={img} alt="Production" className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-106" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* ============ ABOUT US ============ */}
+       {/* ============ ABOUT US ============ */}
+<section id="about" className="py-10 md:py-14 px-4 md:px-6 bg-[#f5f1ed]">
+  <div className="max-w-7xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-center">
+      {/* Text Content */}
+      <div className="reveal">
+        <h2 className="font-body text-4xl md:text-6xl font-light text-[#2a2a2a] leading-none mb-1">
+          ABOUT
+        </h2>
+        <h3 className="font-script text-4xl md:text-6xl text-[#2a2a2a] mb-6 md:mb-8 -mt-1 ml-1">
+          Us
+        </h3>
+        <div className="space-y-3 max-w-md">
+          <p className="text-gray-600 leading-relaxed font-body font-light text-sm md:text-[15px]">
+            <span className="font-script text-2xl text-[#8b7355] mr-1">M</span>
+            aestro Films is an independent film production house focused on
+            commercial and editorial work.
+          </p>
+          <p className="text-gray-600 leading-relaxed font-body font-light text-sm md:text-[15px]">
+            We collaborate with brands, stylists, and visionaries to craft visual
+            narratives that are emotionally driven and timeless.
+          </p>
         </div>
-      </section>
+      </div>
+
+      {/* Collage Image Grid */}
+      <div className="reveal">
+        <div className="grid grid-cols-2 gap-2.5 md:gap-3">
+          {/* Top full-width image */}
+          <div className="col-span-2 relative h-40 md:h-60 overflow-hidden rounded-sm shadow-md hover-lift group">
+            <img
+              src="https://6a8930a197833836f65581d4.imgix.net/sandbox/onepic.jpeg"
+              alt="Production"
+              className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          </div>
+
+          {/* Bottom left */}
+          <div className="relative h-36 md:h-44 overflow-hidden rounded-sm shadow-md hover-lift group">
+            <img
+              src="https://6a8930a197833836f65581d4.imgix.net/sandbox/twpic.jpeg"
+              alt="Production"
+              className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          </div>
+
+          {/* Bottom right */}
+          <div className="relative h-36 md:h-44 overflow-hidden rounded-sm shadow-md hover-lift group">
+            <img
+              src="https://6a8930a197833836f65581d4.imgix.net/sandbox/thrpic.jpeg"
+              alt="Production"
+              className="w-full h-full object-cover transition-transform duration-600 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          </div>
+
+ 
+    
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* ============ CONTACT SECTION ============ */}
       <section id="contact" className="py-10 md:py-14 px-4 md:px-6 bg-white">
