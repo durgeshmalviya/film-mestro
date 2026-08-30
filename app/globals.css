@@ -25,3 +25,71 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes wobble {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(0.4deg) scale(1.01);
+  }
+  50% {
+    transform: rotate(-0.3deg) scale(1);
+  }
+  75% {
+    transform: rotate(0.2deg) scale(1.005);
+  }
+}
+@keyframes luxSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96) rotateX(8deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+}
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.9) rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    /* keep the final rotate that is set inline */
+  }
+}
+@keyframes polaroidIn {
+  from {
+    opacity: 0;
+    transform: translateY(60px) scale(0.88) rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    /* final rotate is already set inline */
+  }
+}@keyframes masonryIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) rotate(0deg) translate(30%, 40%);
+  }
+  100% {
+    opacity: 1;
+    /* final rotate comes from inline style */
+  }
+}
+
+.masonry-card {
+  animation: masonryIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Menu, ChevronRight, ChevronLeft, X } from 'lucide-react';
+import { Menu, ChevronRight, ChevronLeft, X, ShieldAlert } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import 'swiper/css';
@@ -11,13 +11,46 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Footer from '../components/Footer';
 
+// ============ HELPERS ============
+// Fisher-Yates shuffle. Returns a new array; never mutates the source.
+function shuffleArray<T>(source: T[]): T[] {
+  const arr = [...source];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// Small monogram mark shown on hover over protected media. A believable
+// theft deterrent (like a photographer's watermark) is more effective than
+// any amount of JS gatekeeping, and it doubles as a premium studio cue.
+function CornerMark() {
+  return (
+    <div className="pointer-events-none absolute bottom-3 right-3 md:bottom-4 md:right-4 z-10 opacity-0 group-hover:opacity-80 transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+      <span className="font-script text-white text-xl md:text-2xl drop-shadow-[0_1px_6px_rgba(0,0,0,0.55)]">
+        Maestro
+      </span>
+    </div>
+  );
+}
+
+// Subtle film-grain texture — a signature that ties back to the subject
+// (a film studio) instead of a decorative flourish.
+const GRAIN_BG =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E";
+
 export default function MaestroFilms() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [modalVideo, setModalVideo] = useState<string | null>(null);
+  const [pageReady, setPageReady] = useState(false);
+  const [devToolsSuspected, setDevToolsSuspected] = useState(false);
+  const [tabHidden, setTabHidden] = useState(false);
   const modalRef = useRef<HTMLVideoElement>(null);
+  const protectionRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -97,27 +130,161 @@ export default function MaestroFilms() {
     },
   ];
 
+  // Shuffled copies shown in the swipers. Seeded client-side only, after
+  // mount, so the server-rendered markup and the first client render match
+  // (shuffling during render would cause a hydration mismatch in Next.js).
+  const [editorialItems, setEditorialItems] = useState(editorials);
+  const [productionItems, setProductionItems] = useState(productions);
+
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add('animate-in');
-        });
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
-    );
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
-    return () => window.removeEventListener('scroll', handleScroll);
+    setEditorialItems(shuffleArray(editorials));
+    setProductionItems(shuffleArray(productions));
+    // Runs once on mount by design — reshuffling on every render would
+    // fight the swiper's own state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ============ DATA PROTECTION SETUP ============
+  // Note on scope: none of this can block screen capture, mobile screenshots,
+  // or a phone camera pointed at the screen — nothing running in the page
+  // can do that. It also can't hide specific DevTools panels (Network,
+  // Application, etc.) from someone who has DevTools open; the browser
+  // doesn't expose that to page JS. What follows are the standard,
+  // best-effort deterrents real sites use — they raise friction for casual
+  // copying, not a technical guarantee.
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const blockedCombo =
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+        (e.ctrlKey && e.shiftKey && e.key === 'J') ||
+        (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+        (e.metaKey && e.altKey && e.key === 'i') ||
+        (e.ctrlKey && (e.key === 's' || e.key === 'S')) || // Save page
+        (e.ctrlKey && (e.key === 'u' || e.key === 'U')) || // View source
+        (e.ctrlKey && (e.key === 'p' || e.key === 'P'));   // Print
+
+      if (blockedCombo) {
+        e.preventDefault();
+        return false;
+      }
+    };
+
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      return false;
+    };
+
+    const handleDragStart = (e: DragEvent) => {
+      e.preventDefault();
+      return false;
+    };
+
+    const handleCopy = (e: ClipboardEvent) => {
+      e.preventDefault();
+      return false;
+    };
+
+    // Heuristic DevTools check based on the gap between outer and inner
+    // window size. It only catches docked panels, misses undocked windows
+    // and mobile inspectors, and can false-positive on some browser
+    // toolbars — treat it as a nudge, not a lock.
+    const DEVTOOLS_THRESHOLD = 160;
+    const checkDevTools = () => {
+      const widthGap = window.outerWidth - window.innerWidth > DEVTOOLS_THRESHOLD;
+      const heightGap = window.outerHeight - window.innerHeight > DEVTOOLS_THRESHOLD;
+      setDevToolsSuspected(widthGap || heightGap);
+    };
+
+    // Blur/hide media when the tab loses focus. Mostly a deterrent against
+    // basic screen-recording setups that only capture the active window —
+    // it does nothing against OS-level or phone-camera capture.
+    const handleVisibility = () => setTabHidden(document.hidden);
+
+    window.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('dragstart', handleDragStart);
+ 
+    document.addEventListener('copy', handleCopy);
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('resize', checkDevTools);
+    const devToolsInterval = setInterval(checkDevTools, 1000);
+    checkDevTools();
+
+    console.clear();
+    console.log(
+      '%cMaestro Films Portfolio',
+      'color: #8b7355; font-size: 16px; font-weight: bold;'
+    );
+    console.log(
+      '%cThis content is protected. Unauthorized access, reproduction, or download of images/videos is prohibited.',
+      'color: #c4785a; font-size: 12px;'
+    );
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('dragstart', handleDragStart);
+ 
+      document.removeEventListener('copy', handleCopy);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('resize', checkDevTools);
+      clearInterval(devToolsInterval);
+    };
+  }, []);
+
+  // ============ PERFORMANCE OPTIMIZATION ============
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+
+    const scrollOptions = { passive: true, capture: false };
+    window.addEventListener('scroll', handleScroll, scrollOptions);
+
+    const observerOptions = {
+      threshold: [0.12, 0.5],
+      rootMargin: '0px 0px -40px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+          entry.target.classList.remove('will-animate');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach((el) => {
+      el.classList.add('will-animate');
+      observer.observe(el);
+    });
+
+    const prefetchImages = () => {
+      [slides[0].left, slides[0].right].forEach(src => {
+        const l = document.createElement('link');
+        l.rel = 'prefetch';
+        l.as = 'image';
+        l.href = src;
+        document.head.appendChild(l);
+      });
+    };
+
+    setTimeout(prefetchImages, 100);
+    setPageReady(true);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, scrollOptions);
+      observer.disconnect();
+    };
+  }, []);
+
+  // ============ CAROUSEL AUTOPLAY ============
   useEffect(() => {
     const interval = setInterval(() => {
       goToNext();
     }, 6000);
     return () => clearInterval(interval);
-  }, [slides.length, isTransitioning]);
+  }, [currentSlide, isTransitioning, slides.length]);
 
   useEffect(() => {
     if (modalVideo && modalRef.current) {
@@ -125,6 +292,7 @@ export default function MaestroFilms() {
     }
   }, [modalVideo]);
 
+  // ============ CAROUSEL NAVIGATION ============
   const goToSlide = useCallback(
     (index: number) => {
       if (isTransitioning || index === currentSlide) return;
@@ -143,6 +311,7 @@ export default function MaestroFilms() {
     goToSlide((currentSlide - 1 + slides.length) % slides.length);
   }, [currentSlide, slides.length, goToSlide]);
 
+  // ============ FORM HANDLERS ============
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -154,6 +323,7 @@ export default function MaestroFilms() {
     setFormData({ fullName: '', email: '', phone: '', message: '' });
   };
 
+  // ============ MODAL HANDLERS ============
   const openModal = (videoUrl: string) => {
     setModalVideo(videoUrl);
     document.body.style.overflow = 'hidden';
@@ -165,20 +335,61 @@ export default function MaestroFilms() {
   };
 
   return (
-    <div className="bg-[#f5f1ed] text-[#2a2a2a] min-h-screen font-sans overflow-x-hidden selection:bg-[#8b7355] selection:text-white">
+    <div
+      ref={protectionRef}
+      className="bg-[#f5f1ed] text-[#2a2a2a] min-h-screen font-sans overflow-x-hidden selection:bg-[#8b7355] selection:text-white"
+      onContextMenu={(e) => e.preventDefault()}
+      onCopy={(e) => e.preventDefault()}
+    >
       <style jsx global>{`
+        * {
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          user-select: none;
+          -webkit-user-drag: none;
+        }
+
+        input, textarea {
+          -webkit-user-select: text;
+          -moz-user-select: text;
+          user-select: text;
+        }
+
         @import url('https://fonts.googleapis.com/css2?family=Allura&family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+        html {
+          scroll-behavior: smooth;
+        }
+
+        body {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          overflow-x: hidden;
+        }
+
         .font-script { font-family: 'Allura', cursive; }
         .font-body { font-family: 'Poppins', sans-serif; }
 
-        /* Premium smooth reveals */
+        .smooth-scroll {
+          scroll-behavior: smooth;
+          scroll-padding-top: 80px;
+        }
+
         .reveal {
           opacity: 0;
           transform: translateY(28px) translateZ(0);
           transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
                       transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
           will-change: opacity, transform;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
         }
+
+        .reveal.will-animate {
+          opacity: 0;
+          transform: translateY(28px) translateZ(0);
+        }
+
         .reveal.animate-in {
           opacity: 1;
           transform: translateY(0) translateZ(0);
@@ -188,26 +399,31 @@ export default function MaestroFilms() {
           0%, 100% { transform: translateY(0px) translateZ(0); }
           50% { transform: translateY(-10px) translateZ(0); }
         }
+
         .animate-float {
           animation: float 5.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
           will-change: transform;
+          backface-visibility: hidden;
         }
 
         @keyframes fadeInScale {
           from { opacity: 0; transform: scale(1.06) translateZ(0); }
           to { opacity: 1; transform: scale(1) translateZ(0); }
         }
+
         .hero-image-anim {
           animation: fadeInScale 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
           will-change: transform, opacity;
+          backface-visibility: hidden;
         }
 
-        /* Ultra-smooth hover lift */
         .hover-lift {
           transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
                       box-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1);
           will-change: transform;
+          backface-visibility: hidden;
         }
+
         .hover-lift:hover {
           transform: translateY(-8px) translateZ(0);
           box-shadow: 0 24px 48px -14px rgba(0, 0, 0, 0.28);
@@ -215,13 +431,14 @@ export default function MaestroFilms() {
 
         .carousel-progress {
           animation: progress 6s linear forwards;
+          will-change: width;
         }
+
         @keyframes progress {
           from { width: 0%; }
           to { width: 100%; }
         }
 
-        /* Swiper bullets & nav – buttery */
         .editorial-swiper .swiper-pagination-bullet,
         .productions-swiper .swiper-pagination-bullet {
           background: #9ca3af;
@@ -229,13 +446,16 @@ export default function MaestroFilms() {
           width: 8px;
           height: 8px;
           transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          backface-visibility: hidden;
         }
+
         .editorial-swiper .swiper-pagination-bullet-active,
         .productions-swiper .swiper-pagination-bullet-active {
           background: #2a2a2a;
           opacity: 1;
-          transform: scale(1.25);
+          transform: scale(1.25) translateZ(0);
         }
+
         .editorial-swiper .swiper-button-next,
         .editorial-swiper .swiper-button-prev,
         .productions-swiper .swiper-button-next,
@@ -248,15 +468,18 @@ export default function MaestroFilms() {
           border-radius: 50%;
           box-shadow: 0 4px 16px rgba(0,0,0,0.08);
           transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          backface-visibility: hidden;
         }
+
         .editorial-swiper .swiper-button-next:hover,
         .editorial-swiper .swiper-button-prev:hover,
         .productions-swiper .swiper-button-next:hover,
         .productions-swiper .swiper-button-prev:hover {
           background: #2a2a2a;
           color: white;
-          transform: scale(1.12);
+          transform: scale(1.12) translateZ(0);
         }
+
         .editorial-swiper .swiper-button-next::after,
         .editorial-swiper .swiper-button-prev::after,
         .productions-swiper .swiper-button-next::after,
@@ -265,19 +488,73 @@ export default function MaestroFilms() {
           font-weight: bold;
         }
 
-        /* Image & video rendering – buttery smooth */
         img, video {
           backface-visibility: hidden;
           -webkit-backface-visibility: hidden;
           transform: translateZ(0);
+          -webkit-transform: translateZ(0);
           image-rendering: -webkit-optimize-contrast;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          user-select: none;
+          -webkit-user-drag: none;
+          pointer-events: auto;
         }
 
-        /* Smooth video container */
         .video-smooth {
           will-change: transform;
+          backface-visibility: hidden;
+        }
+
+        .protected-image {
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          user-select: none;
+          -webkit-user-drag: none;
+          pointer-events: auto;
+        }
+
+        /* Screen-recording deterrent: blur media while the tab is hidden. */
+        .capture-guard {
+          transition: filter 0.3s ease;
+        }
+        .capture-guard.is-hidden {
+          filter: blur(28px) saturate(0.6);
+        }
+
+        button, a {
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
         }
       `}</style>
+
+     
+      <AnimatePresence>
+        {(devToolsSuspected || tabHidden) && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[200] bg-[#1a1410]/97 backdrop-blur-xl flex items-center justify-center px-6 text-center"
+          >
+            <div className="max-w-sm">
+              <ShieldAlert className="w-9 h-9 text-[#c4a882] mx-auto mb-4" strokeWidth={1.25} />
+              <p className="font-body text-white text-sm tracking-wide leading-relaxed">
+                This gallery is protected. Please close developer tools or
+                return to this tab to keep viewing.
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ============ VIDEO MODAL ============ */}
       <AnimatePresence>
@@ -316,6 +593,9 @@ export default function MaestroFilms() {
                 autoPlay
                 playsInline
                 preload="auto"
+                disablePictureInPicture
+                controlsList="nodownload noremoteplayback"
+                onContextMenu={(e) => e.preventDefault()}
               />
             </motion.div>
           </motion.div>
@@ -337,7 +617,7 @@ export default function MaestroFilms() {
 
         <div className={`fixed inset-0 bg-[#1a1410] z-40 flex items-center justify-center transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
           <nav className="text-center space-y-6">
-            {['Portfolio', 'About', 'Productions', 'Contact'].map((item) => (
+            {['Portfolio', 'About', 'reels', 'Contact'].map((item) => (
               <a key={item} href={`/${item.toLowerCase()}`} onClick={() => setIsMenuOpen(false)} className="block text-3xl md:text-5xl font-body font-light text-white hover:text-[#c4a882] transition-colors duration-400 tracking-wide">
                 {item}
               </a>
@@ -345,33 +625,45 @@ export default function MaestroFilms() {
           </nav>
         </div>
 
+        {/* Film-grain signature — restrained, tied to the subject */}
+        <div
+          className="absolute inset-0 z-[15] pointer-events-none opacity-[0.05] mix-blend-overlay"
+          style={{ backgroundImage: `url("${GRAIN_BG}")`, backgroundRepeat: 'repeat' }}
+        />
+
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            className={`capture-guard ${tabHidden ? 'is-hidden' : ''} absolute inset-0 transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
               index === currentSlide ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-[1.04]'
             }`}
           >
-            <div className="absolute left-0 top-0 w-full md:w-1/2 h-full hidden md:block overflow-hidden">
+            <div className="absolute left-0 top-0 w-full md:w-1/2 h-full hidden md:block overflow-hidden group">
               <img
                 src={slide.left}
-                alt="Maestro Films"
-                className="w-full h-full object-cover hero-image-anim"
+                alt="Maestro Films portfolio"
+                className="protected-image w-full h-full object-cover hero-image-anim"
                 loading={index === 0 ? 'eager' : 'lazy'}
                 decoding="async"
+                onContextMenu={(e) => e.preventDefault()}
+                onDragStart={(e) => e.preventDefault()}
               />
               <div className="absolute inset-0 bg-black/30" />
+              <CornerMark />
             </div>
-            <div className="absolute right-0 top-0 w-full md:w-1/2 h-full overflow-hidden">
+            <div className="absolute right-0 top-0 w-full md:w-1/2 h-full overflow-hidden group">
               <img
                 src={slide.right}
-                alt="Maestro Films"
-                className="w-full h-full object-cover hero-image-anim"
+                alt="Maestro Films portfolio"
+                className="protected-image w-full h-full object-cover hero-image-anim"
                 style={{ animationDelay: '0.12s' }}
                 loading={index === 0 ? 'eager' : 'lazy'}
                 decoding="async"
+                onContextMenu={(e) => e.preventDefault()}
+                onDragStart={(e) => e.preventDefault()}
               />
               <div className="absolute inset-0 bg-black/20" />
+              <CornerMark />
             </div>
             <div className="absolute inset-0 flex items-center justify-center z-10 bg-gradient-to-b from-black/20 via-transparent to-black/30">
               <div className={`text-center text-white px-4 transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
@@ -459,18 +751,21 @@ export default function MaestroFilms() {
               breakpoints={{ 640: { slidesPerView: 2, spaceBetween: 20 }, 1024: { slidesPerView: 3, spaceBetween: 24 } }}
               className="editorial-swiper !pb-12"
             >
-              {editorials.map((item, i) => (
-                <SwiperSlide key={i}>
+              {editorialItems.map((item, i) => (
+                <SwiperSlide key={item.title + i}>
                   <div className="group relative h-[400px] md:h-[520px] rounded-sm overflow-hidden cursor-pointer shadow-lg hover-lift">
                     <img
                       src={item.img}
-                      alt={item.title}
-                      className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+                      alt={`Editorial: ${item.title}`}
+                      className="protected-image w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
                       loading="lazy"
                       decoding="async"
+                      onContextMenu={(e) => e.preventDefault()}
+                      onDragStart={(e) => e.preventDefault()}
                     />
                     <div className={`absolute inset-0 bg-gradient-to-t opacity-20 group-hover:opacity-10 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]`} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                    <CornerMark />
                     <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]">
                       <p className="text-white/70 text-[10px] tracking-[0.2em] uppercase font-body font-light mb-1">Editorial</p>
                       <h3 className="text-white text-xl font-body font-light">{item.title}</h3>
@@ -542,8 +837,8 @@ export default function MaestroFilms() {
               breakpoints={{ 640: { slidesPerView: 2, spaceBetween: 20 }, 1024: { slidesPerView: 3, spaceBetween: 24 } }}
               className="productions-swiper !pb-12"
             >
-              {productions.map((item, i) => (
-                <SwiperSlide key={i}>
+              {productionItems.map((item, i) => (
+                <SwiperSlide key={item.label + i}>
                   <div
                     className="group relative h-[400px] md:h-[520px] rounded-md overflow-hidden cursor-pointer shadow-lg hover-lift video-smooth"
                     onClick={() => openModal(item.video)}
@@ -558,10 +853,14 @@ export default function MaestroFilms() {
                         autoPlay
                         playsInline
                         preload="metadata"
+                        disablePictureInPicture
+                        onContextMenu={(e) => e.preventDefault()}
+                        controlsList="nodownload noremoteplayback"
                       />
                     </div>
                     <div className={`absolute inset-0 bg-gradient-to-t ${item.color} opacity-10 group-hover:opacity-10 transition-opacity duration-600 pointer-events-none`} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
+                    <CornerMark />
 
                     {/* Bottom Label */}
                     <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 pointer-events-none">
@@ -580,7 +879,6 @@ export default function MaestroFilms() {
       <section id="about" className="py-10 md:py-14 px-4 md:px-6 bg-[#f5f1ed]">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-center">
-            {/* Text Content */}
             <div className="reveal">
               <h2 className="font-body text-4xl md:text-6xl font-light text-[#2a2a2a] leading-none mb-1">
                 ABOUT
@@ -601,41 +899,44 @@ export default function MaestroFilms() {
               </div>
             </div>
 
-            {/* Collage Image Grid */}
             <div className="reveal">
               <div className="grid grid-cols-2 gap-2.5 md:gap-3">
-                {/* Top full-width image */}
                 <div className="col-span-2 relative h-40 md:h-60 overflow-hidden rounded-sm shadow-md hover-lift group">
                   <img
                     src="https://6a8930a197833836f65581d4.imgix.net/sandbox/onepic.jpeg"
-                    alt="Production"
-                    className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+                    alt="Maestro Films production work"
+                    className="protected-image w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
                     loading="lazy"
                     decoding="async"
+                    onContextMenu={(e) => e.preventDefault()}
+                    onDragStart={(e) => e.preventDefault()}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                  <CornerMark />
                 </div>
 
-                {/* Bottom left */}
                 <div className="relative h-36 md:h-44 overflow-hidden rounded-sm shadow-md hover-lift group">
                   <img
                     src="https://6a8930a197833836f65581d4.imgix.net/sandbox/twpic.jpeg"
-                    alt="Production"
-                    className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+                    alt="Maestro Films production work"
+                    className="protected-image w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
                     loading="lazy"
                     decoding="async"
+                    onContextMenu={(e) => e.preventDefault()}
+                    onDragStart={(e) => e.preventDefault()}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
                 </div>
 
-                {/* Bottom right */}
                 <div className="relative h-36 md:h-44 overflow-hidden rounded-sm shadow-md hover-lift group">
                   <img
                     src="https://6a8930a197833836f65581d4.imgix.net/sandbox/thrpic.jpeg"
-                    alt="Production"
-                    className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+                    alt="Maestro Films production work"
+                    className="protected-image w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
                     loading="lazy"
                     decoding="async"
+                    onContextMenu={(e) => e.preventDefault()}
+                    onDragStart={(e) => e.preventDefault()}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
                 </div>
@@ -653,16 +954,19 @@ export default function MaestroFilms() {
               <div className="relative h-72 md:h-full min-h-[420px] rounded-sm overflow-hidden shadow-2xl group">
                 <img
                   src="https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/banner/front%20page%201.jpg"
-                  alt="Contact"
-                  className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+                  alt="Contact Maestro Films"
+                  className="protected-image w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
                   loading="lazy"
                   decoding="async"
+                  onContextMenu={(e) => e.preventDefault()}
+                  onDragStart={(e) => e.preventDefault()}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 z-10">
                   <h2 className="font-body text-3xl md:text-5xl font-light text-white leading-none mb-1">Let's</h2>
                   <h2 className="font-body text-4xl md:text-7xl font-bold text-white tracking-tight">TALK</h2>
                 </div>
+                <CornerMark />
               </div>
             </div>
             <div className="order-1 md:order-2 flex items-center reveal">
