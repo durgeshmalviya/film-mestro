@@ -1021,7 +1021,8 @@ export default function MaestroFilms() {
           </div>
         </div>
       </section>
-      <Footer />
+
+
     </div>
   );
 }
