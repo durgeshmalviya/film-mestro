@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { Menu, ChevronRight, ChevronLeft, X, ShieldAlert } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { ChevronRight, ChevronLeft, X, ShieldAlert } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import 'swiper/css';
@@ -11,9 +11,49 @@ import { motion, AnimatePresence } from 'framer-motion';
 import FashionPortfolio from '../components/Manso';
 import ProductShoots from './pageo';
 
+// ============ IMAGE OPTIMIZATION HELPER ============
+const getOptimizedImageUrl = (url: string, width?: number): string => {
+  if (url.includes('imagekit.io')) {
+    return `${url}${url.includes('?') ? '&' : '?'}tr=w-${width || 1200},q-80,f-auto`;
+  }
+  if (url.includes('ibb.co')) {
+    return url;
+  }
+  if (url.includes('bitbucket.org')) {
+    return url;
+  }
+  return url;
+};
+
+// ============ LAZY IMAGE COMPONENT ============
+function LazyImage({ src, alt, className, onContextMenu, onDragStart, loading = 'lazy', decoding = 'async' }: any) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => {
+      setImageSrc(src);
+      setIsLoaded(true);
+    };
+    img.onerror = () => setImageSrc(src);
+    img.src = src;
+  }, [src]);
+
+  return (
+    <img
+      src={imageSrc || src}
+      alt={alt}
+      className={`${className} ${!isLoaded ? 'blur-sm' : 'blur-0'} transition-all duration-300`}
+      loading={loading}
+      decoding={decoding}
+      onContextMenu={onContextMenu}
+      onDragStart={onDragStart}
+    />
+  );
+}
 
 // ============ HELPERS ============
-// Fisher-Yates shuffle. Returns a new array; never mutates the source.
 function shuffleArray<T>(source: T[]): T[] {
   const arr = [...source];
   for (let i = arr.length - 1; i > 0; i--) {
@@ -33,7 +73,6 @@ function CornerMark() {
   );
 }
 
- 
 const GRAIN_BG =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E";
 
@@ -46,6 +85,7 @@ export default function MaestroFilms() {
   const [pageReady, setPageReady] = useState(false);
   const [devToolsSuspected, setDevToolsSuspected] = useState(false);
   const [tabHidden, setTabHidden] = useState(false);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const modalRef = useRef<HTMLVideoElement>(null);
   const protectionRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({
@@ -55,7 +95,7 @@ export default function MaestroFilms() {
     message: '',
   });
 
-  const slides = [
+  const slides = useMemo(() => [
     {
       left: 'https://i.ibb.co/rKjZyrPC/qwe.jpg',
       right: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/banner/front%20page%201.jpg',
@@ -84,9 +124,9 @@ export default function MaestroFilms() {
       subtitle: 'Films',
       tagline: 'Stories That Move You',
     },
-  ];
+  ], []);
 
-  const editorials = [
+  const editorials = useMemo(() => [
     { img: 'https://ik.imagekit.io/maestrofilms/Copy%20of%209%20copy.jpg?updatedAt=1788075353055&ik-s=7fdbab837cc3e8ac00d5e8d92738b56e6ea79fbd', color: 'from-gray-700 to-gray-900', title: 'Shadow Play' },
     { img: 'https://ik.imagekit.io/maestrofilms/Copy%20of%2019.jpg?updatedAt=1788075350100&ik-s=b85a972771eddb158663211697f33750416081ee', color: 'from-orange-400 to-orange-600', title: 'Golden Hour' },
     { img: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/candid%20shoot/Img11.jpg', color: 'from-amber-800 to-amber-950', title: 'Warm Tones' },
@@ -95,12 +135,40 @@ export default function MaestroFilms() {
     { img: 'https://ik.imagekit.io/maestrofilms/Copy%20of%20MF_08663.jpg?updatedAt=1788075353076&ik-s=91f300d463c2f86b0a849a8183d871dd89eea2fe', color: 'from-amber-800 to-amber-950', title: 'Warm Tones' },
     { img: 'https://ik.imagekit.io/maestrofilms/MF_08942.jpg?updatedAt=1788072997752&ik-s=073b8f8911744a355fafd7ff35c4b7af71bc830d', color: 'from-stone-600 to-stone-800', title: 'Urban Edge' },
     { img: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/banner/DSC09946-Enhanced-NR_2.jpg', color: 'from-rose-400 to-rose-600', title: 'Soft Light' },
-  ];
- 
- 
-  const [editorialItems, setEditorialItems] = useState(editorials);
- 
- 
+  ], []);
+
+  const [editorialItems] = useState(editorials);
+
+  // ============ PRELOAD STRATEGY ============
+  useEffect(() => {
+    const preloadCriticalImages = () => {
+      [slides[0].left, slides[0].right].forEach(src => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = src;
+        link.fetchPriority = 'high';
+        document.head.appendChild(link);
+      });
+
+      // Prefetch next slides
+      setTimeout(() => {
+        slides.slice(1, 3).forEach(slide => {
+          [slide.left, slide.right].forEach(src => {
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.as = 'image';
+            link.href = src;
+            document.head.appendChild(link);
+          });
+        });
+      }, 500);
+    };
+
+    preloadCriticalImages();
+  }, [slides]);
+
+  // ============ SECURITY & DEVTOOLS CHECK ============
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const blockedCombo =
@@ -109,9 +177,9 @@ export default function MaestroFilms() {
         (e.ctrlKey && e.shiftKey && e.key === 'J') ||
         (e.ctrlKey && e.shiftKey && e.key === 'C') ||
         (e.metaKey && e.altKey && e.key === 'i') ||
-        (e.ctrlKey && (e.key === 's' || e.key === 'S')) || // Save page
-        (e.ctrlKey && (e.key === 'u' || e.key === 'U')) || // View source
-        (e.ctrlKey && (e.key === 'p' || e.key === 'P'));   // Print
+        (e.ctrlKey && (e.key === 's' || e.key === 'S')) ||
+        (e.ctrlKey && (e.key === 'u' || e.key === 'U')) ||
+        (e.ctrlKey && (e.key === 'p' || e.key === 'P'));
 
       if (blockedCombo) {
         e.preventDefault();
@@ -133,7 +201,7 @@ export default function MaestroFilms() {
       e.preventDefault();
       return false;
     };
- 
+
     const DEVTOOLS_THRESHOLD = 160;
     const checkDevTools = () => {
       const widthGap = window.outerWidth - window.innerWidth > DEVTOOLS_THRESHOLD;
@@ -141,15 +209,11 @@ export default function MaestroFilms() {
       setDevToolsSuspected(widthGap || heightGap);
     };
 
-    // Blur/hide media when the tab loses focus. Mostly a deterrent against
-    // basic screen-recording setups that only capture the active window —
-    // it does nothing against OS-level or phone-camera capture.
     const handleVisibility = () => setTabHidden(document.hidden);
 
     window.addEventListener('keydown', handleKeyDown);
     document.addEventListener('contextmenu', handleContextMenu);
     document.addEventListener('dragstart', handleDragStart);
-
     document.addEventListener('copy', handleCopy);
     document.addEventListener('visibilitychange', handleVisibility);
     window.addEventListener('resize', checkDevTools);
@@ -170,7 +234,6 @@ export default function MaestroFilms() {
       window.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('contextmenu', handleContextMenu);
       document.removeEventListener('dragstart', handleDragStart);
-
       document.removeEventListener('copy', handleCopy);
       document.removeEventListener('visibilitychange', handleVisibility);
       window.removeEventListener('resize', checkDevTools);
@@ -178,7 +241,7 @@ export default function MaestroFilms() {
     };
   }, []);
 
-  // ============ PERFORMANCE OPTIMIZATION ============
+  // ============ SCROLL & OBSERVER ============
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
 
@@ -204,17 +267,6 @@ export default function MaestroFilms() {
       observer.observe(el);
     });
 
-    const prefetchImages = () => {
-      [slides[0].left, slides[0].right].forEach(src => {
-        const l = document.createElement('link');
-        l.rel = 'prefetch';
-        l.as = 'image';
-        l.href = src;
-        document.head.appendChild(l);
-      });
-    };
-
-    setTimeout(prefetchImages, 100);
     setPageReady(true);
 
     return () => {
@@ -457,9 +509,9 @@ export default function MaestroFilms() {
           user-select: none;
           -webkit-user-drag: none;
           pointer-events: auto;
+          will-change: transform;
         }
 
-        /* Screen-recording deterrent: blur media while the tab is hidden. */
         .capture-guard {
           transition: filter 0.3s ease;
         }
@@ -478,10 +530,7 @@ export default function MaestroFilms() {
             transition-duration: 0.01ms !important;
           }
         }
- 
-   
       `}</style>
-
 
       <AnimatePresence>
         {(devToolsSuspected || tabHidden) && (
@@ -539,7 +588,7 @@ export default function MaestroFilms() {
                 controls
                 autoPlay
                 playsInline
-                preload="auto"
+                preload="metadata"
                 disablePictureInPicture
                 controlsList="nodownload noremoteplayback"
                 onContextMenu={(e) => e.preventDefault()}
@@ -572,7 +621,6 @@ export default function MaestroFilms() {
           </nav>
         </div>
 
-        {/* Film-grain signature — restrained, tied to the subject */}
         <div
           className="absolute inset-0 z-[15] pointer-events-none opacity-[0.05] mix-blend-overlay"
           style={{ backgroundImage: `url("${GRAIN_BG}")`, backgroundRepeat: 'repeat' }}
@@ -614,8 +662,8 @@ export default function MaestroFilms() {
             <div className="absolute inset-0 flex items-center justify-center z-10 bg-gradient-to-b from-black/20 via-transparent to-black/30">
               <div className={`text-center text-white px-4 transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${index === currentSlide ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`}>
-                <h1 className="font-script text-4xl md:text-6xl mb-0  drop-shadow-2xl animate-float leading-relaxed">{slide.title}</h1>
-                <p className="font-body font-bold text-2xl md:text-4xl tracking-[0.15em] mb-3 drop-shadow-lg  leading-relaxed uppercase">{slide.subtitle}</p>
+                <h1 className="font-script text-4xl md:text-6xl mb-0 drop-shadow-2xl animate-float leading-relaxed">{slide.title}</h1>
+                <p className="font-body font-bold text-2xl md:text-4xl tracking-[0.15em] mb-3 drop-shadow-lg leading-relaxed uppercase">{slide.subtitle}</p>
                 <p className="text-xs md:text-sm font-light tracking-[0.2em] uppercase drop-shadow-md opacity-90 font-body">{slide.tagline}</p>
               </div>
             </div>
@@ -670,9 +718,7 @@ export default function MaestroFilms() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 md:mb-8 gap-4 reveal">
             <div className='text-center'>
               <p className="text-[10px] md:text-sm font-body font-medium text-gray-500 mx-2 tracking-[0.25em] uppercase mb-2">A Curated Glimpse Into Our</p>
-              <p className="text-[10px] md:text-xs font-body font-medium text-gray-500 mx-2 tracking-[0.25em]    " >Recent Collaborations |
-                <span className="text-[10px] md:text-sm font-body font-script text-gray-500 mx-2 tracking-[0.25em]">Studio Portrait Series</span>|
-                <span className="text-[10px] md:text-xs font-body font-medium text-gray-500 mx-2 tracking-[0.25em]">Ikat Collection</span></p>
+              <p className="text-[10px] md:text-xs font-body font-medium text-gray-500 mx-2 tracking-[0.25em]">Recent Collaborations | <span className="text-[10px] md:text-sm font-body font-script text-gray-500 mx-2 tracking-[0.25em]">Studio Portrait Series</span> | <span className="text-[10px] md:text-xs font-body font-medium text-gray-500 mx-2 tracking-[0.25em]">Ikat Collection</span></p>
             </div>
             <div className="flex items-center justify-end gap-3 w-full md:w-auto">
               <div className="swiper-custom-prev-editorial w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm">
@@ -721,7 +767,8 @@ export default function MaestroFilms() {
               ))}
             </Swiper>
           </div>
-        </div> <div className="max-w-7xl mx-auto bg-[#f5f1ed]">
+        </div>
+        <div className="max-w-7xl mx-auto bg-[#f5f1ed]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-start">
             <div className="reveal">
               <h2 className="font-body text-2xl md:text-4xl font-light text-[#2a2a2a] leading-tight mb-4">Latest <span className="font-semibold">stories</span> & <span className="font-semibold">collaboration</span></h2>
@@ -743,90 +790,10 @@ export default function MaestroFilms() {
         </div>
       </section>
 
+      <ProductShoots />
+      <FashionPortfolio />
 
-      {/* ============ RECENT PRODUCTIONS - VIDEO SWIPER ============ */}
-      {/*
-      <section id="productions" className=" text-center py-5 px-4 md:px-6 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-end items-center md:items-end mb-6 md:mb-8 gap-4 reveal">
-
-            <div className="text-right">
-              <p className="text-[10px] md:text-xs font-body font-medium text-gray-500 tracking-[0.25em] uppercase mb-2">
-                Cinematic Showcase
-              </p>
-              <h2 className="font-body text-3xl md:text-5xl font-light mb-3 text-[#2a2a2a]">
-                <span className="font-semibold text-[#2a2a2]"> The Maestro reels</span>
-              </h2>
-              <p className="text-xs md:text-sm text-gray-600 max-w-xl leading-relaxed font-body font-light ml-auto">
-                Every frame tells a story. From commercial campaigns to documentary films, our productions capture the essence of emotion and authenticity.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="swiper-custom-prev-prod w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm">
-                <ChevronLeft size={16} />
-              </div>
-              <div className="swiper-custom-next-prod w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm">
-                <ChevronRight size={16} />
-              </div>
-            </div>
-          </div>
-          <div className="reveal">
-            <Swiper
-              modules={[Autoplay, Pagination, Navigation]}
-              spaceBetween={16}
-              slidesPerView={1}
-              loop={true}
-              speed={900}
-              autoplay={{ delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true }}
-              pagination={{ clickable: true }}
-              navigation={{ prevEl: '.swiper-custom-prev-prod', nextEl: '.swiper-custom-next-prod' }}
-              breakpoints={{ 640: { slidesPerView: 2, spaceBetween: 20 }, 1024: { slidesPerView: 3, spaceBetween: 24 } }}
-              className="productions-swiper !pb-12"
-            >
-              {productionItems.map((item, i) => (
-                <SwiperSlide key={item.label + i}>
-                  <div
-                    className="group relative h-[400px] md:h-[520px] rounded-md overflow-hidden cursor-pointer shadow-lg hover-lift video-smooth"
-                    onClick={() => openModal(item.video)}
-                  >
-                    <div className="relative w-full aspect-[9/16] overflow-hidden rounded-md">
-                      <video
-                        src={item.video}
-                        poster={item.poster}
-                        className="absolute inset-0 w-full h-full p-1 object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
-                        muted
-                        loop
-                        autoPlay
-                        playsInline
-                        preload="metadata"
-                        disablePictureInPicture
-                        onContextMenu={(e) => e.preventDefault()}
-                        controlsList="nodownload noremoteplayback"
-                      />
-                    </div>
-                    <div className={`absolute inset-0 bg-gradient-to-t ${item.color} opacity-10 group-hover:opacity-10 transition-opacity duration-600 pointer-events-none`} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
-                    <CornerMark />
-
-              
-                    <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 pointer-events-none">
-                      <p className="text-white/60 text-[10px] tracking-[0.2em] uppercase font-body font-light mb-1">Production</p>
-                      <h3 className="text-white text-lg md:text-xl font-body font-light">{item.label}</h3>
-                    </div>
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
-        </div>
-   
-      </section> */}
-
-      <ProductShoots/>
-    < FashionPortfolio/>
-     
-      <section id="about" className="  px-4 md:px-6 bg-[#f5f1ed]">
+      <section id="about" className="px-4 md:px-6 bg-[#f5f1ed]">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-center">
             <div className="reveal">
@@ -896,7 +863,6 @@ export default function MaestroFilms() {
         </div>
       </section>
 
- 
       <section id="contact" className="py-10 md:py-14 px-4 md:px-6 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-stretch">
@@ -971,8 +937,6 @@ export default function MaestroFilms() {
           </div>
         </div>
       </section>
-
-
     </div>
   );
 }
