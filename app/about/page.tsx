@@ -198,7 +198,7 @@ export default function AboutPage() {
             </motion.div>
 
             <motion.div variants={fadeUp} className="relative h-72 md:h-96 rounded-sm overflow-hidden shadow-2xl group">
-              <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&h=1000&fit=crop" alt="Studio" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src="https://ik.imagekit.io/maestrofilms/MF_09968.jpg?updatedAt=null&ik-s=28524e0fa6cd63df61207b690310a37d5f8d76ee" alt="Studio" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
               <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8">
                 <p className="text-white/70 text-[10px] tracking-[0.2em] uppercase font-light mb-1">Maestro Films</p>
@@ -208,18 +208,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-
-      {/* ============ FOOTER ============ */}
-      <footer className="bg-[#1a1410] text-white py-8 md:py-10 px-6 md:px-10 border-t border-gray-800/50">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-[11px] text-gray-500 font-light tracking-wider">
-            &copy; 2025 Maestro Films. All rights reserved.
-          </p>
-          <p className="text-[10px] tracking-[0.2em] uppercase text-gray-600 font-light">
-            Croma Shoot — Fashion Photography
-          </p>
-        </div>
-      </footer>
+ 
     </motion.div>
   );
 }

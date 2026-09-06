@@ -8,8 +8,9 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
-import Footer from '../components/Footer';
+import FashionPortfolio from '../components/Manso';
+import ProductShoots from './pageo';
+
 
 // ============ HELPERS ============
 // Fisher-Yates shuffle. Returns a new array; never mutates the source.
@@ -22,21 +23,17 @@ function shuffleArray<T>(source: T[]): T[] {
   return arr;
 }
 
-// Small monogram mark shown on hover over protected media. A believable
-// theft deterrent (like a photographer's watermark) is more effective than
-// any amount of JS gatekeeping, and it doubles as a premium studio cue.
 function CornerMark() {
   return (
     <div className="pointer-events-none absolute bottom-3 right-3 md:bottom-4 md:right-4 z-10 opacity-0 group-hover:opacity-80 transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
-      <span className="font-script text-white text-xl md:text-2xl drop-shadow-[0_1px_6px_rgba(0,0,0,0.55)]">
-        Maestro
+      <span className="font-serif text-white text-lg md:text-lg drop-shadow-[0_1px_6px_rgba(0,0,0,0.55)]">
+        Maestro films
       </span>
     </div>
   );
 }
 
-// Subtle film-grain texture — a signature that ties back to the subject
-// (a film studio) instead of a decorative flourish.
+ 
 const GRAIN_BG =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E";
 
@@ -68,7 +65,7 @@ export default function MaestroFilms() {
     },
     {
       left: 'https://i.ibb.co/DHm0Xs8v/Img10.jpg',
-      right: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/banner/Img13.jpg',
+      right: 'https://ik.imagekit.io/maestrofilms/Copy%20of%20MF_08616.jpg?updatedAt=1788075355476&ik-s=9caf5a4e7dff05c1f5e2a1ece1479023cda3b9c5',
       title: 'Maestro',
       subtitle: 'Films',
       tagline: 'Stories That Move You',
@@ -82,7 +79,7 @@ export default function MaestroFilms() {
     },
     {
       left: 'https://i.ibb.co/DHm0Xs8v/Img10.jpg',
-      right: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/banner/DSC09952-Enhanced-NR_3.jpg',
+      right: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/candid%20shoot/Img12.jpg',
       title: 'Maestro',
       subtitle: 'Films',
       tagline: 'Stories That Move You',
@@ -90,68 +87,20 @@ export default function MaestroFilms() {
   ];
 
   const editorials = [
-    { img: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/candid%20shoot/Img9.jpg', color: 'from-gray-700 to-gray-900', title: 'Shadow Play' },
-    { img: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/candid%20shoot/Img14.jpg', color: 'from-orange-400 to-orange-600', title: 'Golden Hour' },
+    { img: 'https://ik.imagekit.io/maestrofilms/Copy%20of%209%20copy.jpg?updatedAt=1788075353055&ik-s=7fdbab837cc3e8ac00d5e8d92738b56e6ea79fbd', color: 'from-gray-700 to-gray-900', title: 'Shadow Play' },
+    { img: 'https://ik.imagekit.io/maestrofilms/Copy%20of%2019.jpg?updatedAt=1788075350100&ik-s=b85a972771eddb158663211697f33750416081ee', color: 'from-orange-400 to-orange-600', title: 'Golden Hour' },
     { img: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/candid%20shoot/Img11.jpg', color: 'from-amber-800 to-amber-950', title: 'Warm Tones' },
     { img: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/candid%20shoot/Img13.jpg', color: 'from-stone-600 to-stone-800', title: 'Urban Edge' },
+    { img: 'https://ik.imagekit.io/maestrofilms/MF_08305.jpg?updatedAt=1788075346400&ik-s=1bb90076870539d1f89d2b132df30f2aea0f5516', color: 'from-rose-400 to-rose-600', title: 'Soft Light' },
+    { img: 'https://ik.imagekit.io/maestrofilms/Copy%20of%20MF_08663.jpg?updatedAt=1788075353076&ik-s=91f300d463c2f86b0a849a8183d871dd89eea2fe', color: 'from-amber-800 to-amber-950', title: 'Warm Tones' },
+    { img: 'https://ik.imagekit.io/maestrofilms/MF_08942.jpg?updatedAt=1788072997752&ik-s=073b8f8911744a355fafd7ff35c4b7af71bc830d', color: 'from-stone-600 to-stone-800', title: 'Urban Edge' },
     { img: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/banner/DSC09946-Enhanced-NR_2.jpg', color: 'from-rose-400 to-rose-600', title: 'Soft Light' },
   ];
-
-  const productions = [
-    {
-      video: 'https://cdn.shopify.com/videos/c/vp/e68802ff07de49bc8530817c9024559f/e68802ff07de49bc8530817c9024559f.HD-720p-4.5Mbps-65541684.mp4',
-      poster: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=800&fit=crop',
-      color: 'from-[#5a6b7d] to-[#7a8b9d]',
-      label: 'Commercial'
-    },
-    {
-      video: 'https://cdn.shopify.com/videos/c/vp/491124af4d484e99856115135ee6d8bc/491124af4d484e99856115135ee6d8bc.HD-720p-4.5Mbps-65541651.mp4',
-      poster: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=800&fit=crop',
-      color: 'from-[#c4785a] to-[#b86c48]',
-      label: 'Documentary'
-    },
-    {
-      video: 'https://cdn.shopify.com/videos/c/vp/38bae7542a8c4b709f84710601cdb688/38bae7542a8c4b709f84710601cdb688.HD-720p-4.5Mbps-60882849.mp4',
-      poster: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&h=800&fit=crop',
-      color: 'from-[#3a2f2a] to-[#5a4a40]',
-      label: 'Editorial'
-    },
-    {
-      video: 'https://cdn.shopify.com/videos/c/vp/37bc52c41fc34c3fb54b0b340f4586f1/37bc52c41fc34c3fb54b0b340f4586f1.HD-720p-4.5Mbps-60882845.mp4',
-      poster: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=600&h=800&fit=crop',
-      color: 'from-[#6a5acd] to-[#483d8b]',
-      label: 'Fashion Film'
-    },
-    {
-      video: 'https://cdn.shopify.com/videos/c/vp/c5510158662d4ffb8668edf38daf7eb0/c5510158662d4ffb8668edf38daf7eb0.HD-720p-4.5Mbps-65541694.mp4',
-      poster: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&h=800&fit=crop',
-      color: 'from-[#2f4f4f] to-[#1a2f2f]',
-      label: 'Brand Story'
-    },
-  ];
-
-  // Shuffled copies shown in the swipers. Seeded client-side only, after
-  // mount, so the server-rendered markup and the first client render match
-  // (shuffling during render would cause a hydration mismatch in Next.js).
+ 
+ 
   const [editorialItems, setEditorialItems] = useState(editorials);
-  const [productionItems, setProductionItems] = useState(productions);
-
-  useEffect(() => {
-    setEditorialItems(shuffleArray(editorials));
-    setProductionItems(shuffleArray(productions));
-    // Runs once on mount by design — reshuffling on every render would
-    // fight the swiper's own state.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // ============ DATA PROTECTION SETUP ============
-  // Note on scope: none of this can block screen capture, mobile screenshots,
-  // or a phone camera pointed at the screen — nothing running in the page
-  // can do that. It also can't hide specific DevTools panels (Network,
-  // Application, etc.) from someone who has DevTools open; the browser
-  // doesn't expose that to page JS. What follows are the standard,
-  // best-effort deterrents real sites use — they raise friction for casual
-  // copying, not a technical guarantee.
+ 
+ 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const blockedCombo =
@@ -184,11 +133,7 @@ export default function MaestroFilms() {
       e.preventDefault();
       return false;
     };
-
-    // Heuristic DevTools check based on the gap between outer and inner
-    // window size. It only catches docked panels, misses undocked windows
-    // and mobile inspectors, and can false-positive on some browser
-    // toolbars — treat it as a nudge, not a lock.
+ 
     const DEVTOOLS_THRESHOLD = 160;
     const checkDevTools = () => {
       const widthGap = window.outerWidth - window.innerWidth > DEVTOOLS_THRESHOLD;
@@ -204,7 +149,7 @@ export default function MaestroFilms() {
     window.addEventListener('keydown', handleKeyDown);
     document.addEventListener('contextmenu', handleContextMenu);
     document.addEventListener('dragstart', handleDragStart);
- 
+
     document.addEventListener('copy', handleCopy);
     document.addEventListener('visibilitychange', handleVisibility);
     window.addEventListener('resize', checkDevTools);
@@ -225,7 +170,7 @@ export default function MaestroFilms() {
       window.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('contextmenu', handleContextMenu);
       document.removeEventListener('dragstart', handleDragStart);
- 
+
       document.removeEventListener('copy', handleCopy);
       document.removeEventListener('visibilitychange', handleVisibility);
       window.removeEventListener('resize', checkDevTools);
@@ -288,7 +233,7 @@ export default function MaestroFilms() {
 
   useEffect(() => {
     if (modalVideo && modalRef.current) {
-      modalRef.current.play().catch(() => {});
+      modalRef.current.play().catch(() => { });
     }
   }, [modalVideo]);
 
@@ -355,7 +300,7 @@ export default function MaestroFilms() {
           user-select: text;
         }
 
-        @import url('https://fonts.googleapis.com/css2?family=Allura&family=Poppins:wght@200;300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Allura&family=Poppins:wght@200;300;400;500;600&display=swap');
 
         html {
           scroll-behavior: smooth;
@@ -533,9 +478,11 @@ export default function MaestroFilms() {
             transition-duration: 0.01ms !important;
           }
         }
+ 
+   
       `}</style>
 
-     
+
       <AnimatePresence>
         {(devToolsSuspected || tabHidden) && (
           <motion.div
@@ -617,7 +564,7 @@ export default function MaestroFilms() {
 
         <div className={`fixed inset-0 bg-[#1a1410] z-40 flex items-center justify-center transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] ${isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
           <nav className="text-center space-y-6">
-            {['Portfolio', 'About', 'reels', 'Contact'].map((item) => (
+            {['Portfolio', 'About', 'Reels', 'Contact'].map((item) => (
               <a key={item} href={`/${item.toLowerCase()}`} onClick={() => setIsMenuOpen(false)} className="block text-3xl md:text-5xl font-body font-light text-white hover:text-[#c4a882] transition-colors duration-400 tracking-wide">
                 {item}
               </a>
@@ -634,15 +581,14 @@ export default function MaestroFilms() {
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`capture-guard ${tabHidden ? 'is-hidden' : ''} absolute inset-0 transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              index === currentSlide ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-[1.04]'
-            }`}
+            className={`capture-guard ${tabHidden ? 'is-hidden' : ''} absolute inset-0 transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${index === currentSlide ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-[1.04]'
+              }`}
           >
             <div className="absolute left-0 top-0 w-full md:w-1/2 h-full hidden md:block overflow-hidden group">
               <img
                 src={slide.left}
                 alt="Maestro Films portfolio"
-                className="protected-image w-full h-full object-cover hero-image-anim"
+                className="protected-image w-full h-full object-cover object-top aspect-square hero-image-anim"
                 loading={index === 0 ? 'eager' : 'lazy'}
                 decoding="async"
                 onContextMenu={(e) => e.preventDefault()}
@@ -655,7 +601,7 @@ export default function MaestroFilms() {
               <img
                 src={slide.right}
                 alt="Maestro Films portfolio"
-                className="protected-image w-full h-full object-cover hero-image-anim"
+                className="protected-image w-full h-full object-cover object-top aspect-square hero-image-anim"
                 style={{ animationDelay: '0.12s' }}
                 loading={index === 0 ? 'eager' : 'lazy'}
                 decoding="async"
@@ -666,11 +612,10 @@ export default function MaestroFilms() {
               <CornerMark />
             </div>
             <div className="absolute inset-0 flex items-center justify-center z-10 bg-gradient-to-b from-black/20 via-transparent to-black/30">
-              <div className={`text-center text-white px-4 transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                index === currentSlide ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`}>
-                <h1 className="font-script text-6xl md:text-8xl mb-0 leading-none drop-shadow-2xl animate-float">{slide.title}</h1>
-                <p className="font-body font-bold text-2xl md:text-4xl tracking-[0.15em] mb-3 drop-shadow-lg uppercase">{slide.subtitle}</p>
+              <div className={`text-center text-white px-4 transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${index === currentSlide ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                }`}>
+                <h1 className="font-script text-4xl md:text-6xl mb-0  drop-shadow-2xl animate-float leading-relaxed">{slide.title}</h1>
+                <p className="font-body font-bold text-2xl md:text-4xl tracking-[0.15em] mb-3 drop-shadow-lg  leading-relaxed uppercase">{slide.subtitle}</p>
                 <p className="text-xs md:text-sm font-light tracking-[0.2em] uppercase drop-shadow-md opacity-90 font-body">{slide.tagline}</p>
               </div>
             </div>
@@ -690,9 +635,8 @@ export default function MaestroFilms() {
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`relative w-2 h-2 md:w-2.5 md:h-2.5 rounded-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                  index === currentSlide ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/70'
-                }`}
+                className={`relative w-2 h-2 md:w-2.5 md:h-2.5 rounded-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${index === currentSlide ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/70'
+                  }`}
               >
                 {index === currentSlide && <span className="absolute inset-0 rounded-full bg-white/30 animate-ping" />}
               </button>
@@ -721,14 +665,16 @@ export default function MaestroFilms() {
       </section>
 
       {/* ============ RECENT EDITORIALS - SWIPER ============ */}
-      <section id="editorials" className="py-10 md:py-14 px-4 md:px-6 bg-[#f5f1ed]">
+      <section id="editorials" className="py-5 md:py-10 px-4 md:px-6 bg-[#f5f1ed]">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 md:mb-8 gap-4 reveal">
-            <div>
-              <p className="text-[10px] md:text-xs font-body font-medium text-gray-500 tracking-[0.25em] uppercase mb-2">A Curated Glimpse Into Our</p>
-              <h2 className="font-body text-3xl md:text-5xl font-light text-[#2a2a2a] leading-tight">Recent <span className="font-normal">Editorials</span></h2>
+            <div className='text-center'>
+              <p className="text-[10px] md:text-sm font-body font-medium text-gray-500 mx-2 tracking-[0.25em] uppercase mb-2">A Curated Glimpse Into Our</p>
+              <p className="text-[10px] md:text-xs font-body font-medium text-gray-500 mx-2 tracking-[0.25em]    " >Recent Collaborations |
+                <span className="text-[10px] md:text-sm font-body font-script text-gray-500 mx-2 tracking-[0.25em]">Studio Portrait Series</span>|
+                <span className="text-[10px] md:text-xs font-body font-medium text-gray-500 mx-2 tracking-[0.25em]">Ikat Collection</span></p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-end gap-3 w-full md:w-auto">
               <div className="swiper-custom-prev-editorial w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm">
                 <ChevronLeft size={16} />
               </div>
@@ -775,15 +721,9 @@ export default function MaestroFilms() {
               ))}
             </Swiper>
           </div>
-        </div>
-      </section>
-
-      {/* ============ LATEST STORIES ============ */}
-      <section className="py-10 md:py-14 px-4 md:px-6 bg-[#f5f1ed]">
-        <div className="max-w-7xl mx-auto">
+        </div> <div className="max-w-7xl mx-auto bg-[#f5f1ed]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-start">
             <div className="reveal">
-              <p className="text-[10px] md:text-xs font-body font-medium text-gray-500 tracking-[0.25em] uppercase mb-3">A Curated Glimpse Into Our</p>
               <h2 className="font-body text-2xl md:text-4xl font-light text-[#2a2a2a] leading-tight mb-4">Latest <span className="font-semibold">stories</span> & <span className="font-semibold">collaboration</span></h2>
               <p className="text-xs md:text-sm text-gray-600 leading-relaxed font-body font-light max-w-lg">
                 Each editorial begins as a whisper—an idea, a glance, a mood waiting to be revealed. Through our images, we chase the fleeting, the honest, and the elegantly imperfect.
@@ -803,17 +743,25 @@ export default function MaestroFilms() {
         </div>
       </section>
 
+
       {/* ============ RECENT PRODUCTIONS - VIDEO SWIPER ============ */}
-      <section id="productions" className="py-10 md:py-14 px-4 md:px-6 bg-white">
+      {/*
+      <section id="productions" className=" text-center py-5 px-4 md:px-6 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 md:mb-8 gap-4 reveal">
-            <div>
-              <p className="text-[10px] md:text-xs font-body font-medium text-gray-500 tracking-[0.25em] uppercase mb-2">Cinematic Showcase</p>
-              <h2 className="font-body text-3xl md:text-5xl font-light mb-3 text-[#2a2a2a]">Latest <span className="font-semibold">films & productions</span></h2>
-              <p className="text-xs md:text-sm text-gray-600 max-w-xl leading-relaxed font-body font-light">
+          <div className="flex flex-col md:flex-row justify-end items-center md:items-end mb-6 md:mb-8 gap-4 reveal">
+
+            <div className="text-right">
+              <p className="text-[10px] md:text-xs font-body font-medium text-gray-500 tracking-[0.25em] uppercase mb-2">
+                Cinematic Showcase
+              </p>
+              <h2 className="font-body text-3xl md:text-5xl font-light mb-3 text-[#2a2a2a]">
+                <span className="font-semibold text-[#2a2a2]"> The Maestro reels</span>
+              </h2>
+              <p className="text-xs md:text-sm text-gray-600 max-w-xl leading-relaxed font-body font-light ml-auto">
                 Every frame tells a story. From commercial campaigns to documentary films, our productions capture the essence of emotion and authenticity.
               </p>
             </div>
+
             <div className="flex items-center gap-3">
               <div className="swiper-custom-prev-prod w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm">
                 <ChevronLeft size={16} />
@@ -823,7 +771,6 @@ export default function MaestroFilms() {
               </div>
             </div>
           </div>
-
           <div className="reveal">
             <Swiper
               modules={[Autoplay, Pagination, Navigation]}
@@ -862,7 +809,7 @@ export default function MaestroFilms() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
                     <CornerMark />
 
-                    {/* Bottom Label */}
+              
                     <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 pointer-events-none">
                       <p className="text-white/60 text-[10px] tracking-[0.2em] uppercase font-body font-light mb-1">Production</p>
                       <h3 className="text-white text-lg md:text-xl font-body font-light">{item.label}</h3>
@@ -873,17 +820,20 @@ export default function MaestroFilms() {
             </Swiper>
           </div>
         </div>
-      </section>
+   
+      </section> */}
 
-      {/* ============ ABOUT US ============ */}
-      <section id="about" className="py-10 md:py-14 px-4 md:px-6 bg-[#f5f1ed]">
+      <ProductShoots/>
+    < FashionPortfolio/>
+     
+      <section id="about" className="  px-4 md:px-6 bg-[#f5f1ed]">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-center">
             <div className="reveal">
-              <h2 className="font-body text-4xl md:text-6xl font-light text-[#2a2a2a] leading-none mb-1">
+              <h2 className="font-body text-4xl md:text-6xl font-light text-[#c99846] leading-none mb-1">
                 ABOUT
               </h2>
-              <h3 className="font-script text-4xl md:text-6xl text-[#2a2a2a] mb-6 md:mb-8 -mt-1 ml-1">
+              <h3 className="font-script text-4xl md:text-6xl text-[#c99846] mb-6 md:mb-8 -mt-1 ml-1">
                 Us
               </h3>
               <div className="space-y-3 max-w-md">
@@ -946,7 +896,7 @@ export default function MaestroFilms() {
         </div>
       </section>
 
-      {/* ============ CONTACT SECTION ============ */}
+ 
       <section id="contact" className="py-10 md:py-14 px-4 md:px-6 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-stretch">

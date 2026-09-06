@@ -41,15 +41,19 @@ export default function Navbar() {
           NAVBAR
       ════════════════════════════════════════ */}
       <div
-        className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex justify-between items-center transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-5 flex justify-between items-center transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           scrolled
-            ? "bg-[#0a0a0a]/90 backdrop-blur-md shadow-md py-4"
+            ? "bg-[#f8f5f0]/90 backdrop-blur-md shadow-sm py-4"
             : "bg-transparent"
         }`}
       >
         <Link
           href="/"
-          className="text-sm md:text-base font-medium tracking-[0.25em] uppercase text-white transition-colors duration-500"
+          className={`text-sm md:text-base font-medium tracking-[0.25em] uppercase transition-colors duration-500 ${
+            scrolled || isMenuOpen
+              ? "text-[#3d3429]"
+              : "text-white"
+          }`}
         >
           Maestro Films
         </Link>
@@ -61,37 +65,48 @@ export default function Navbar() {
           aria-label="Toggle menu"
         >
           <span
-            className={`w-full h-[1.5px] bg-white transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              isMenuOpen ? "rotate-45 translate-y-[9px]" : ""
+            className={`w-full h-[1.5px] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              isMenuOpen
+                ? "bg-white rotate-45 translate-y-[9px]"
+                : scrolled
+                ? "bg-[#3d3429]"
+                : "bg-white"
             }`}
           />
           <span
-            className={`w-full h-[1.5px] bg-white transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              isMenuOpen ? "opacity-0" : "opacity-100"
+            className={`w-full h-[1.5px] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              isMenuOpen
+                ? "opacity-0"
+                : scrolled
+                ? "bg-[#3d3429] opacity-100"
+                : "bg-white opacity-100"
             }`}
           />
           <span
-            className={`w-full h-[1.5px] bg-white transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              isMenuOpen ? "-rotate-45 -translate-y-[9px]" : ""
+            className={`w-full h-[1.5px] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              isMenuOpen
+                ? "bg-white -rotate-45 -translate-y-[9px]"
+                : scrolled
+                ? "bg-[#3d3429]"
+                : "bg-white"
             }`}
           />
         </button>
       </div>
 
-      {/* Full-screen mobile menu overlay */}
+      {/* Full-screen menu overlay – matches your dark menu screenshot */}
       <div
-        className={`fixed inset-0 bg-[#0a0a0a] z-40 flex items-center justify-center transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`fixed inset-0 bg-[#0f0d0c] z-40 flex items-center justify-center transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           isMenuOpen
             ? "opacity-100 visible"
             : "opacity-0 invisible pointer-events-none"
         }`}
       >
-        <nav className="text-center space-y-6">
+        <nav className="text-center space-y-7 md:space-y-8">
           {[
-            { label: "Home", href: "/" },
-            { label: "Work & Studio", href: "/work-studio" },
+            { label: "Portfolio", href: "/work-studio" },
+            { label: "About", href: "/about" },
             { label: "Reels", href: "/reels" },
-            { label: "About", href: "/#about" },
             { label: "Contact", href: "/#contact" },
           ].map((item) => (
             <Link

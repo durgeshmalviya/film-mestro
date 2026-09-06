@@ -291,12 +291,12 @@ export default function ReelsSection() {
             }`}
           >
             <h1 className="text-6xl  lg:mt-30 lg:text-7xl xl:text-8xl font-serif font-light tracking-tight text-[#2C2A26] leading-none">
-              WORK
+        REELS
             </h1>
             <div className="mt-3 mb-8 flex items-center gap-4">
               <div className="h-px w-12 bg-[#C4B5A0]" />
               <span className="text-sm tracking-[0.3em] uppercase text-[#8A8378]">
-                REELS
+            
               </span>
               <div className="h-px w-12 bg-[#C4B5A0]" />
             </div>
@@ -304,7 +304,7 @@ export default function ReelsSection() {
               A selection of reels and stills from our fashion and cultural storytelling projects.
             </p>
             <a
-              href="#"
+              href="https://www.instagram.com/maestrofilms.co.in/"
               className="inline-flex items-center gap-2 text-sm tracking-wide text-[#2C2A26] hover:gap-3 transition-all duration-300 group"
             >
               VIEW ALL WORK
