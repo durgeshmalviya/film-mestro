@@ -1,9 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // ✅ Allow access from your local network IP
+ cacheComponents: true,          // enables 'use cache' + better PPR-style behavior
+  partialPrefetching: true,
   allowedDevOrigins: ["192.168.29.129"],
-
+experimental: {
+    optimizePackageImports: ['lucide-react', '@heroicons/react', 'date-fns', /* your icon/utils libs */],
+    // turbopack options if needed
+  },
   images: {
     remotePatterns: [
       {

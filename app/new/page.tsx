@@ -9,7 +9,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import FashionPortfolio from '../components/Manso';
-import ProductShoots from './pageo';
+ 
 
 // ============ IMAGE OPTIMIZATION HELPER ============
 const getOptimizedImageUrl = (url: string, width?: number): string => {
@@ -104,7 +104,7 @@ export default function MaestroFilms() {
       tagline: 'Cinematic Excellence from Bhopal',
     },
     {
-      left: 'https://i.ibb.co/DHm0Xs8v/Img10.jpg',
+      left: 'https://ik.imagekit.io/maestrofilms/Copy%20of%20MF_08701.jpg?updatedAt=1788875427426',
       right: 'https://ik.imagekit.io/maestrofilms/Copy%20of%20MF_08616.jpg?updatedAt=1788075355476&ik-s=9caf5a4e7dff05c1f5e2a1ece1479023cda3b9c5',
       title: 'Maestro',
       subtitle: 'Films',
@@ -112,7 +112,7 @@ export default function MaestroFilms() {
     },
     {
       left: 'https://i.ibb.co/HDF4dS09/front-page-1.jpg',
-      right: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/banner/Img14.jpg',
+      right: 'https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/banner/DSC09676-Enhanced-NR-4.jpg',
       title: 'Maestro',
       subtitle: 'Films',
       tagline: 'Cinematic Excellence from Bhopal',
@@ -642,7 +642,7 @@ export default function MaestroFilms() {
                 onContextMenu={(e) => e.preventDefault()}
                 onDragStart={(e) => e.preventDefault()}
               />
-              <div className="absolute inset-0 bg-black/30" />
+          
               <CornerMark />
             </div>
             <div className="absolute right-0 top-0 w-full md:w-1/2 h-full overflow-hidden group">
@@ -656,7 +656,7 @@ export default function MaestroFilms() {
                 onContextMenu={(e) => e.preventDefault()}
                 onDragStart={(e) => e.preventDefault()}
               />
-              <div className="absolute inset-0 bg-black/20" />
+          
               <CornerMark />
             </div>
             <div className="absolute inset-0 flex items-center justify-center z-10 bg-gradient-to-b from-black/20 via-transparent to-black/30">
@@ -713,155 +713,12 @@ export default function MaestroFilms() {
       </section>
 
       {/* ============ RECENT EDITORIALS - SWIPER ============ */}
-      <section id="editorials" className="py-5 md:py-10 px-4 md:px-6 bg-[#f5f1ed]">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 md:mb-8 gap-4 reveal">
-            <div className='text-center'>
-              <p className="text-[10px] md:text-sm font-body font-medium text-gray-500 mx-2 tracking-[0.25em] uppercase mb-2">A Curated Glimpse Into Our</p>
-              <p className="text-[10px] md:text-xs font-body font-medium text-gray-500 mx-2 tracking-[0.25em]">Recent Collaborations | <span className="text-[10px] md:text-sm font-body font-script text-gray-500 mx-2 tracking-[0.25em]">Studio Portrait Series</span> | <span className="text-[10px] md:text-xs font-body font-medium text-gray-500 mx-2 tracking-[0.25em]">Ikat Collection</span></p>
-            </div>
-            <div className="flex items-center justify-end gap-3 w-full md:w-auto">
-              <div className="swiper-custom-prev-editorial w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm">
-                <ChevronLeft size={16} />
-              </div>
-              <div className="swiper-custom-next-editorial w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm">
-                <ChevronRight size={16} />
-              </div>
-            </div>
-          </div>
+  
 
-          <div className="reveal">
-            <Swiper
-              modules={[Autoplay, Pagination, Navigation]}
-              spaceBetween={16}
-              slidesPerView={1}
-              loop={true}
-              speed={900}
-              autoplay={{ delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true }}
-              pagination={{ clickable: true }}
-              navigation={{ prevEl: '.swiper-custom-prev-editorial', nextEl: '.swiper-custom-next-editorial' }}
-              breakpoints={{ 640: { slidesPerView: 2, spaceBetween: 20 }, 1024: { slidesPerView: 3, spaceBetween: 24 } }}
-              className="editorial-swiper !pb-12"
-            >
-              {editorialItems.map((item, i) => (
-                <SwiperSlide key={item.title + i}>
-                  <div className="group relative h-[400px] md:h-[520px] rounded-sm overflow-hidden cursor-pointer shadow-lg hover-lift">
-                    <img
-                      src={item.img}
-                      alt={`Editorial: ${item.title}`}
-                      className="protected-image w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
-                      loading="lazy"
-                      decoding="async"
-                      onContextMenu={(e) => e.preventDefault()}
-                      onDragStart={(e) => e.preventDefault()}
-                    />
-                    <div className={`absolute inset-0 bg-gradient-to-t opacity-20 group-hover:opacity-10 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]`} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
-                    <CornerMark />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]">
-                      <p className="text-white/70 text-[10px] tracking-[0.2em] uppercase font-body font-light mb-1">Editorial</p>
-                      <h3 className="text-white text-xl font-body font-light">{item.title}</h3>
-                    </div>
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto bg-[#f5f1ed]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-start">
-            <div className="reveal">
-              <h2 className="font-body text-2xl md:text-4xl font-light text-[#2a2a2a] leading-tight mb-4">Latest <span className="font-semibold">stories</span> & <span className="font-semibold">collaboration</span></h2>
-              <p className="text-xs md:text-sm text-gray-600 leading-relaxed font-body font-light max-w-lg">
-                Each editorial begins as a whisper—an idea, a glance, a mood waiting to be revealed. Through our images, we chase the fleeting, the honest, and the elegantly imperfect.
-              </p>
-              <button className="mt-6 px-6 py-2.5 border border-gray-400 text-gray-700 font-body font-light text-[11px] tracking-[0.15em] uppercase hover:bg-[#2a2a2a] hover:text-white hover:border-[#2a2a2a] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-sm hover:shadow-md">
-                learn more
-              </button>
-            </div>
-            <div className="hidden md:flex justify-end reveal">
-              <div className="w-28 h-28 border border-[#8b7355]/30 rounded-full flex items-center justify-center animate-float">
-                <div className="w-20 h-20 border border-[#8b7355]/50 rounded-full flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 bg-[#8b7355] rounded-full" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <ProductShoots />
+ 
       <FashionPortfolio />
 
-      <section id="about" className="px-4 md:px-6 bg-[#f5f1ed]">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-center">
-            <div className="reveal">
-              <h2 className="font-body text-4xl md:text-6xl font-light text-[#c99846] leading-none mb-1">
-                ABOUT
-              </h2>
-              <h3 className="font-script text-4xl md:text-6xl text-[#c99846] mb-6 md:mb-8 -mt-1 ml-1">
-                Us
-              </h3>
-              <div className="space-y-3 max-w-md">
-                <p className="text-gray-600 leading-relaxed font-body font-light text-sm md:text-[15px]">
-                  <span className="font-script text-2xl text-[#8b7355] mr-1">M</span>
-                  aestro Films is an independent film production house focused on
-                  commercial and editorial work.
-                </p>
-                <p className="text-gray-600 leading-relaxed font-body font-light text-sm md:text-[15px]">
-                  We collaborate with brands, stylists, and visionaries to craft visual
-                  narratives that are emotionally driven and timeless.
-                </p>
-              </div>
-            </div>
-
-            <div className="reveal">
-              <div className="grid grid-cols-2 gap-2.5 md:gap-3">
-                <div className="col-span-2 relative h-40 md:h-60 overflow-hidden rounded-sm shadow-md hover-lift group">
-                  <img
-                    src="https://6a8930a197833836f65581d4.imgix.net/sandbox/onepic.jpeg"
-                    alt="Maestro Films production work"
-                    className="protected-image w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
-                    loading="lazy"
-                    decoding="async"
-                    onContextMenu={(e) => e.preventDefault()}
-                    onDragStart={(e) => e.preventDefault()}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
-                  <CornerMark />
-                </div>
-
-                <div className="relative h-36 md:h-44 overflow-hidden rounded-sm shadow-md hover-lift group">
-                  <img
-                    src="https://6a8930a197833836f65581d4.imgix.net/sandbox/twpic.jpeg"
-                    alt="Maestro Films production work"
-                    className="protected-image w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
-                    loading="lazy"
-                    decoding="async"
-                    onContextMenu={(e) => e.preventDefault()}
-                    onDragStart={(e) => e.preventDefault()}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
-                </div>
-
-                <div className="relative h-36 md:h-44 overflow-hidden rounded-sm shadow-md hover-lift group">
-                  <img
-                    src="https://6a8930a197833836f65581d4.imgix.net/sandbox/thrpic.jpeg"
-                    alt="Maestro Films production work"
-                    className="protected-image w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
-                    loading="lazy"
-                    decoding="async"
-                    onContextMenu={(e) => e.preventDefault()}
-                    onDragStart={(e) => e.preventDefault()}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+     
 
       <section id="contact" className="py-10 md:py-14 px-4 md:px-6 bg-white">
         <div className="max-w-7xl mx-auto">

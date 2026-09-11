@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import ReelCard from "@/app/components/ReelCard";
-import LandscapeFilm from "@/app/components/LandscapeFilm";
+import LandscapeFilm from "@/app/components/ContactForm";
 
 const categories = [
   {
@@ -296,17 +296,7 @@ export default function WorkStudioPage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════
-          FEATURED LANDSCAPE FILM
-      ════════════════════════════════════════ */}
-      <section className="px-6 md:px-10 max-w-[1400px] mx-auto pb-10">
-        <LandscapeFilm
-          title="Brand Campaign Film"
-          tag="Featured · 4K Landscape"
-          poster="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1800&q=90"
-          video="/videos/brand-campaign.mp4"
-        />
-      </section>
+      
 
       {/* ════════════════════════════════════════
           CAPABILITIES — Premium Card Grid

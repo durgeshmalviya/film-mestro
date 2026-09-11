@@ -10,7 +10,7 @@ interface Reel {
   subtitle: string;
   duration: string;
   playbackId: string;
-  // image is now generated from Mux
+   
 }
 
 const originalReels: Reel[] = [
@@ -47,7 +47,7 @@ const originalReels: Reel[] = [
     title: "VEIL & VERSE",
     subtitle: "Cultural Short • 01:31",
     duration: "01:31",
-    playbackId: "euJroxRrxGH34bwSw5FXPK2PgthYoIBaOg1wM2OKllg",
+    playbackId: "XUqnzmGTZh689VRAM01rENXZ7y5xDtHdEZrG2q8mT3F00",
   },
   {
     id: 6,
@@ -200,7 +200,7 @@ export default function ReelsSection() {
   };
 
   return (
-    <section className="min-h-screen bg-[#F8F5F0] text-[#2C2A26] font-sans selection:bg-[#D4C5A9]/selection:text-[#2C2A26]">
+    <section className="min-h-screen bg-[#F8F5F0] text-gold font-body selection:bg-[#D4C5A9]/selection:text-[#2C2A26]">
       {/* Main Content */}
       <div className="px-8 lg:px-16 py-10 lg:py-15">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
@@ -264,17 +264,17 @@ export default function ReelsSection() {
                     {!isHovered && (
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                         <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center transition-all duration-500 group-hover:scale-110">
-                          <Play className="w-5 h-5 text-white fill-white ml-0.5" />
+                          <Play className="w-5 h-5 text-gold fill-white ml-0.5" />
                         </div>
                       </div>
                     )}
 
                     {/* Caption */}
                     <div className="absolute bottom-0 left-0 right-0 p-4 text-left pointer-events-none">
-                      <h3 className="text-white text-xs font-medium tracking-wider uppercase mb-0.5">
+                      <h3 className="text-gold text-xs font-medium tracking-wider uppercase mb-0.5">
                         {reel.title}
                       </h3>
-                      <p className="text-white/70 text-[11px] tracking-wide">
+                      <p className="text-gold text-[11px] tracking-wide">
                         {reel.subtitle}
                       </p>
                     </div>
@@ -290,7 +290,7 @@ export default function ReelsSection() {
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
           >
-            <h1 className="text-6xl  lg:mt-30 lg:text-7xl xl:text-8xl font-serif font-light tracking-tight text-[#2C2A26] leading-none">
+            <h1 className="text-6xl  lg:mt-30 lg:text-7xl xl:text-8xl font-serif font-light tracking-tight text-gold leading-none">
         REELS
             </h1>
             <div className="mt-3 mb-8 flex items-center gap-4">
@@ -300,15 +300,15 @@ export default function ReelsSection() {
               </span>
               <div className="h-px w-12 bg-[#C4B5A0]" />
             </div>
-            <p className="text-[#5C574F] text-base leading-relaxed max-w-sm mb-10">
+            <p className="text-gold text-base leading-relaxed max-w-sm mb-10">
               A selection of reels and stills from our fashion and cultural storytelling projects.
             </p>
             <a
               href="https://www.instagram.com/maestrofilms.co.in/"
-              className="inline-flex items-center gap-2 text-sm tracking-wide text-[#2C2A26] hover:gap-3 transition-all duration-300 group"
+              className="inline-flex items-center gap-2 text-sm tracking-wide text-gold hover:gap-3 transition-all duration-300 group"
             >
               VIEW ALL WORK
-              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 text-[#c] group-hover:-translate-y-0.5 transition-transform" />
             </a>
           </div>
         </div>

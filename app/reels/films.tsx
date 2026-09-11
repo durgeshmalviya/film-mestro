@@ -151,29 +151,24 @@ export default function FilmCarousel() {
                     }}
                   />
                 </div>
-              )}
-
-              {/* Cinematic overlays */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#F7F4EF]/95 via-[#F7F4EF]/40 to-transparent lg:from-[#F7F4EF]/80 lg:via-[#F7F4EF]/20 lg:to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
+              )}           
             </div>
           );
         })}
       </div>
-
       {/* ===== LEFT CONTENT ===== */}
       <div className="relative z-20 h-full flex flex-col justify-center px-6 sm:px-10 lg:px-16 xl:px-24 max-w-[720px]">
         {/* Small label */}
         <div className="flex items-center gap-3 mb-5 sm:mb-6">
           <div className="h-px w-7 bg-[#C9B8A4]" />
-          <span className="text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-[#8A8378] font-medium">
+          <span className="text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-gold font-medium">
             Cinematic Production House
           </span>
         </div>
 
         {/* Main title */}
-        <h1 className="font-serif font-light tracking-tight text-[#2C2A26] leading-[0.88] mb-1">
-          <span className="block text-[clamp(2.75rem,8vw,5.8rem)]">
+        <h1 className="font-body font-light tracking-tight text-gold leading-[0.88] mb-1">
+          <span className="block text-[clamp(2.75rem,8vw,5.8rem)] text-gold">
             Work &
           </span>
           <span className="block text-[clamp(2.75rem,8vw,5.8rem)] text-[#B8A99A]">

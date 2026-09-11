@@ -1,8 +1,43 @@
-@import "tailwindcss";
+ @import "tailwindcss";
 
+/* ─────────────────────────────────────────────
+   PREMIUM COLOR SYSTEM + AMOLED EXPERIENCE
+───────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Base */
+  --background: #F5F1ED;          /* warm luxury cream */
+  --foreground: #1a1a1a;
+
+  /* Luxury palette */
+  --lux-cream: #F5F1ED;
+  --lux-warm: #EDE6DF;
+  --lux-sand: #D9CFC3;
+  --lux-charcoal: #1C1C1C;
+  --lux-ink: #0F0F0F;
+  --lux-gold: #C9A86C;
+  --lux-gold-soft: #E8D5A8;
+  --lux-rose: #C4A4A0;
+  --lux-slate: #4A4A4A;
+
+  /* AMOLED / dark mode */
+  --amoled-bg: #000000;
+  --amoled-surface: #0A0A0A;
+  --amoled-elevated: #141414;
+  --amoled-text: #F5F1ED;
+  --amoled-muted: #A1A1A1;
+  --amoled-accent: #C9A86C;
+
+  /* Scrollbar */
+  --scrollbar-track: #EDE6DF;
+  --scrollbar-thumb: #C9A86C;
+  --scrollbar-thumb-hover: #B8955A;
+
+  /* Motion */
+  --ease-butter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-lux: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 0.35s;
+  --duration-normal: 0.55s;
+  --duration-slow: 0.9s;
 }
 
 @theme inline {
@@ -12,19 +47,74 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Dark / AMOLED preference */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--amoled-bg);
+    --foreground: var(--amoled-text);
+    --scrollbar-track: #111111;
+    --scrollbar-thumb: #C9A86C;
+    --scrollbar-thumb-hover: #E8D5A8;
   }
+}
+
+/* ─────────────────────────────────────────────
+   BASE + BUTTERY SCROLLING
+───────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  cursor: auto;
+  user-select: none;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+   
+ 
+  overflow-x: hidden;
+
+  /* Premium touch feel */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  overscroll-behavior-y: none; /* prevents rubber-banding on most mobile browsers */
 }
 
+/* ─────────────────────────────────────────────
+   CUSTOM SCROLLBAR (Chrome, Edge, Safari, Firefox)
+───────────────────────────────────────────── */
+/* Webkit */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+  border: 2px solid var(--scrollbar-track);
+  transition: background 0.25s var(--ease-butter);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* ─────────────────────────────────────────────
+   KEYFRAME ANIMATIONS
+───────────────────────────────────────────── */
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -37,19 +127,12 @@ body {
 }
 
 @keyframes wobble {
-  0%, 100% {
-    transform: rotate(0deg) scale(1);
-  }
-  25% {
-    transform: rotate(0.4deg) scale(1.01);
-  }
-  50% {
-    transform: rotate(-0.3deg) scale(1);
-  }
-  75% {
-    transform: rotate(0.2deg) scale(1.005);
-  }
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  25%      { transform: rotate(0.4deg) scale(1.01); }
+  50%      { transform: rotate(-0.3deg) scale(1); }
+  75%      { transform: rotate(0.2deg) scale(1.005); }
 }
+
 @keyframes luxSlideIn {
   from {
     opacity: 0;
@@ -60,37 +143,265 @@ body {
     transform: translateY(0) scale(1) rotateX(0deg);
   }
 }
+
 @keyframes floatIn {
   from {
     opacity: 0;
-    transform: translateY(50px) scale(0.9) rotate(0deg);
+    transform: translateY(50px) scale(0.9);
   }
   to {
     opacity: 1;
-    /* keep the final rotate that is set inline */
+    transform: translateY(0) scale(1);
   }
 }
+
 @keyframes polaroidIn {
   from {
     opacity: 0;
-    transform: translateY(60px) scale(0.88) rotate(0deg);
+    transform: translateY(60px) scale(0.88);
   }
   to {
     opacity: 1;
-    /* final rotate is already set inline */
+    transform: translateY(0) scale(1);
   }
-}@keyframes masonryIn {
+}
+
+@keyframes masonryIn {
   0% {
     opacity: 0;
     transform: scale(0.4) rotate(0deg) translate(30%, 40%);
   }
   100% {
     opacity: 1;
-    /* final rotate comes from inline style */
+    transform: scale(1) rotate(0deg) translate(0, 0);
   }
 }
 
+/* New general-purpose animations */
+@keyframes softFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes gentlePulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.7; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ─────────────────────────────────────────────
+   UTILITY ANIMATION CLASSES
+───────────────────────────────────────────── */
+.masonry-card {
+  animation: masonryIn 0.9s var(--ease-butter) both;
+}
+
+.fade-up {
+  animation: fadeUp var(--duration-normal) var(--ease-butter) both;
+}
+
+.lux-slide {
+  animation: luxSlideIn var(--duration-slow) var(--ease-lux) both;
+}
+
+.float-in {
+  animation: floatIn 0.8s var(--ease-butter) both;
+}
+
+.polaroid-in {
+  animation: polaroidIn 0.85s var(--ease-butter) both;
+}
+
+.scale-in {
+  animation: scaleIn 0.6s var(--ease-butter) both;
+}
+
+.slide-left {
+  animation: slideFromLeft 0.7s var(--ease-butter) both;
+}
+
+.slide-right {
+  animation: slideFromRight 0.7s var(--ease-butter) both;
+}
+
+/* Stagger helpers (use with animation-delay) */
+.stagger-1 { animation-delay: 0.08s; }
+.stagger-2 { animation-delay: 0.16s; }
+.stagger-3 { animation-delay: 0.24s; }
+.stagger-4 { animation-delay: 0.32s; }
+.stagger-5 { animation-delay: 0.40s; }
+
+/* ─────────────────────────────────────────────
+   PERFORMANCE & MEDIA OPTIMIZATION
+───────────────────────────────────────────── */
+img, video {
+  max-width: 100%;
+  
+  display: block;
+}
+
+/* Encourage browsers to treat large media as high priority when preloaded */
+img[loading="eager"],
+video[preload="auto"] {
+  content-visibility: auto;
+}
+
+/* Soft GPU acceleration for animated elements */
+.masonry-card,
+.fade-up,
+.lux-slide,
+.float-in,
+.polaroid-in,
+.scale-in {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE BREAKPOINTS
+   Covers: iPhone XS → 17/18, Samsung Flip, 
+   S22/S23/S24 Ultra, Xiaomi, Pixel, all phones,
+   tablets, 14″ / 32″ / 45″ desktops
+───────────────────────────────────────────── */
+
+/* Base mobile first (extra small phones) */
+@media (max-width: 374px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+/* iPhone XS / small phones */
+@media (min-width: 375px) and (max-width: 414px) {
+  body {
+    font-size: 15px;
+  }
+}
+
+/* Modern phones (iPhone 12–16, Pixel, most Android) */
+@media (min-width: 415px) and (max-width: 480px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+/* Large phones / small foldables (S22–S24 Ultra, Flip outer) */
+@media (min-width: 481px) and (max-width: 599px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+/* Tablets portrait / large foldables (Flip inner, iPad mini) */
+@media (min-width: 600px) and (max-width: 767px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+/* Tablets landscape / small laptops */
+@media (min-width: 768px) and (max-width: 1023px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+/* 14″ laptops / standard desktops */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+/* Large desktops (up to ~32″) */
+@media (min-width: 1440px) and (max-width: 1919px) {
+  body {
+    font-size: 17px;
+  }
+}
+
+/* Ultra-wide / 32–45″ displays */
+@media (min-width: 1920px) {
+  body {
+    font-size: 18px;
+  }
+}
+
+/* Extra safety for very tall mobile devices */
+@media (max-width: 480px) and (min-height: 800px) {
+  body {
+    
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 .masonry-card {
   animation: masonryIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+ /* Eclipse light sweep across the text */
+@keyframes eclipseSweep {
+  0% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+} 
+ .text-gold {
+  background:  #a68b6a;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent; 
+  cursor: pointer;
+}
