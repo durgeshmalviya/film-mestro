@@ -8,6 +8,7 @@ import AboutUs from "./Kamad-Solanki/about";
 import dynamic from "next/dynamic";
 import BookStudioCTA from "./components/ReadtBook";
 import ContactForm from "./components/ContactForm";
+import FAQ from "./faq/page";
 
 const MSReels = dynamic(() => import("./components/MSReels"), {
   ssr: false,
@@ -112,6 +113,7 @@ export default function Home() {
         <BookStudioCTA />
         <AboutUs />
         <ContactForm />
+        <FAQ/>
       </div>
     </>
   );
