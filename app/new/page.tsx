@@ -8,7 +8,8 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import FashionPortfolio from '../components/Manso';
+import FashionPortfolio from '../components/FashionShoots';
+import ProductShoots from './pageo';
  
 
 // ============ IMAGE OPTIMIZATION HELPER ============
@@ -793,7 +794,9 @@ export default function MaestroFilms() {
             </div>
           </div>
         </div>
+
       </section>
+      <ProductShoots/>
     </div>
   );
 }

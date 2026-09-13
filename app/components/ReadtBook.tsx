@@ -3,12 +3,12 @@
 import Link from "next/link";
 import MuxPlayer from "@mux/mux-player-react";
 
-const PLAYBACK_ID = "tA01vNfZ00uH6BIoDrIv006HXgAy0101NiRdaf8QeJHO01lG8";
+const PLAYBACK_ID = "UpqANwpzG98MxXyKFn6fOLHgXl4RCKrIWxL9wLm9cME";
 
 export default function BookStudioCTA() {
   return (
-    <section className="relative py-24 sm:py-28 md:py-36 px-5 sm:px-6 md:px-10 overflow-hidden mb-5 group">
-      {/* Full-bleed video background */}
+    <section className="relative py-28 sm:py-32 md:py-40 px-5 sm:px-6 md:px-10 overflow-hidden group">
+      {/* Full-bleed video background - 4K preferred */}
       <div className="absolute inset-0 z-0">
         <MuxPlayer
           playbackId={PLAYBACK_ID}
@@ -17,6 +17,10 @@ export default function BookStudioCTA() {
           muted
           loop
           playsInline
+          preload="auto"
+          maxResolution="2160p"
+          minResolution="720p"
+          preferPlayback="mse"
           style={{
             "--controls": "none",
             "--media-object-fit": "cover",
@@ -24,33 +28,34 @@ export default function BookStudioCTA() {
             width: "100%",
             height: "100%",
           }}
-          className="absolute inset-0 w-full h-full scale-105 group-hover:scale-100 transition-transform duration-[4s] ease-out"
+          className="absolute inset-0 w-full h-full scale-105 group-hover:scale-100 transition-transform duration-[5s] ease-[cubic-bezier(0.16,1,0.3,1)]"
         />
+
         {/* Premium multi-layer overlays */}
- 
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.55)_70%)]" />
-        {/* Subtle gold ambient glow */}
-        <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_80%,rgba(201,168,108,0.18),transparent_55%)]" />
-      </div>
+         </div>
 
       {/* Decorative thin gold lines */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-16 h-px bg-gradient-to-r from-transparent via-[#c9a86c]/70 to-transparent" />
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-16 h-px bg-gradient-to-r from-transparent via-[#c9a86c]/70 to-transparent" />
+      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-20 h-px bg-gradient-to-r from-transparent via-[#c9a86c]/60 to-transparent" />
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-20 h-px bg-gradient-to-r from-transparent via-[#c9a86c]/60 to-transparent" />
 
       <div className="relative z-10 max-w-[1400px] mx-auto text-center">
         {/* Eyebrow */}
-        
+        <p className="text-[11px] sm:text-xs tracking-[0.35em] uppercase text-[#c9a86c]/80 mb-6 font-light">
+          Studio Booking
+        </p>
 
         {/* Main heading */}
-        <h2 className="font-serif text-[2.15rem] sm:text-4xl md:text-5xl lg:text-[3.75rem] font-normal text-[#c9a86c] mb-6 sm:mb-7 drop-shadow-[0_4px_24px_rgba(0,0,0,0.5)] leading-[1.15] tracking-tight">
+        <h2 className="font-serif text-[2.4rem] sm:text-5xl md:text-6xl lg:text-[4rem] font-normal text-[#f5f1ed] mb-6 sm:mb-8 drop-shadow-[0_4px_30px_rgba(0,0,0,0.6)] leading-[1.1] tracking-tight">
           Ready to book
-          <span className="block mt-1 sm:mt-2 text-[#c9a86c] italic">the studio?</span>
+          <span className="block mt-2 text-[#c9a86c] italic font-light">
+            the studio?
+          </span>
         </h2>
 
         {/* Subtext */}
-        <p className="text-[#c9a86c] mb-12 sm:mb-14 max-w-lg mx-auto text-[0.95rem] sm:text-base md:text-lg leading-relaxed drop-shadow-md px-2">
+        <p className="text-[#e8e2d9]/90 mb-12 sm:mb-14 max-w-xl mx-auto text-[0.95rem] sm:text-base md:text-lg leading-relaxed font-light px-2">
           Fashion, product, editorial or commercial —{" "}
-          <span className="text-[#F8F5F0]">tell us the brief.</span>
+          <span className="text-[#f5f1ed]">tell us the brief.</span>
         </p>
 
         {/* CTAs */}
@@ -58,10 +63,10 @@ export default function BookStudioCTA() {
           {/* Primary button */}
           <Link
             href="/#contact"
-            className="group/btn relative inline-flex items-center justify-center gap-3 bg-[#c9a86c] text-[#0a0a0a] px-9 sm:px-11 py-4 sm:py-[1.15rem] text-[0.8rem] sm:text-sm tracking-[0.18em] sm:tracking-[0.22em] uppercase font-medium overflow-hidden transition-all duration-500 hover:bg-[#e0c48a] hover:shadow-[0_0_50px_rgba(201,168,108,0.45)] hover:-translate-y-0.5"
+            className="group/btn relative inline-flex items-center justify-center gap-3 bg-[#c9a86c] text-[#0a0a0a] px-10 sm:px-12 py-4 sm:py-[1.2rem] text-[0.8rem] sm:text-sm tracking-[0.2em] uppercase font-medium overflow-hidden transition-all duration-500 hover:bg-[#e0c48a] hover:shadow-[0_0_60px_rgba(201,168,108,0.4)] hover:-translate-y-0.5"
           >
             {/* Shine sweep */}
-            <span className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+            <span className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
             <span className="relative z-10">Book a Shoot</span>
             <svg
               className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1.5"
@@ -80,10 +85,10 @@ export default function BookStudioCTA() {
 
           {/* Secondary button */}
           <Link
-            href="/reels"
-            className="group/secondary relative inline-flex items-center justify-center border border-white/25 text-white px-9 sm:px-11 py-4 sm:py-[1.15rem] text-[0.8rem] sm:text-sm tracking-[0.18em] sm:tracking-[0.22em] uppercase backdrop-blur-md bg-white/5 hover:bg-white/10 hover:border-[#c9a86c]/50 hover:text-gold transition-all duration-400"
+           href="/work-studio/#reels"
+            className="group/secondary relative inline-flex items-center justify-center border border-white/20 text-white/90 px-10 sm:px-12 py-4 sm:py-[1.2rem] text-[0.8rem] sm:text-sm tracking-[0.2em] uppercase backdrop-blur-md bg-white/5 hover:bg-white/10 hover:border-[#c9a86c]/50 hover:text-[#c9a86c] transition-all duration-500"
           >
-            Watch Reels 
+            Watch Reels
             <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-px bg-[#c9a86c] group-hover/secondary:w-3/5 transition-all duration-500" />
           </Link>
         </div>

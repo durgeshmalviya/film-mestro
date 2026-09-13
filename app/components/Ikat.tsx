@@ -11,10 +11,10 @@ import Link from 'next/link';
 
 function CornerMark() {
   return (
-    <div className="pointer-events-none absolute bottom-3 right-3 md:bottom-4 md:right-4 z-10 opacity-80 md:opacity-0 md:group-hover:opacity-80 transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
-      <p className="block scale-[0.9] bg-[#c9a86c]  rounded-sm text-#8a7a5c p-1 border leading-none tracking-tight text-sm w-max">
+    <div className="pointer-events-none absolute bottom-3 right-3 md:bottom-4 md:right-4 z-10 opacity-70 md:opacity-0 md:group-hover:opacity-90 transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+      <span className="inline-block px-2 py-1 bg-[#c9a86c]/90 text-[#2a2420] text-[10px] tracking-[0.08em] font-medium leading-none rounded-sm">
         Maestro Films
-      </p>
+      </span>
     </div>
   );
 }
@@ -31,42 +31,34 @@ export default function EditorialsSection() {
     () => [
       {
         img: 'https://ik.imagekit.io/maestrofilms/Copy%20of%209%20copy.jpg?updatedAt=1788075353055&ik-s=7fdbab837cc3e8ac00d5e8d92738b56e6ea79fbd',
-        color: 'from-[#c9a86c] to-[#a68b6a]',
         title: 'Shadow Play',
       },
       {
         img: 'https://ik.imagekit.io/maestrofilms/Copy%20of%2019.jpg?updatedAt=1788075350100&ik-s=b85a972771eddb158663211697f33750416081ee',
-        color: 'from-[#c9a86c] to-[#a68b6a]',
         title: 'Golden Hour',
       },
       {
         img: 'https://ik.imagekit.io/maestrofilms/Img11.jpg?updatedAt=null&ik-s=d52d27f75a50a2639217c14ca96a734b28135758',
-        color: 'from-[#c9a86c] to-[#a68b6a]',
         title: 'Warm Tones',
       },
       {
         img: 'https://ik.imagekit.io/maestrofilms/Img13.jpg?updatedAt=null&ik-s=f5bfa7966d98e5afaa541033540911076dc58217',
-        color: 'from-[#c9a86c] to-[#a68b6a]',
         title: 'Urban Edge',
       },
       {
         img: 'https://ik.imagekit.io/maestrofilms/MF_08305.jpg?updatedAt=1788075346400&ik-s=1bb90076870539d1f89d2b132df30f2aea0f5516',
-        color: 'from-[#c9a86c] to-[#a68b6a]',
         title: 'Soft Light',
       },
       {
         img: 'https://ik.imagekit.io/maestrofilms/Copy%20of%20MF_08663.jpg?updatedAt=1788075353076&ik-s=91f300d463c2f86b0a849a8183d871dd89eea2fe',
-        color: 'from-[#c9a86c] to-[#a68b6a]',
         title: 'Warm Tones',
       },
       {
         img: 'https://ik.imagekit.io/maestrofilms/MF_08942.jpg?updatedAt=1788072997752&ik-s=073b8f8911744a355fafd7ff35c4b7af71bc830d',
-        color: 'from-[#c9a86c] to-[#a68b6a]',
         title: 'Urban Edge',
       },
       {
         img: 'https://ik.imagekit.io/maestrofilms/DSC09946-Enhanced-NR_2.jpg?updatedAt=null&ik-s=398c8c6fb5a2bc541b3b50d4fe8b99666238a825',
-        color: 'from-[#c9a86c] to-[#a68b6a]',
         title: 'Soft Light',
       },
     ],
@@ -74,94 +66,104 @@ export default function EditorialsSection() {
   );
 
   return (
-    <section id="editorials" className="py-5 md:py-10 px-4 md:px-6 bg-[#f5f1ed] ">
-      <div className="max-w-7xl mx-auto" >
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 md:mb-8 gap-4 reveal">
-          <div className="text-center text-gold " >
-            <p className="text-[10px] md:text-sm font-body font-medium   mx-2 tracking-[0.25em] uppercase mb-2">
+    <section
+      id="editorials"
+      className="py-5 md:py-10 px-5 md:px-10 lg:px-10 bg-[#f5f1ed]"
+    >
+      <div className="max-w-[1400px] mx-auto">
+        {/* Header - Text Centered + Buttons at End */}
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-10 md:mb-12 gap-6">
+          {/* Centered Text */}
+          <div className="text-center md:text-left w-full md:w-auto">
+            <p className="text-[13px] md:text-sm font-medium tracking-[0.32em] uppercase text-gold mb-3">
               A Curated Glimpse Into Our
             </p>
-            <p className="text-[10px] md:text-xs font-body font-medium  mx-2 tracking-[0.25em]">
-              Recent Collaborations |{' '}
-              <span className="text-[10px] md:text-sm font-body font-script mx-2 tracking-[0.25em]">
-                Studio Portrait Series
-              </span>{' '}
-              |{' '}
-              <span className="text-[10px] md:text-xs font-body font-medium  mx-2 tracking-[0.25em]">
-                Ikat Collection
-              </span>
+            <p className="text-[14px] md:text-sm text-gold tracking-[0.2em] font-light">
+             | Recent Collaborations  |
+              <span className="text-gold"> Studio Portrait Series |</span>
+              <span className="  text-gold px-2"> Ikat Collection</span>
             </p>
           </div>
 
-          {/* Navigation Buttons */}
-          <div className="flex items-center justify-end gap-3 w-full md:w-auto">
+          {/* Navigation Buttons - Aligned to End */}
+          <div className="flex items-center gap-3">
             <button
               onClick={() => swiperRef.current?.slidePrev()}
-              className="w-9 h-9 rounded-full border border-[#c9a86c] flex items-center  justify-center hover:bg-white hover:border-[#c9a86c] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm"
+              className="w-10 h-10 rounded-full border border-[#c9a86c]/40 flex items-center justify-center hover:border-[#c9a86c] hover:bg-[#c9a86c]/5 transition-all duration-400 cursor-pointer group"
               aria-label="Previous slide"
             >
-              <ChevronLeft size={16} className='text-[#c9a86c]' />
+              <ChevronLeft
+                size={16}
+                className="text-[#c4785a] group-hover:text-text-gold transition-colors"
+                strokeWidth={1.5}
+              />
             </button>
-
             <button
               onClick={() => swiperRef.current?.slideNext()}
-              className="w-9 h-9 rounded-full border border-[#c9a86c]  flex items-center justify-center hover:bg-white  hover:border-[#c9a86c] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer shadow-sm"
+              className="w-10 h-10 rounded-full border border-[#c9a86c]/40 flex items-center justify-center hover:border-[#c9a86c] hover:bg-[#c9a86c]/5 transition-all duration-400 cursor-pointer group"
               aria-label="Next slide"
             >
-              <ChevronRight size={16} className='text-[#c9a86c]' />
+              <ChevronRight
+                size={16}
+                className="text-[#c4785a] group-hover:text-gold transition-colors"
+                strokeWidth={1.5}
+              />
             </button>
           </div>
         </div>
 
-        {/* Swiper - only render after client mount */}
-        <div className="reveal min-h-[400px] md:min-h-[520px]">
+        {/* Swiper */}
+        <div className="min-h-[420px] md:min-h-[540px]">
           {mounted ? (
             <Swiper
               onSwiper={(swiper) => {
                 swiperRef.current = swiper;
               }}
               modules={[Autoplay, Pagination]}
-              spaceBetween={16}
+              spaceBetween={18}
               slidesPerView={1}
               loop={true}
-              speed={900}
+              speed={1000}
               autoplay={{
-                delay: 3200,
+                delay: 3600,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
               }}
               pagination={{
                 clickable: true,
                 renderBullet: (index, className) =>
-                  `<span class="${className} !size-2 !rounded-full !bg-[#c9a86c]/40 !opacity-100 transition-all duration-300 hover:!bg-[#c9a86c]/70 [&.swiper-pagination-bullet-active]:!bg-gradient-to-r [&.swiper-pagination-bullet-active]:from-[#e0c48a] [&.swiper-pagination-bullet-active]:to-[#a68b6a] [&.swiper-pagination-bullet-active]:scale-125"></span>`,
+                  `<span class="${className} !w-2 !h-2 !rounded-full !bg-[#c9a86c]/35 !opacity-100 transition-all duration-400 [&.swiper-pagination-bullet-active]:!bg-[#c9a86c] [&.swiper-pagination-bullet-active]:!scale-125"></span>`,
               }}
               breakpoints={{
                 640: { slidesPerView: 2, spaceBetween: 20 },
                 1024: { slidesPerView: 3, spaceBetween: 24 },
               }}
-              className="editorial-swiper !pb-12"
+              className="editorial-swiper !pb-14"
             >
               {editorialItems.map((item, i) => (
                 <SwiperSlide key={item.title + i}>
-                  <div className="group relative h-[400px] md:h-[520px] rounded-sm overflow-hidden cursor-pointer shadow-lg hover-lift">
+                  <div className="group relative h-[420px] md:h-[540px] overflow-hidden cursor-pointer rounded-sm">
                     <img
                       src={item.img}
                       alt={`Editorial: ${item.title}`}
-                      className="protected-image w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+                      className="protected-image w-full h-full object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]"
                       loading="lazy"
                       decoding="async"
                       onContextMenu={(e) => e.preventDefault()}
                       onDragStart={(e) => e.preventDefault()}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t opacity-20 group-hover:opacity-10 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+
+                    {/* Soft overlays */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-700 pointer-events-none" />
+
                     <CornerMark />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]">
-                      <p className="text-gold text-[10px] tracking-[0.2em] uppercase font-body font-semibold mb-1">
+
+                    {/* Title reveal */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6 md:p-7 translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none">
+                      <p className="text-white/55 text-[10px] tracking-[0.28em] uppercase font-light mb-1.5">
                         Editorial
                       </p>
-                      <h3 className="text-gold text-lg  font-body font-bold">
+                      <h3 className="text-white text-lg md:text-xl font-light tracking-wide">
                         {item.title}
                       </h3>
                     </div>
@@ -170,31 +172,37 @@ export default function EditorialsSection() {
               ))}
             </Swiper>
           ) : (
-            // Simple placeholder while mounting (prevents layout shift)
-            <div className="h-[400px] md:h-[520px] bg-neutral-200/50 rounded-sm animate-pulse" />
+            <div className="h-[420px] md:h-[540px] bg-[#e8e2d9]/60 rounded-sm animate-pulse" />
           )}
         </div>
-      </div>
-      <div className="max-w-7xl mx-auto bg-[#f5f1ed] mt-10 md:mt-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-start">
-          <div className="reveal">
-            <h2 className="font-body text-2xl md:text-4xl font-light text-gold leading-tight mb-4">
-              Latest <span className="font-semibold">stories</span> &{' '}
-              <span className="font-semibold">collaboration</span>
-            </h2>
-            <p className="text-lg md:text-lg text-gold leading-relaxed font-body font-light max-w-lg mb-5">
-              Each editorial begins as a whisper—an idea, a glance, a mood waiting to
-              be revealed. Through our images, we chase the fleeting, the honest, and
-              the elegantly imperfect.
-            </p>
-            <Link href="#reels" className="px-6 py-2.5 border border-[#c9a86c] text-gold font-body font-light text-[11px] hover:scale-1.0 tracking-[0.15em] uppercase hover:bg-[#c9a86c] hover:text-[#c9a86c] hover:border-[#c9a86c] transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-2xl hover:shadow-xl">
-              learn more
-            </Link>
-          </div>
-          <div className="hidden md:flex justify-end reveal">
-            <div className="w-28 h-28 border border-[#8b7355]/30 rounded-full flex items-center justify-center animate-float">
-              <div className="w-20 h-20 border border-[#8b7355]/50 rounded-full flex items-center justify-center">
-                <div className="w-1.5 h-1.5 bg-[#8b7355] rounded-full" />
+
+        {/* Bottom Stories Section */}
+        <div className="text-center md:text-left ">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
+            <div>
+              <h2 className="font-body text-3xl md:text-4xl lg:text-[2.75rem] font-light text-gold leading-[1.15] mb-5">
+                Latest <span className="font-medium">stories</span> &{' '}
+                <span className="font-medium">collaborations</span>
+              </h2>
+              <p className="text-[15px] md:text-base text-gold leading-relaxed font-light max-w-md mb-8">
+                Each editorial begins as a whisper—an idea, a glance, a mood waiting
+                to be revealed. Through our images, we chase the fleeting, the honest,
+                and the elegantly imperfect.
+              </p>
+              <Link
+                href="#reels"
+                className="inline-block px-7 py-3 border border-[#c9a86c]/60 text-gold text-[11px] tracking-[0.2em] uppercase font-light hover:bg-[#c9a86c] hover:text-[#f5f1ed] hover:border-[#c9a86c] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+              >
+                Learn more
+              </Link>
+            </div>
+
+            {/* Decorative element */}
+            <div className="hidden md:flex justify-end">
+              <div className="w-32 h-32 border border-[#c9a86c]/25 rounded-full flex items-center justify-center">
+                <div className="w-22 h-22 border border-[#c9a86c]/40 rounded-full flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-[#c9a86c]/70 rounded-full" />
+                </div>
               </div>
             </div>
           </div>

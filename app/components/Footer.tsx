@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Footer() {
   const structuredData = {
@@ -80,40 +81,41 @@ export default function Footer() {
       <footer
         itemScope
         itemType="https://schema.org/LocalBusiness"
-        className="bg-[#f8f5f0] text-[#3d3429] pt-24 pb-10 px-6 md:px-10 font-body selection:bg-[#c4a882]/30 selection:text-[#3d3429]"
+        className="bg-[#f5f1ed] text-[#3d3429] pt-5 md:pt-5 pb-8 px-5 md:px-10 lg:px-16 font-body selection:bg-[#c9a86c]/20 selection:text-[#3d3429]"
       >
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1400px] mx-auto">
           {/* Main Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-10 mb-20">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-14 md:gap-12 mb-20">
+
             {/* Brand */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.6 }}
               className="md:col-span-5"
             >
               <div
                 itemProp="name"
-                className="font-script text-5xl md:text-6xl text-[#a68b6a] mb-1 leading-none"
+                className="font-body text-5xl md:text-6xl text-[#a68b6a] mb-2 leading-none"
               >
                 Maestro
               </div>
-              <p className="text-[10px] tracking-[0.3em] uppercase text-[#8a7a6a] font-light mb-8">
-                Films & Photography
+              <p className="text-[11px] tracking-[0.32em] uppercase text-gold font-light mb-8">
+                Fashion Photography & Films
               </p>
 
               <p
                 itemProp="description"
-                className="text-sm leading-[1.9] text-[#5c5348] font-light max-w-sm mb-8"
+                className="text-[15px] leading-[1.85] text-gold font-light max-w-sm mb-8"
               >
-                Fashion photography and cinematic production house serving{" "}
+                High-end fashion photography and cinematic production based in{" "}
                 <span itemProp="areaServed" className="text-[#3d3429]">
                   Bhopal
                 </span>{" "}
-                and <span className="text-[#3d3429]">Mumbai</span>. Editorial
-                portfolios, brand campaigns, and commercial filmmaking since
-                1982.
+                & <span className="text-[#3d3429]">Mumbai</span>.
+                Editorial portfolios, brand campaigns, and commercial work crafted
+                to elevate your image.
               </p>
 
               <div className="flex gap-3">
@@ -140,7 +142,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={s.label}
-                    className="w-10 h-10 rounded-full border border-[#d9cfc3] flex items-center justify-center text-[#8a7a6a] hover:text-[#a68b6a] hover:border-[#a68b6a] hover:bg-[#f0eae2] transition-all duration-300 hover:scale-105"
+                    className="w-10 h-10 rounded-full border border-[#d9cfc3] flex items-center justify-center text-[#8a7a6a] hover:text-[#a68b6a] hover:border-[#a68b6a] hover:bg-[#f0eae2] transition-all duration-400 hover:scale-105"
                   >
                     <s.icon className="w-4 h-4" />
                   </a>
@@ -148,99 +150,103 @@ export default function Footer() {
               </div>
             </motion.div>
 
-            {/* Services */}
+            {/* Core Work – Fashion Photography Focused */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
               className="md:col-span-3"
             >
-              <p className="text-[10px] tracking-[0.25em] uppercase text-[#8a7a6a] font-medium mb-6">
-                Services
+              <p className="text-[11px] tracking-[0.28em] uppercase text-gold font-medium mb-7">
+                Core Work
               </p>
-              <ul className="space-y-3 text-sm text-[#5c5348] font-light">
+              <ul className="space-y-3.5 text-[14px] text-gold font-light">
                 {[
-                  "Fashion Photography",
-                  "Editorial Shoots",
-                  "Portfolio Development",
-                  "Brand Campaigns",
-                  "Commercial Filmmaking",
-                  "Product Photography",
-                  "Modeling Shoots",
-                ].map((svc) => (
-                  <li
-                    key={svc}
-                    className="hover:text-[#a68b6a] transition-colors duration-300 cursor-default"
-                  >
-                    {svc}
+                  { label: "Editorial", href: "/editorial" },
+                  { label: "Lookbook", href: "/lookbook" },
+                  { label: "Fashion Photography", href: "/fashion-photography" },
+                  { label: "Beauty", href: "/beauty" },
+                  { label: "Campaign", href: "/campaign" },
+                  { label: "Product Shoot", href: "/product" },
+                  { label: "Model Portfolio Development", href: "/contact" },
+                  { label: "Luxury Brand Campaigns", href: "/campaign" },
+                ].map((item) => (
+                  <li key={item.label}>
+                    <Link
+                      href={item.href}
+                      className="hover:text-[#a68b6a] transition-colors duration-300"
+                    >
+                      {item.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
             </motion.div>
 
-            {/* Contact */}
+            {/* Book a Session */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
               className="md:col-span-4"
             >
-              <p className="text-[10px] tracking-[0.25em] uppercase text-[#8a7a6a] font-medium mb-6">
-                Contact
+              <p className="text-[11px] tracking-[0.28em] uppercase text-gold font-medium mb-7">
+                Book a Session
               </p>
 
-              <div className="space-y-4 text-sm text-[#5c5348] font-light">
-                <div className="flex items-start gap-3 group">
-                  <Phone className="w-4 h-4 text-[#a68b6a] mt-0.5 group-hover:text-[#8a6b4a] transition-colors flex-shrink-0" />
+              <div className="space-y-5 text-[14px] text-[#5c5346] font-light">
+                <div className="flex items-start gap-3.5 group">
+                  <Phone className="w-4 h-4 text-[#a68b6a] mt-0.5 group-hover:text-gold  transition-colors flex-shrink-0" strokeWidth={1.5} />
                   <div>
+
                     <a
-                      href="tel:+917582005558"
-                      className="block hover:text-[#a68b6a] transition-colors"
+                      href="tel:+917581800555"
+                      className="block text-gold hover:text-gold transition-colors mt-0.5"
                     >
-                      +91 75820 05558
+                      +91 75818 00555
                     </a>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 group">
-                  <Mail className="w-4 h-4 text-[#a68b6a] mt-0.5 group-hover:text-[#8a6b4a] transition-colors flex-shrink-0" />
+                <div className="flex items-start gap-3.5 group">
+                  <Mail className="w-4 h-4 text-[#a68b6a] mt-0.5 group-hover:text-[#8a6b4a] transition-colors flex-shrink-0" strokeWidth={1.5} />
                   <a
                     href="mailto:Officialmaestrofilm@gmail.com"
                     itemProp="email"
-                    className="hover:text-[#a68b6a] transition-colors break-all"
+                    className="hover:text-[#a68b6a] text-gold transition-colors break-all"
                   >
                     Officialmaestrofilm@gmail.com
                   </a>
                 </div>
 
                 <div
-                  className="flex items-start gap-3 group"
+                  className="flex items-start gap-3.5 group  text-gold"
                   itemProp="address"
                   itemScope
                   itemType="https://schema.org/PostalAddress"
                 >
-                  <MapPin className="w-4 h-4 text-[#a68b6a] mt-0.5 group-hover:text-[#8a6b4a] transition-colors flex-shrink-0" />
-                  <div>
+                  <MapPin className="w-4 h-4 text-gold mt-0.5 group-hover:text-gold transition-colors flex-shrink-0" strokeWidth={1.5} />
+                  <div className="leading-relaxed ">
                     <span itemProp="streetAddress">
                       35, Laxmi Parisar, Rohit Nagar
                     </span>
-                    ,<br />
+                    ,{" "}
                     <span itemProp="addressLocality">
                       Bawadiya Kalan, Gulmohar Colony
                     </span>
-                    ,<br />
+                    ,{" "}
                     <span itemProp="addressLocality">Bhopal</span>,{" "}
                     <span itemProp="addressRegion">MP</span>{" "}
                     <span itemProp="postalCode">462039</span>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 group">
-                  <Clock className="w-4 h-4 text-[#a68b6a] mt-0.5 group-hover:text-[#8a6b4a] transition-colors flex-shrink-0" />
+                <div className="flex items-start gap-3.5 group text-gold">
+                  <Clock className="w-4 h-4 text-gold mt-0.5 group-hover:text-gold transition-colors flex-shrink-0" strokeWidth={1.5} />
                   <span itemProp="openingHours" content="Mo-Su 06:00-23:30">
-                    Mon – Sun : 6 AM – 11:30 PM
+                    Mon – Sun · 6:00 AM – 11:30 PM
                   </span>
                 </div>
               </div>
@@ -264,9 +270,7 @@ export default function Footer() {
               <h3 itemProp="name">What services does Maestro Films offer?</h3>
               <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
                 <p itemProp="text">
-                  Maestro Films offers fashion photography, editorial shoots,
-                  portfolio development, brand campaigns, commercial filmmaking,
-                  product photography, and modeling shoots in Bhopal and Mumbai.
+                  Maestro Films offers high fashion editorials, campaign and lookbook shoots, model portfolio development, celebrity portraits, luxury brand campaigns, runway and fashion film, beauty imagery, and e-commerce fashion photography in Bhopal and Mumbai.
                 </p>
               </div>
             </div>
@@ -312,10 +316,10 @@ export default function Footer() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="border-t border-[#e8dfd4] pt-8 flex flex-col md:flex-row justify-between items-center gap-4"
+            className="border-t border-[#e8dfd4] pt-8 flex flex-col md:flex-row justify-between items-center gap-5"
           >
             <p className="text-[11px] text-[#8a7a6a] font-light tracking-wider">
-              &copy; 2025-26 Maestro Films. All rights reserved.
+              © 2025–26 Maestro Films. All rights reserved.
             </p>
 
             <div className="flex items-center gap-6">
@@ -324,15 +328,16 @@ export default function Footer() {
                 className="text-[11px] text-[#8a7a6a] hover:text-[#a68b6a] transition-colors duration-300 tracking-wider"
               >
                 Privacy Policy
-              </a> <a
+              </a>
+              <a
                 href="https://www.freeprivacypolicy.com/live/ecdab47e-ea34-4264-b862-9c782c066a58"
                 className="text-[11px] text-[#8a7a6a] hover:text-[#a68b6a] transition-colors duration-300 tracking-wider"
               >
                 Terms & Conditions
               </a>
-              <span className="text-[#d9cfc3]">|</span>
-              <span className="text-[10px] tracking-[0.15em] uppercase text-[#8a7a6a] font-light">
-                Fashion Photography
+              <span className="text-[#d9cfc3]">·</span>
+              <span className="text-[10px] tracking-[0.18em] uppercase text-[#8a7a6a] font-light">
+                Fashion Photography · Bhopal & Mumbai
               </span>
             </div>
           </motion.div>

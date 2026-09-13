@@ -6,7 +6,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import FashionPortfolio from '../components/Manso';
+import FashionPortfolio from '../components/FashionShoots';
 import { useState, useEffect, useCallback } from 'react';
 import { Menu, ChevronRight, ChevronLeft, Play, Film, CornerRightUp, X } from 'lucide-react';
 import MuxPlayer from '@mux/mux-player-react';
