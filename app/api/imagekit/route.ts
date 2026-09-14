@@ -3,9 +3,9 @@ import ImageKit from "imagekit";
 
 // Initialize once at module level, not in the handler
 const imagekit = new ImageKit({
-  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || "",
+  publicKey: process.env.IMAGEKIT_PUBLIC_KEY || "",
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
-  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || "",
+  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT || "",
 });
 
 export async function GET(req: NextRequest) {
