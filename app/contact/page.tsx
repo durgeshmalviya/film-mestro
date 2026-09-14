@@ -84,7 +84,7 @@ export default function SendEmail() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.9 }}
-              className="text-center mb-14 md:mb-16"
+              className="text-center mb-5 md:mb-2"
             >
                
               <div className="font-script text-5xl md:text-6xl text-[#a68b6a] mb-3 leading-none">
@@ -105,38 +105,8 @@ export default function SendEmail() {
               </p>
             </motion.div>
 
-            {/* ===== SERVICE LOCATIONS ===== */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1 }}
-              className="grid md:grid-cols-3 gap-5 md:gap-6"
-            >
-              {serviceLocations.map((location, idx) => (
-                <div
-                  key={idx}
-                  className="rounded-sm border border-[#e0d6c8] bg-[#f0ebe4] p-6 hover:border-[#c9a86c]/45 hover:shadow-[0_12px_40px_rgba(201,168,108,0.08)] transition-all duration-500"
-                >
-                  <div className="flex items-start gap-3 mb-3">
-                    <MapPin
-                      size={18}
-                      className="text-[#c9a86c] flex-shrink-0 mt-0.5"
-                      strokeWidth={1.75}
-                    />
-                    <div>
-                      <h3 className="text-base font-medium text-gold">
-                        {location.city}
-                      </h3>
-                      <p className="text-sm text-gold">{location.region}</p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gold leading-relaxed font-light">
-                    Specializing in {location.specialization}
-                  </p>
-                </div>
-              ))}
-            </motion.div>
+          
+            
           </div>
         </div>
 
@@ -348,9 +318,39 @@ export default function SendEmail() {
                 </p>
               </motion.div>
             </div>
-          </div> <div className="py-5 text-center text-xs text-[#a68b6a]">
-              <p>Maestro Films · Fashion Photography Studio · Since 1982</p>
-              <p className="mt-2">Bhopal · Mumbai · Pan India</p>
+          </div> <div className="py-5 text-center text-xs m-2 text-[#a68b6a]"><motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+              className="grid md:grid-cols-3 gap-5 md:gap-6"
+            >
+              {serviceLocations.map((location, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-sm border border-[#e0d6c8] bg-[#f0ebe4] p-6 hover:border-[#c9a86c]/45 hover:shadow-[0_12px_40px_rgba(201,168,108,0.08)] transition-all duration-500"
+                >
+                  <div className="flex items-start gap-3 mb-3">
+                    <MapPin
+                      size={18}
+                      className="text-[#c9a86c] flex-shrink-0 mt-0.5"
+                      strokeWidth={1.75}
+                    />
+                    <div>
+                      <h3 className="text-base font-medium text-gold">
+                        {location.city}
+                      </h3>
+                      <p className="text-sm text-gold">{location.region}</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gold leading-relaxed font-light">
+                    Specializing in {location.specialization}
+                  </p>
+                </div>
+              ))}
+            </motion.div>
+              <p className='py-5'>Maestro Films · Fashion Photography Studio · Since 1982</p>
+ 
             </div>
         </div>
 
