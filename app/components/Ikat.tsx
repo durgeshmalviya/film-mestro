@@ -9,6 +9,49 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import Link from 'next/link';
 
+// ============ IMAGEKIT RESOLVER (same as hero – free plan friendly) ============
+const imageCache = new Map<string, string>();
+const CACHE_TTL = 4 * 60 * 1000; // 4 minutes
+
+async function getImageKitUrl(path: string): Promise<string> {
+  // Already a full URL → return as-is
+  if (path.startsWith('http')) return path;
+
+  // 1. In-memory cache
+  const cached = imageCache.get(path);
+  if (cached) return cached;
+
+  // 2. localStorage
+  const storageKey = `ik_${path}`;
+  try {
+    const stored = localStorage.getItem(storageKey);
+    if (stored) {
+      const { url, ts } = JSON.parse(stored);
+      if (Date.now() - ts < CACHE_TTL) {
+        imageCache.set(path, url);
+        return url;
+      }
+    }
+  } catch {}
+
+  // 3. Fetch signed URL only once
+  try {
+    const res = await fetch(`/api/imagekit?path=${encodeURIComponent(path)}`);
+    if (!res.ok) throw new Error('ImageKit failed');
+    const { url } = await res.json();
+
+    imageCache.set(path, url);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify({ url, ts: Date.now() }));
+    } catch {}
+
+    return url;
+  } catch (err) {
+    console.error('ImageKit resolve error:', path, err);
+    return path;
+  }
+}
+
 function CornerMark() {
   return (
     <div className="pointer-events-none absolute bottom-3 right-3 md:bottom-4 md:right-4 z-10 opacity-70 md:opacity-0 md:group-hover:opacity-90 transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
@@ -22,48 +65,77 @@ function CornerMark() {
 export default function EditorialsSection() {
   const swiperRef = useRef<SwiperType | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [imagesReady, setImagesReady] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // ============ SLIDES DATA (paths only) ============
   const editorialItems = useMemo(
     () => [
       {
-        img: 'https://ik.imagekit.io/maestrofilms/Copy%20of%209%20copy.jpg?updatedAt=1788075353055&ik-s=7fdbab837cc3e8ac00d5e8d92738b56e6ea79fbd',
+        img: '/editorial/maestrofilms-6.jpg',
         title: 'Shadow Play',
       },
       {
-        img: 'https://ik.imagekit.io/maestrofilms/Copy%20of%2019.jpg?updatedAt=1788075350100&ik-s=b85a972771eddb158663211697f33750416081ee',
+        img: '/editorial/ maestrofilms-30.JPG',
         title: 'Golden Hour',
       },
       {
-        img: 'https://ik.imagekit.io/maestrofilms/Img11.jpg?updatedAt=null&ik-s=d52d27f75a50a2639217c14ca96a734b28135758',
+        img: '/editorial/maestrofilms-20.JPG',
         title: 'Warm Tones',
       },
       {
-        img: 'https://ik.imagekit.io/maestrofilms/Img13.jpg?updatedAt=null&ik-s=f5bfa7966d98e5afaa541033540911076dc58217',
+        img: '/editorial/maestrofilms-24.jpg',
         title: 'Urban Edge',
       },
       {
-        img: 'https://ik.imagekit.io/maestrofilms/MF_08305.jpg?updatedAt=1788075346400&ik-s=1bb90076870539d1f89d2b132df30f2aea0f5516',
+        img: '/editorial/maestrofilms-5.jpg',
         title: 'Soft Light',
       },
       {
-        img: 'https://ik.imagekit.io/maestrofilms/Copy%20of%20MF_08663.jpg?updatedAt=1788075353076&ik-s=91f300d463c2f86b0a849a8183d871dd89eea2fe',
+        img: '/editorial/MF_08006.JPG',
         title: 'Warm Tones',
       },
       {
-        img: 'https://ik.imagekit.io/maestrofilms/MF_08942.jpg?updatedAt=1788072997752&ik-s=073b8f8911744a355fafd7ff35c4b7af71bc830d',
+        img: '/editorial/ maestrofilms-29.JPG',
         title: 'Urban Edge',
       },
       {
-        img: 'https://ik.imagekit.io/maestrofilms/DSC09946-Enhanced-NR_2.jpg?updatedAt=null&ik-s=398c8c6fb5a2bc541b3b50d4fe8b99666238a825',
+        img: '/editorial/maestrofilms-12.jpg',
         title: 'Soft Light',
       },
     ],
     []
   );
+
+  const [resolvedItems, setResolvedItems] = useState(editorialItems);
+
+  // ============ RESOLVE ALL PATHS ONCE ============
+  useEffect(() => {
+    let cancelled = false;
+
+    async function resolveAll() {
+      const resolved = await Promise.all(
+        editorialItems.map(async (item) => {
+          const img = await getImageKitUrl(item.img);
+          return { ...item, img };
+        })
+      );
+
+      if (!cancelled) {
+        setResolvedItems(resolved);
+        setImagesReady(true);
+      }
+    }
+
+    resolveAll();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [editorialItems]);
 
   return (
     <section
@@ -71,21 +143,19 @@ export default function EditorialsSection() {
       className="py-5 md:py-10 px-5 md:px-10 lg:px-10 bg-[#f5f1ed]"
     >
       <div className="max-w-[1400px] mx-auto">
-        {/* Header - Text Centered + Buttons at End */}
+        {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-10 md:mb-12 gap-6">
-          {/* Centered Text */}
           <div className="text-center md:text-left w-full md:w-auto">
             <p className="text-[13px] md:text-sm font-medium tracking-[0.32em] uppercase text-gold mb-3">
               A Curated Glimpse Into Our
             </p>
             <p className="text-[14px] md:text-sm text-gold tracking-[0.2em] font-light">
-             | Recent Collaborations  |
+              | Recent Collaborations |
               <span className="text-gold"> Studio Portrait Series |</span>
-              <span className="  text-gold px-2"> Ikat Collection</span>
+              <span className="text-gold px-2"> Ikat Collection</span>
             </p>
           </div>
 
-          {/* Navigation Buttons - Aligned to End */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => swiperRef.current?.slidePrev()}
@@ -114,7 +184,7 @@ export default function EditorialsSection() {
 
         {/* Swiper */}
         <div className="min-h-[420px] md:min-h-[540px]">
-          {mounted ? (
+          {mounted && imagesReady ? (
             <Swiper
               onSwiper={(swiper) => {
                 swiperRef.current = swiper;
@@ -140,7 +210,7 @@ export default function EditorialsSection() {
               }}
               className="editorial-swiper !pb-14"
             >
-              {editorialItems.map((item, i) => (
+              {resolvedItems.map((item, i) => (
                 <SwiperSlide key={item.title + i}>
                   <div className="group relative h-[420px] md:h-[540px] overflow-hidden cursor-pointer rounded-sm">
                     <img
@@ -153,12 +223,10 @@ export default function EditorialsSection() {
                       onDragStart={(e) => e.preventDefault()}
                     />
 
-                    {/* Soft overlays */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-700 pointer-events-none" />
 
                     <CornerMark />
 
-                    {/* Title reveal */}
                     <div className="absolute bottom-0 left-0 right-0 p-6 md:p-7 translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none">
                       <p className="text-white/55 text-[10px] tracking-[0.28em] uppercase font-light mb-1.5">
                         Editorial
@@ -177,7 +245,7 @@ export default function EditorialsSection() {
         </div>
 
         {/* Bottom Stories Section */}
-        <div className="text-center md:text-left ">
+        <div className="text-center md:text-left">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
             <div>
               <h2 className="font-body text-3xl md:text-4xl lg:text-[2.75rem] font-light text-gold leading-[1.15] mb-5">
@@ -197,7 +265,6 @@ export default function EditorialsSection() {
               </Link>
             </div>
 
-            {/* Decorative element */}
             <div className="hidden md:flex justify-end">
               <div className="w-32 h-32 border border-[#c9a86c]/25 rounded-full flex items-center justify-center">
                 <div className="w-22 h-22 border border-[#c9a86c]/40 rounded-full flex items-center justify-center">

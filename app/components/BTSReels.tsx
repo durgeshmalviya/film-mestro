@@ -20,7 +20,7 @@ const originalBTS: BTSItem[] = [
     subtitle: "Behind the Scenes • Editorial",
     duration: "01:05",
     videoUrl:
-      "https://ik.imagekit.io/maestrofilms/VID-20250702-WA0014.mp4?updatedAt=null&ik-s=9c67befd1f9396839d8585b5da9c05f75f00320a",
+      "https://res.cloudinary.com/dpgnhczzz/video/upload/v1789825831/h9q617tldsdpfx1pa6r0.mp4",
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const originalBTS: BTSItem[] = [
     subtitle: "On Set • Portfolio Session",
     duration: "00:52",
     videoUrl:
-      "https://ik.imagekit.io/maestrofilms/VID-20250702-WA0016.mp4?updatedAt=null&ik-s=44d550ea31579fc1498bc40560b9072622f7ae4c",
+      "https://res.cloudinary.com/dpgnhczzz/video/upload/v1789825817/gdplsufzda6xusfkzb4z.mp4",
   },
   {
     id: 3,
@@ -36,7 +36,7 @@ const originalBTS: BTSItem[] = [
     subtitle: "Fashion Shoot • Process",
     duration: "01:18",
     videoUrl:
-      "https://ik.imagekit.io/maestrofilms/VID-20250702-WA0013.mp4?updatedAt=null&ik-s=1820bf5cfe19aa4006df8f60de6b09696530c3a3",
+      "https://res.cloudinary.com/dpgnhczzz/video/upload/v1789825831/h9q617tldsdpfx1pa6r0.mp4",
   },
   {
     id: 4,
@@ -44,7 +44,7 @@ const originalBTS: BTSItem[] = [
     subtitle: "Brand Shoot • BTS",
     duration: "01:30",
     videoUrl:
-      "https://ik.imagekit.io/maestrofilms/20250608_175752.mp4?updatedAt=null&ik-s=45feaa14c5b8e797ea19b9de64c4bdf7b864bac6",
+      "https://res.cloudinary.com/dpgnhczzz/video/upload/v1789825858/g0os0itvinkkubr0m391.mp4",
   },
   {
     id: 5,
@@ -52,7 +52,7 @@ const originalBTS: BTSItem[] = [
     subtitle: "Location Shoot • Editorial",
     duration: "00:48",
     videoUrl:
-      "https://ik.imagekit.io/maestrofilms/20250608_181015.mp4?updatedAt=null&ik-s=693e6f99e6e69c1759abf479d8d6fb79bb7d7b1d",
+      "https://res.cloudinary.com/dpgnhczzz/video/upload/v1789825838/vpqsfvthdo4hoag6oenp.mp4",
   },
   {
     id: 6,
@@ -60,7 +60,7 @@ const originalBTS: BTSItem[] = [
     subtitle: "Fashion Photography • Process",
     duration: "01:10",
     videoUrl:
-      "https://ik.imagekit.io/maestrofilms/20250608_175815.mp4?updatedAt=null&ik-s=0440a18d1dc5ce83584dcf24039f2ea0971ce246",
+      "https://res.cloudinary.com/dpgnhczzz/video/upload/v1789825832/djs4dyizrzxfwkzdryrl.mp4",
   },
 ];
 

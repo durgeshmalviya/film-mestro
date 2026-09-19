@@ -10,7 +10,7 @@ interface Reel {
   subtitle: string;
   duration: string;
   playbackId: string;
-   
+  token?: string;
 }
 
 const originalReels: Reel[] = [
@@ -19,49 +19,72 @@ const originalReels: Reel[] = [
     title: "HERITAGE REEL",
     subtitle: "Fashion • Culture • 01:12",
     duration: "01:12",
-    playbackId: "3hiPKKzq6IBY27RCaf2GQ1fCYGHTsIUAGGvinKeePsM",
+    playbackId: "DxGwybWNmDx9cpvHkLtxRc75DRSJ9spDONjgj01jPwnM",
   },
   {
     id: 2,
     title: "ECHOES OF SILK",
     subtitle: "Fashion Film • 01:45",
     duration: "01:45",
-    playbackId: "6K6MDZ5PONKbfdHQ7deXPwE7KcqmUizPdARQMD200bXE",
+    playbackId: "BemUPIKGSob01qcQmJAT1qeCwlYQpJ7OZI3cdhswBREs",
   },
   {
     id: 3,
     title: "THREADS",
     subtitle: "Fashion Film • 01:08",
     duration: "01:08",
-    playbackId: "AoxCMbUmrAu3QsGG00TKT00eX00g00fAozbE3muiJidBGN8",
+    playbackId: "yI77xWfZmVNs5Hein5Yf9farU1ugL001BIa1TEPRkNqU",
   },
   {
     id: 4,
     title: "NOMAD SOULS",
     subtitle: "Documentary Reel • 02:03",
     duration: "02:03",
-    playbackId: "kAmgd166Ny02AUB9Gad2SbDbjmPI4x00ZsaRkkRqy5uY4",
+    playbackId: "c9MRELkg008bmER01VIRyvEzZ7ehy3eqzL3l4h4JCaZVQ",
   },
   {
     id: 5,
     title: "VEIL & VERSE",
     subtitle: "Cultural Short • 01:31",
     duration: "01:31",
-    playbackId: "piWuLih5GvDFoKRkvUzS9DXlhPc4E8y5z241hW8HtMk",
+    playbackId: "e00bhikXWulFN00jsq432y4RrSIAjqm00Z6ZfjArY5PDGE",
   },
   {
     id: 6,
     title: "IN TRADITION",
     subtitle: "Fashion Still • 00:58",
     duration: "00:58",
-    playbackId: "SwU4J7c8cBQ12FzaHkNqehQPY02WbfWCLGeMe5Acw00XU",
+    playbackId: "pRZzQAumc00Je9vQ5OyLh2fuU9TUQNmFsf3xlA7GjfeE",
   },
-   
 ];
-  
-// Generate Mux thumbnail URL
-const getMuxThumbnail = (playbackId: string, time = 1) =>
-  `https://image.mux.com/${playbackId}/thumbnail.jpg?time=${time}&width=600`;
+
+// Generate Mux thumbnail URL (supports signed token)
+const getMuxThumbnail = (
+  playbackId: string,
+  time = 1,
+  token?: string,
+  width = 600
+) => {
+  const base = `https://image.mux.com/${playbackId}/thumbnail.jpg?time=${time}&width=${width}`;
+  return token ? `${base}&token=${token}` : base;
+};
+
+async function getSignedPlaybackToken(playbackId: string): Promise<string> {
+  try {
+    const res = await fetch("/api/mux-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ playbackId }),
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch token");
+    const data = await res.json();
+    return data.token;
+  } catch (error) {
+    console.error("Token fetch error:", error);
+    return "";
+  }
+}
 
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
@@ -75,10 +98,11 @@ function shuffleArray<T>(array: T[]): T[] {
 export default function ReelsSection() {
   const [reels, setReels] = useState<Reel[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [direction, setDirection] = useState<"up" | "down" | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [tokenMap, setTokenMap] = useState<Record<string, string>>({});
+  const [modalToken, setModalToken] = useState<string>("");
 
   // Player state (modal)
   const [isPlaying, setIsPlaying] = useState(true);
@@ -90,8 +114,23 @@ export default function ReelsSection() {
   const touchStartTime = useRef<number>(0);
   const centerIconTimeout = useRef<NodeJS.Timeout | null>(null);
 
+  // Shuffle reels and load tokens on mount (same logic as code1)
   useEffect(() => {
-    setReels(shuffleArray(originalReels));
+    const shuffled = shuffleArray(originalReels);
+    setReels(shuffled);
+
+    const loadTokens = async () => {
+      const tokens: Record<string, string> = {};
+      await Promise.all(
+        shuffled.map(async (reel) => {
+          const token = await getSignedPlaybackToken(reel.playbackId);
+          tokens[reel.playbackId] = token;
+        })
+      );
+      setTokenMap(tokens);
+    };
+
+    loadTokens();
     setIsVisible(true);
   }, []);
 
@@ -157,12 +196,12 @@ export default function ReelsSection() {
     }, 800);
   };
 
-  const toggleMute = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const toggleMute = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     setIsMuted((prev) => !prev);
   };
 
-  // Keyboard
+  // Keyboard controls
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (selectedIndex === null) return;
@@ -173,7 +212,7 @@ export default function ReelsSection() {
         e.preventDefault();
         togglePlay();
       }
-      if (e.key === "m") toggleMute({ stopPropagation: () => {} } as any);
+      if (e.key === "m") toggleMute();
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
@@ -199,25 +238,31 @@ export default function ReelsSection() {
     touchStartY.current = null;
   };
 
+  const openModal = async (index: number) => {
+    const reel = reels[index];
+    let token = tokenMap[reel.playbackId];
+    if (!token) {
+      token = await getSignedPlaybackToken(reel.playbackId);
+    }
+    setModalToken(token);
+    setSelectedIndex(index);
+  };
+
   return (
-    <section className="min-h-screen bg-[#F8F5F0] text-gold font-body selection:bg-[#D4C5A9]/selection:text-[#2C2A26]">
+    <section className="min-h-screen bg-[#F8F5F0] text-gold font-body selection:bg-[#D4C5A9]/40 selection:text-[#2C2A26]">
       {/* Main Content */}
       <div className="px-8 lg:px-16 py-10 lg:py-15">
         <div id="reels" className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          
           {/* LEFT - Grid */}
           <div className="lg:col-span-8 order-2 lg:order-1">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-5">
               {reels.map((reel, index) => {
-                const isHovered = hoveredIndex === index;
-                const thumbnail = getMuxThumbnail(reel.playbackId);
+                const token = tokenMap[reel.playbackId];
 
                 return (
                   <button
                     key={reel.id}
-                    onClick={() => setSelectedIndex(index)}
-                    onMouseEnter={() => setHoveredIndex(index)}
-                    onMouseLeave={() => setHoveredIndex(null)}
+                    onClick={() => openModal(index)}
                     className={`
                       group relative overflow-hidden rounded-sm bg-[#EDE7DC]
                       aspect-[3/4] focus:outline-none
@@ -227,54 +272,52 @@ export default function ReelsSection() {
                     `}
                     style={{ transitionDelay: `${index * 60}ms` }}
                   >
-                    {/* Thumbnail (always visible) */}
-                    <img
-                      src={thumbnail}
-                      alt={reel.title}
-                      className={`absolute inset-0 w-full h-110 object-cover transition-opacity duration-500 ${
-                        isHovered ? "opacity-0" : "opacity-100"
-                      }`}
-                    />
-
-                    {/* Hover Video Preview (Mux) */}
-                    {isHovered && (
-                      <div className="absolute inset-0">
+                    {/* Video – same logic as code1 */}
+                    <div className="relative w-full h-full overflow-hidden bg-black">
+                      {token ? (
                         <MuxPlayer
                           playbackId={reel.playbackId}
-                          streamType="on-demand"
-                          autoPlay
+                          poster={`https://image.mux.com/${reel.playbackId}/thumbnail.jpg?width=800&height=1200&fit_mode=smartcrop`}
+                          autoPlay="muted"
                           muted
                           loop
                           playsInline
-                          preload="auto"
-                          className="w-full h-full object-cover"
+                          preload="metadata"
+                          streamType="on-demand"
+                          preferPlayback="mse"
+                          maxResolution="720p"
+                          tokens={{ playback: token }}
+                          className="absolute inset-0 w-full h-full transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
                           style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
+                            "--controls": "none",
+                            "--media-object-fit": "cover",
+                            "--media-object-position": "top center",
+                            transform: "translateZ(0)",
+                            willChange: "transform",
+                            backfaceVisibility: "hidden",
                           }}
                         />
-                      </div>
-                    )}
+                      ) : (
+                        <div className="absolute inset-0 w-full h-full bg-gray-800 animate-pulse" />
+                      )}
+                    </div>
 
-                    {/* Gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                    {/* Subtle gradient overlays (same spirit as code1) */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-700 pointer-events-none" />
 
-                    {/* Play icon (only when not hovering) */}
-                    {!isHovered && (
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center transition-all duration-500 group-hover:scale-110">
-                          <Play className="w-5 h-5 text-gold fill-white ml-0.5" />
-                        </div>
+                    {/* Play indicator on hover (same as code1) */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                      <div className="w-14 h-14 rounded-full border border-white/30 bg-black/20 backdrop-blur-sm flex items-center justify-center">
+                        <div className="w-0 h-0 border-t-[7px] border-t-transparent border-l-[12px] border-l-white border-b-[7px] border-b-transparent ml-1" />
                       </div>
-                    )}
+                    </div>
 
                     {/* Caption */}
                     <div className="absolute bottom-0 left-0 right-0 p-4 text-left pointer-events-none">
-                      <h3 className="text-gold/90 text-xs font-medium tracking-wider uppercase mb-0.5">
+                      <h3 className="text-white/90 text-xs font-medium tracking-wider uppercase mb-0.5">
                         {reel.title}
                       </h3>
-                      <p className="text-gold text-[11px] tracking-wide">
+                      <p className="text-white/70 text-[11px] tracking-wide">
                         {reel.subtitle}
                       </p>
                     </div>
@@ -290,14 +333,12 @@ export default function ReelsSection() {
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
           >
-            <h1 className="text-6xl  lg:mt-30 lg:text-7xl xl:text-8xl font-serif font-light tracking-tight text-gold leading-none">
-        REELS
+            <h1 className="text-6xl lg:mt-30 lg:text-7xl xl:text-8xl font-serif font-light tracking-tight text-gold leading-none">
+              REELS
             </h1>
             <div className="mt-3 mb-8 flex items-center gap-4">
               <div className="h-px w-12 bg-[#C4B5A0]" />
-              <span className="text-sm tracking-[0.3em] uppercase text-[#8A8378]">
-            
-              </span>
+              <span className="text-sm tracking-[0.3em] uppercase text-[#8A8378]" />
               <div className="h-px w-12 bg-[#C4B5A0]" />
             </div>
             <p className="text-gold text-base leading-relaxed max-w-sm mb-10">
@@ -308,14 +349,14 @@ export default function ReelsSection() {
               className="inline-flex items-center gap-2 text-sm tracking-wide text-gold hover:gap-3 transition-all duration-300 group"
             >
               VIEW ALL WORK
-              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 text-[#c] group-hover:-translate-y-0.5 transition-transform" />
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 text-gold group-hover:-translate-y-0.5 transition-transform" />
             </a>
           </div>
         </div>
       </div>
 
       {/* ===== PREMIUM MUX REELS MODAL ===== */}
-      {selectedReel && selectedIndex !== null && (
+      {selectedReel && selectedIndex !== null && modalToken && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center"
           onClick={() => setSelectedIndex(null)}
@@ -370,12 +411,13 @@ export default function ReelsSection() {
                 ref={playerRef}
                 key={selectedReel.playbackId + selectedIndex}
                 playbackId={selectedReel.playbackId}
-                poster={getMuxThumbnail(selectedReel.playbackId)}
+                poster={getMuxThumbnail(selectedReel.playbackId, 1, modalToken)}
                 streamType="on-demand"
                 autoPlay
                 muted={isMuted}
                 loop
                 playsInline
+                tokens={{ playback: modalToken }}
                 className="absolute inset-0 w-full h-full object-cover"
                 style={{
                   width: "100%",

@@ -1,8 +1,55 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from 'react';
 
+import type { Swiper as SwiperType } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import Link from 'next/link';
+
+import { ArrowUpRight } from "lucide-react";
+// ============ IMAGEKIT RESOLVER (same as hero – free plan friendly) ============
+const imageCache = new Map<string, string>();
+const CACHE_TTL = 4 * 60 * 1000; // 4 minutes
+
+async function getImageKitUrl(path: string): Promise<string> {
+  // Already a full URL → return as-is
+  if (path.startsWith('http')) return path;
+
+  // 1. In-memory cache
+  const cached = imageCache.get(path);
+  if (cached) return cached;
+
+  // 2. localStorage
+  const storageKey = `ik_${path}`;
+  try {
+    const stored = localStorage.getItem(storageKey);
+    if (stored) {
+      const { url, ts } = JSON.parse(stored);
+      if (Date.now() - ts < CACHE_TTL) {
+        imageCache.set(path, url);
+        return url;
+      }
+    }
+  } catch { }
+
+  // 3. Fetch signed URL only once
+  try {
+    const res = await fetch(`/api/imagekit?path=${encodeURIComponent(path)}`);
+    if (!res.ok) throw new Error('ImageKit failed');
+    const { url } = await res.json();
+
+    imageCache.set(path, url);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify({ url, ts: Date.now() }));
+    } catch { }
+
+    return url;
+  } catch (err) {
+    console.error('ImageKit resolve error:', path, err);
+    return path;
+  }
+}
 interface PortfolioImage {
   id: number;
   src: string;
@@ -11,59 +58,72 @@ interface PortfolioImage {
   category: string;
   href: string;
 }
-
-const portfolioImages: PortfolioImage[] = [
-  {
-    id: 1,
-    src: "https://ik.imagekit.io/maestrofilms/Copy%20of%209%20copy.jpg?updatedAt=1788075353055&ik-s=7fdbab837cc3e8ac00d5e8d92738b56e6ea79fbd",
-    alt: "High-fashion editorial photography – Shadow Play",
-    title: "Shadow Play",
-    category: "Editorial",
-    href: "/editorial",
-  },
-  {
-    id: 2,
-    src: "https://ik.imagekit.io/maestrofilms/Copy%20of%2019.jpg?updatedAt=1788075350100&ik-s=b85a972771eddb158663211697f33750416081ee",
-    alt: "Golden hour fashion lookbook photography",
-    title: "Golden Hour",
-    category: "Lookbook",
-    href: "/lookbook",
-  },
-   {
-    id: 3,
-    src: "https://ik.imagekit.io/maestrofilms/Copy%20of%20MF_08982.jpg?updatedAt=1788964504186&ik-s=47f85d66f42387aa200648cb88361aac8e5fed4a",
-    alt: "Golden hour fashion lookbook photography",
-    title: "Golden Hour",
-    category: "Fashion-Photography",
-    href: "/fashion-photgraphy",
-  },
-  {
-    id: 4,
-    src: "https://ik.imagekit.io/maestrofilms/MF_08305.jpg?updatedAt=1788075346400&ik-s=1bb90076870539d1f89d2b132df30f2aea0f5516",
-    alt: "Soft light beauty and fashion photography",
-    title: "Soft Light",
-    category: "Beauty",
-    href: "/beauty",
-  },
-  {
-    id: 5,
-    src: "https://ik.imagekit.io/maestrofilms/MF_08942.jpg?updatedAt=1788072997752&ik-s=073b8f8911744a355fafd7ff35c4b7af71bc830d",
-    alt: "Urban edge commercial fashion campaign photography",
-    title: "Urban Edge",
-    category: "Campaign",
-    href: "/campaign",
-  },
-    {
-    id: 6,
-    src: "https://ik.imagekit.io/maestrofilms/Copy%20of%2010.jpg?updatedAt=1788964516385&ik-s=0a2bec3c037ee64401174313a39c2f4921b76ab1",
-    alt: "Urban edge commercial fashion campaign photography",
-    title: "Urban Edge",
-    category: "Product Shoot",
-    href: "/Product",
-  },
-];
-
 export default function FashionPortfolio() {
+  const swiperRef = useRef<SwiperType | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [imagesReady, setImagesReady] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // ============ SLIDES DATA (paths only) ============
+  const portfolioImage = useMemo(
+    () => [
+      {
+        img: '/editorial/maestrofilms-11.jpg',
+        title: 'Catalogues',
+        href: '/catalog',
+      },
+      {
+        img: '/editorial/MF_08006.JPG', // removed stray leading space
+        title: 'Editorial & champaign',
+        href: '/editorial-campaign',
+      },
+      {
+        img: '/editorial/maestrofilms-20.JPG',
+        title: 'High Fashion',
+        href: '/high-fashion',
+      },
+      {
+        img: '/editorial/maestrofilms-24.jpg',
+        title: 'Product & Commercial',
+        href: '/product-commercial',
+      },
+
+
+
+    ],
+    []
+  );
+
+  const [resolvedItems, setResolvedItems] = useState(portfolioImage);
+
+  // ============ RESOLVE ALL PATHS ONCE ============
+  useEffect(() => {
+    let cancelled = false;
+
+    async function resolveAll() {
+      const resolved = await Promise.all(
+        portfolioImage.map(async (item) => {
+          const img = await getImageKitUrl(item.img);
+          return { ...item, img };
+        })
+      );
+
+      if (!cancelled) {
+        setResolvedItems(resolved);
+        setImagesReady(true);
+      }
+    }
+
+    resolveAll();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [portfolioImage]);
+
   return (
     <>
       <section className="px-5 md:px-10 lg:px-12 bg-[#f5f1ed] select-none">
@@ -84,16 +144,16 @@ export default function FashionPortfolio() {
           </div>
 
           {/* Grid */}
-          <div className="columns-2 md:columns-2 lg:columns-3 gap-4 md:gap-5 space-y-4 md:space-y-5">
-            {portfolioImages.map((img) => (
+          <div className="columns-2 md:columns-4 lg:columns-4 gap-4 md:gap-5 space-y-4 md:space-y-5">
+            {resolvedItems.map((img) => (
               <Link
-                key={img.id}
+
                 href={img.href}
                 className="break-inside-avoid relative group block overflow-hidden rounded-sm bg-[#f5f1ed]"
               >
                 <img
-                  src={img.src}
-                  alt={img.alt}
+                  src={img.img}
+                  alt={img.title}
                   loading="lazy"
                   draggable={false}
                   className="w-full h-auto object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
@@ -104,20 +164,20 @@ export default function FashionPortfolio() {
 
                 {/* Centered link text + underline */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3">
-                  
+
 
                   <div className="inline-flex flex-col items-center gap-1.5">
                     <span className="inline-flex items-center font-bold gap-1 text-white   text-[10px] sm:text-[11px] tracking-[0.22em] uppercase">
-                      {img.category}
-                      
+                      {img.title}
+
                     </span>
 
                     {/* Theme underline */}
                     <span className="block h-px p-0.2 w-20 bg-[#d9cfc3]/90 rotate-90 group-hover:w-14 transition-all duration-500" />
-                  <ArrowUpRight
-                        className="w-3.5 h-3.5 text-white transition-transform  -mt-13 -rotate-45 duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 max-sm:animate-[arrowNudge_1.6s_ease-in-out_infinite]"
-                        strokeWidth={1.75}
-                      /></div>
+                    <ArrowUpRight
+                      className="w-3.5 h-3.5 text-white transition-transform  -mt-13 -rotate-45 duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 max-sm:animate-[arrowNudge_1.6s_ease-in-out_infinite]"
+                      strokeWidth={1.75}
+                    /></div>
                 </div>
               </Link>
             ))}
@@ -125,7 +185,6 @@ export default function FashionPortfolio() {
         </div>
       </section>
 
-      {/* Bottom quote */}
       <div className="bg-[#f5f1ed] px-5 md:px-10 lg:px-16 pb-10 md:pb-12 pt-3 select-none">
         <div className="max-w-[1400px] mx-auto text-center">
           <div className="w-10 h-px bg-[#c9a86c]/50 mx-auto mb-6" />

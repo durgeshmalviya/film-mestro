@@ -53,21 +53,30 @@ export default function Navbar() {
             className={`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a86c]/60 focus-visible:ring-offset-2 transition-colors duration-500 ${scrolled || isMenuOpen ? "text-[#a68b6a]" : "text-[#c9a86c]"
               }`}
           >
-            <span className="block h-0 overflow-visible">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 1043 811"
-                width="110"
-                height="22"
-                fill="currentColor"
-                role="img"
-                aria-label="Maestro Films Logo"
-                style={{ display: "block", scale: "1.85" }}
-              >
-                <title>Maestro Films</title>
-                <path d="M42 47v36h72V11H42zm147 0v36h73V11h-73zm148 0v36h72V11h-72zm147 0v36h73V11h-73zm148 0v36h72V11h-72zm147 0v36h73V11h-73zm148 0v36h72V11h-72zM209 337v171h77v-96.9c0-53.4.3-97.2.8-97.4.4-.3 15.7 25.6 34.1 57.4 18.4 31.9 33.7 58.2 34.1 58.4.3.2 15.5-25.3 33.6-56.7s33.4-57.8 34.1-58.7c1-1.3 1.2 19.1 1.3 96.1V508h77V166h-76.8l-34.3 59.5c-20 34.7-34.7 59.1-35.2 58.6s-16-27.1-34.6-59.2l-33.6-58.4-38.8-.3-38.7-.2zm382 0v171h78V371h141v-68H669v-69h166v-68H591zM42 607v36h72v-72H42zm147 0v36h73v-72h-73zm148 0v36h72v-72h-72zm147 0v36h73v-72h-73zm148 0v36h72v-72h-72zm147 0v36h73v-72h-73zm148 0v36h72v-72h-72z" />
-              </svg>
-            </span>
+               <p
+                  className="text-[11px] md:text-sm font-semibold tracking-[0.29em] uppercase text-transparent bg-clip-text opacity-90 select-none"
+                  style={{
+                    backgroundImage: `
+                      linear-gradient(
+                        105deg,
+                        #3a2f1f 0%,
+                        #C9A86C 18%,
+                        #F5F1ED 32%,
+                        #E8D5A8 48%,
+                        #C9A86C 62%,
+                        #F5F1ED 78%,
+                        #3a2f1f 100%
+                      )
+                    `,
+                    backgroundSize: '250% 100%',
+                    animation:
+                      'eclipseSweep 7s ease-in-out infinite, floatSmooth 9s ease-in-out infinite',
+                    filter: 'drop-shadow(0 4px 20px rgba(201,168,108,0.4))',
+                    transform: 'translateZ(0)',
+                  }}
+                >
+                 Maestro Films  
+                </p>
           </Link>
 
           {/* Hamburger */}

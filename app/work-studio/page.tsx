@@ -4,40 +4,37 @@ import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 
-
 import ReelsSection from "@/app/components/Reels";
-
 import Navbar from "@/app/components/Nav";
 import BTSSection from "@/app/components/BTSReels";
 
-const PLAYBACK_ID = "yCqRdIERZFqOgcxh5gk00FtSrwWoDOGeJlXzyS7YsPVA";
+// Unsigned playback IDs that will be signed server-side
+const HERO_PLAYBACK_ID = "ZgtM02HGyyB5ffa4HDyaVlpF02KUtGLXGPbLtymq4X8zg";
+const CTA_PLAYBACK_ID = "bxbFuJjIegtrT63j01temXLFxIg5BaY5ZPbTrh9hQWYY";
+
 const studioFilms = [
   {
     title: "Studio Session",
     tag: "4K Film",
     duration: "0:32",
-     
     video: "/videos/studio-session.mp4",
   },
   {
     title: "Editorial Motion",
     tag: "Fashion Film",
     duration: "0:28",
-     
     video: "/videos/editorial-motion.mp4",
   },
   {
     title: "Product Cinema",
     tag: "Commercial",
     duration: "0:18",
-   
     video: "/videos/product-cinema.mp4",
   },
   {
     title: "Campaign Cut",
     tag: "Brand Film",
     duration: "0:40",
-    
     video: "/videos/campaign-cut.mp4",
   },
 ];
@@ -49,23 +46,44 @@ const tech = [
   { label: "Color", value: "Cinema-grade grading" },
 ];
 
+async function getSignedPlaybackToken(playbackId: string): Promise<string> {
+  try {
+    const res = await fetch("/api/mux-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ playbackId }),
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch token");
+    const data = await res.json();
+    return data.token;
+  } catch (error) {
+    console.error("Token fetch error:", error);
+    return "";
+  }
+}
+
 export default function WorkStudioPage() {
   const [mounted, setMounted] = useState(false);
-
   const [imagekitCollage, setImagekitCollage] = useState<string[]>([]);
-  const HERO_PLAYBACK_ID = "tA01vNfZ00uH6BIoDrIv006HXgAy0101NiRdaf8QeJHO01lG8";
+  const [heroToken, setHeroToken] = useState<string>("");
+  const [ctaToken, setCtaToken] = useState<string>("");
 
+  const motionRef = useRef<HTMLDivElement>(null);
+  const [motionInView, setMotionInView] = useState(false);
+
+  // Load secure images from ImageKit
   useEffect(() => {
     async function loadSecureImages() {
       const paths = [
-        "/MF_08942.jpg",
-        "/Copy of 9 copy.jpg",
-        "/MF_08006.JPG",
-        "/MF_08305.jpg",
-        "/Copy of 20 copy.jpg",
-        "/Copy of MF_08086.jpg",
-        "/MF_08982.jpg",
-        "/Copy of 13.jpg",
+        "/editorial/maestrofilms-7.jpg",
+        "/editorial/maestrofilms-16.JPG",
+        "/editorial/maestrofilms-23.jpg",
+        "/editorial/maestrofilms-13.jpg",
+        "/editorial/maestrofilms-31.JPG",
+        "/editorial/Copy of 18 copy.jpg",
+        "/editorial/Copy of MF_08998.jpg",
+        "/editorial/DSC04826.JPG",
       ];
 
       try {
@@ -87,13 +105,24 @@ export default function WorkStudioPage() {
     loadSecureImages();
   }, []);
 
+  // Load signed Mux tokens
+  useEffect(() => {
+    async function loadTokens() {
+      const hero = await getSignedPlaybackToken(HERO_PLAYBACK_ID);
+      const cta = await getSignedPlaybackToken(CTA_PLAYBACK_ID);
+      setHeroToken(hero);
+      setCtaToken(cta);
+    }
+
+    loadTokens();
+  }, []);
+
+  // Mount animation
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const motionRef = useRef<HTMLDivElement>(null);
-  const [motionInView, setMotionInView] = useState(false);
-
+  // Intersection observer for motion
   useEffect(() => {
     const el = motionRef.current;
     if (!el) return;
@@ -115,53 +144,60 @@ export default function WorkStudioPage() {
   return (
     <>
       <Navbar />
+      {/* ════════════════════════════════════════
+          HERO SECTION
+      ════════════════════════════════════════ */}
       <section className="relative flex items-end overflow-hidden bg-[#0a0a0a] text-white">
         <div className="absolute inset-0 py-0.5">
-          <MuxPlayer
-            playbackId={HERO_PLAYBACK_ID}
-            streamType="on-demand"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster={HERO_PLAYBACK_ID}
-            metadata={{
-              video_title: "Maestro Films — Studio Hero",
-              video_id: "hero-studio",
-            }}
-            accentColor="#c9a86c"
-            style={{
-              "--controls": "none",
-            }}
-          />
+          {heroToken ? (
+            <MuxPlayer
+              playbackId={HERO_PLAYBACK_ID}
+              streamType="on-demand"
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster={HERO_PLAYBACK_ID}
+              metadata={{
+                video_title: "Maestro Films — Studio Hero",
+                video_id: "hero-studio",
+              }}
+              accentColor="#c9a86c"
+              tokens={{ playback: heroToken }}
+              style={{
+                "--controls": "none",
+              } }
+            />
+          ) : (
+            <div className="w-full h-full bg-gray-900 animate-pulse" />
+          )}
         </div>
+
         <div
-          className={`relative z-10  m-3 max-w-[1400px] mx-auto w-full px-5 sm:px-6 md:px-10 
+          className={`relative z-10 m-3 max-w-[1400px] mx-auto w-full px-5 sm:px-6 md:px-10 
       pb-12 sm:pb-16 md:pb-28 
       pt-[calc(72px+2.5rem)] sm:pt-[calc(72px+4rem)] md:pt-[calc(72px+5rem)]
-      transition-all duration-1000 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}
+      transition-all duration-1000 ${
+        mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      }`}
         >
           <div className="flex items-center gap-3 mb-4 sm:mb-5">
             <span className="h-px w-7 sm:w-10 bg-[#c9a86c]" />
             <p className="text-[0.62rem] sm:text-[0.7rem] tracking-[0.28em] sm:tracking-[0.32em] uppercase text-gold font-medium">
               Cinematic Production House
-            </p>  <span className="h-px w-7 sm:w-10 bg-[#c9a86c]" />
+            </p>
+            <span className="h-px w-7 sm:w-10 bg-[#c9a86c]" />
           </div>
 
-          {/* Title */}
           <h1 className="font-display text-[2.65rem] leading-[0.92] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-normal mb-4 sm:mb-6 max-w-4xl">
-            Work &amp;{" "}
-            <span className="italic text-gold">Studio</span>
+            Work &amp; <span className="italic text-gold">Studio</span>
           </h1>
 
-          {/* Description */}
           <p className="max-w-md text-gold text-[0.92rem] sm:text-base md:text-lg leading-relaxed mb-4 sm:mb-5">
             4K resolution. Eco-conscious workflows. Landscape and portrait
             formats ready for web, print, social and cinema.
           </p>
 
-          {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Link
               href="/#contact"
@@ -190,20 +226,23 @@ export default function WorkStudioPage() {
           </div>
         </div>
       </section>
+
       {/* ════════════════════════════════════════
           WHAT WE DELIVER
       ════════════════════════════════════════ */}
       <section className="relative text-gold py-10 sm:py-12 md:py-16 px-5 sm:px-6 md:px-10 max-w-[1400px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-20 items-center">
           <div
-            className={`transition-all duration-1000 delay-100  ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-              }`}
+            className={`transition-all duration-1000 delay-100 ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+            }`}
           >
             <div className="flex items-center gap-3 mb-4">
               <span className="h-px w-8 bg-[#c9a86c]" />
               <p className="text-[0.9rem] sm:text-[0.9rem] tracking-[0.28em] uppercase text-[#c9a86c]">
                 What we deliver
-              </p>  <span className="h-px w-8 bg-[#c9a86c]" />
+              </p>
+              <span className="h-px w-8 bg-[#c9a86c]" />
             </div>
 
             <h2 className="font-display text-[1.75rem] sm:text-3xl md:text-4xl lg:text-[2.75rem] font-normal leading-tight mb-5 sm:mb-7 text-gold">
@@ -216,20 +255,21 @@ export default function WorkStudioPage() {
               lighting and wardrobe. Eco-optimized packages — full-resolution
               masters plus web and social variants.
             </p>
-            <p className=" text-gold leading-relaxed text-[0.95rem] sm:text-[1.05rem]">
+            <p className="text-gold leading-relaxed text-[0.95rem] sm:text-[1.05rem]">
               Landscape (16:9) and portrait (3:4 / 9:16) so one shoot feeds
               website heroes, Instagram Reels, lookbooks and ads.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 ">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {tech.map((t, i) => (
               <div
                 key={t.label}
-                className={`group relative bg-[#f8f4ee] rounded-lg p-4 sm:p-6 border border-black/[0.04] overflow-hidden transition-all duration-500 hover:border-[#c9a86c]/30 hover:shadow-[0_8px_30px_rgba(201,168,108,0.12)] ${mounted
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-6"
-                  }`}
+                className={`group relative bg-[#f8f4ee] rounded-lg p-4 sm:p-6 border border-black/[0.04] overflow-hidden transition-all duration-500 hover:border-[#c9a86c]/30 hover:shadow-[0_8px_30px_rgba(201,168,108,0.12)] ${
+                  mounted
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-6"
+                }`}
                 style={{ transitionDelay: `${150 + i * 80}ms` }}
               >
                 <div className="absolute inset-0 text-gold bg-gradient-to-br from-[#c9a86c]/0 to-[#c9a86c]/0 group-hover:from-[#c9a86c]/5 group-hover:to-transparent transition-all duration-500" />
@@ -252,8 +292,9 @@ export default function WorkStudioPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-10 items-center">
           {/* LEFT TEXT */}
           <div
-            className={`lg:col-span-5 transition-all duration-1000 ${mounted ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
-              }`}
+            className={`lg:col-span-5 transition-all duration-1000 ${
+              mounted ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
+            }`}
           >
             <p className="text-[0.65rem] sm:text-[0.7rem] tracking-[0.28em] sm:tracking-[0.32em] uppercase text-gold mb-4 sm:mb-5 font-medium">
               Editorial · Fashion Photography
@@ -266,8 +307,9 @@ export default function WorkStudioPage() {
             </h2>
 
             <p className="text-gold leading-relaxed max-w-md mb-8 sm:mb-10 text-[0.95rem] sm:text-base md:text-[1.05rem]">
-              High-end editorial shoots and model portfolio sessions crafted with precision.
-              Designed for talent, agencies, and brands seeking refined, timeless imagery.
+              High-end editorial shoots and model portfolio sessions crafted with
+              precision. Designed for talent, agencies, and brands seeking refined,
+              timeless imagery.
             </p>
 
             <Link
@@ -284,14 +326,77 @@ export default function WorkStudioPage() {
           {/* RIGHT : Masonry shuffle collage - Secured Private Images */}
           <div className="lg:col-span-7 relative h-[420px] xs:h-[460px] sm:h-[520px] md:h-[600px] lg:h-[680px] mt-2 sm:mt-0">
             {[
-              { src: imagekitCollage[0], top: "2%", left: "2%", w: "32%", rot: "-9deg", z: 10, delay: "0s" },
-              { src: imagekitCollage[1], top: "0%", left: "28%", w: "30%", rot: "-2deg", z: 20, delay: "0.1s" },
-              { src: imagekitCollage[2], top: "1%", left: "55%", w: "28%", rot: "9deg", z: 15 },
-              { src: imagekitCollage[3], top: "32%", left: "8%", w: "34%", rot: "4deg", z: 25, delay: "0.3s" },
-              { src: imagekitCollage[4], top: "28%", left: "42%", w: "31%", rot: "-7deg", z: 30, delay: "0.4s" },
-              { src: imagekitCollage[5], top: "38%", left: "68%", w: "27%", rot: "6deg", z: 18, delay: "0.5s" },
-              { src: imagekitCollage[6], top: "58%", left: "18%", w: "29%", rot: "-4deg", z: 30, delay: "0.6s" },
-              { src: imagekitCollage[7], top: "62%", left: "48%", w: "30%", rot: "5deg", z: 30, delay: "0.7s" },
+              {
+                src: imagekitCollage[0],
+                top: "2%",
+                left: "2%",
+                w: "32%",
+                rot: "-9deg",
+                z: 10,
+                delay: "0s",
+              },
+              {
+                src: imagekitCollage[1],
+                top: "0%",
+                left: "28%",
+                w: "30%",
+                rot: "-2deg",
+                z: 20,
+                delay: "0.1s",
+              },
+              {
+                src: imagekitCollage[2],
+                top: "1%",
+                left: "55%",
+                w: "28%",
+                rot: "9deg",
+                z: 15,
+              },
+              {
+                src: imagekitCollage[3],
+                top: "32%",
+                left: "8%",
+                w: "34%",
+                rot: "4deg",
+                z: 25,
+                delay: "0.3s",
+              },
+              {
+                src: imagekitCollage[4],
+                top: "28%",
+                left: "42%",
+                w: "31%",
+                rot: "-7deg",
+                z: 30,
+                delay: "0.4s",
+              },
+              {
+                src: imagekitCollage[5],
+                top: "38%",
+                left: "68%",
+                w: "27%",
+                rot: "6deg",
+                z: 18,
+                delay: "0.5s",
+              },
+              {
+                src: imagekitCollage[6],
+                top: "58%",
+                left: "18%",
+                w: "29%",
+                rot: "-4deg",
+                z: 30,
+                delay: "0.6s",
+              },
+              {
+                src: imagekitCollage[7],
+                top: "62%",
+                left: "48%",
+                w: "30%",
+                rot: "5deg",
+                z: 30,
+                delay: "0.7s",
+              },
             ].map((item, i) => (
               <div
                 key={i}
@@ -339,22 +444,29 @@ export default function WorkStudioPage() {
       ════════════════════════════════════════ */}
       <section className="relative py-20 sm:py-24 md:py-32 px-5 sm:px-6 md:px-10 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <MuxPlayer
-            playbackId={PLAYBACK_ID}
-            streamType="on-demand"
-            autoPlay="muted"
-            muted
-            loop
-            playsInline
-            style={{
-              "--controls": "none",
-              "--media-object-fit": "cover",
-              "--media-object-position": "center",
-              width: "100%",
-              height: "100%",
-            }}
-            className="absolute inset-0 w-full h-full"
-          />
+          {ctaToken ? (
+            <MuxPlayer
+              playbackId={CTA_PLAYBACK_ID}
+              streamType="on-demand"
+              autoPlay="muted"
+              muted
+              loop
+              playsInline
+              tokens={{ playback: ctaToken }}
+              style={
+                {
+                  "--controls": "none",
+                  "--media-object-fit": "cover",
+                  "--media-object-position": "center",
+                  width: "100%",
+                  height: "100%",
+                } 
+              }
+              className="absolute inset-0 w-full h-full"
+            />
+          ) : (
+            <div className="w-full h-full bg-gray-900 animate-pulse" />
+          )}
         </div>
 
         <div className="relative z-10 max-w-[1400px] mx-auto text-center">
@@ -398,8 +510,9 @@ export default function WorkStudioPage() {
           </div>
         </div>
       </section>
+
       <ReelsSection />
-      <BTSSection/>
+      <BTSSection />
     </>
   );
 }

@@ -44,7 +44,7 @@ export default function ContactForm() {
           <div className="relative order-2 md:order-1">
             <div className="relative h-80 md:h-full min-h-[460px] overflow-hidden rounded-sm group">
               <img
-                src="https://ik.imagekit.io/maestrofilms/Bg.jpg?updatedAt=null&ik-s=d747a03b935c03a093d0fd778cddb26f056b5e51"
+                src="https://ik.imagekit.io/mfashion/editorial/maestrofilms-7.jpg?updatedAt=1789720889496&ik-s=8e33738f8ef8a87a3af3589fd9179aab418e3b16"
                 alt="Contact Maestro Films"
                 className="protected-image w-full h-full object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
                 loading="lazy"

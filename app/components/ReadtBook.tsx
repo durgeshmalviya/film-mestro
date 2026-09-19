@@ -2,36 +2,65 @@
 
 import Link from "next/link";
 import MuxPlayer from "@mux/mux-player-react";
-
-const PLAYBACK_ID = "UpqANwpzG98MxXyKFn6fOLHgXl4RCKrIWxL9wLm9cME";
-
+import { useEffect, useState, useRef } from "react";
+const PLAYBACK_ID = "7z9suaRTJZA40001LNJU5LfB6K602xXXNSCFdivicNs1k8";
+ 
+async function getSignedPlaybackToken(playbackId: string): Promise<string> {
+  try {
+    const res = await fetch("/api/mux-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ playbackId }),
+    });
+ 
+    if (!res.ok) throw new Error("Failed to fetch token");
+    const data = await res.json();
+    return data.token;
+  } catch (error) {
+    console.error("Token fetch error:", error);
+    return "";
+  }
+}
 export default function BookStudioCTA() {
+    const [heroToken, setHeroToken] = useState<string>("");
+  const [ctaToken, setCtaToken] = useState<string>("");
+useEffect(() => {
+    async function loadTokens() {
+      const hero = await getSignedPlaybackToken(PLAYBACK_ID);
+      const cta = await getSignedPlaybackToken(PLAYBACK_ID);
+      setHeroToken(hero);
+      setCtaToken(cta);
+    }
+ 
+    loadTokens();
+  }, []);
   return (
-    <section className="relative py-28 sm:py-32 md:py-40 px-5 sm:px-6 md:px-10 overflow-hidden group">
+    <section className="relative py-28 sm:py-28 md:py-30 px-5 sm:px-6 md:px-10 overflow-hidden group">
       {/* Full-bleed video background - 4K preferred */}
-      <div className="absolute inset-0 z-0">
-        <MuxPlayer
-          playbackId={PLAYBACK_ID}
-          streamType="on-demand"
-          autoPlay="muted"
-          muted
-          loop
-          playsInline
-          preload="auto"
-          maxResolution="2160p"
-          minResolution="720p"
-          preferPlayback="mse"
-          style={{
-            "--controls": "none",
-            "--media-object-fit": "cover",
-            "--media-object-position": "center",
-            width: "100%",
-            height: "100%",
-          }}
-          className="absolute inset-0 w-full h-full scale-105 group-hover:scale-100 transition-transform duration-[5s] ease-[cubic-bezier(0.16,1,0.3,1)]"
-        />
-
-        {/* Premium multi-layer overlays */}
+      <div  className="absolute inset-0 w-full h-full scale-105 group-hover:scale-100 transition-transform duration-[5s] ease-[cubic-bezier(0.16,1,0.3,1)]">
+         {heroToken ? (
+            <MuxPlayer
+              playbackId={PLAYBACK_ID}
+              streamType="on-demand"
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster={PLAYBACK_ID}
+              metadata={{
+                video_title: "Maestro Films — Studio Hero",
+                video_id: "hero-studio",
+              }}
+              accentColor="#c9a86c"
+              tokens={{ playback: heroToken }}
+              style={{
+                "--controls": "none"
+              }}
+            />
+          ) : (
+            <div className="w-full h-full bg-gray-900 animate-pulse" />
+          )}
+         
          </div>
 
       {/* Decorative thin gold lines */}
@@ -63,7 +92,7 @@ export default function BookStudioCTA() {
           {/* Primary button */}
           <Link
             href="/#contact"
-            className="group/btn relative inline-flex items-center justify-center gap-3 bg-[#c9a86c] text-[#0a0a0a] px-10 sm:px-12 py-4 sm:py-[1.2rem] text-[0.8rem] sm:text-sm tracking-[0.2em] uppercase font-medium overflow-hidden transition-all duration-500 hover:bg-[#e0c48a] hover:shadow-[0_0_60px_rgba(201,168,108,0.4)] hover:-translate-y-0.5"
+            className="group/btn relative inline-flex items-center justify-center gap-3 bg-[#c9a86c] text-transparent px-10 sm:px-12 py-4 sm:py-[1.2rem] text-[0.8rem] sm:text-sm tracking-[0.2em] uppercase font-medium overflow-hidden transition-all duration-500 hover:bg-[#e0c48a] hover:shadow-[0_0_60px_rgba(201,168,108,0.4)] hover:-translate-y-0.5"
           >
             {/* Shine sweep */}
             <span className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/30 to-transparent" />

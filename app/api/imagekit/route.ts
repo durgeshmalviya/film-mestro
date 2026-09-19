@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import ImageKit from "imagekit";
 
-// Initialize once at module level, not in the handler
+// Initialize once at module level (not inside the handler)
 const imagekit = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY || "",
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Validate path for security
+    // Security: only allow paths that start with / and never contain ..
     if (!path.startsWith("/") || path.includes("..")) {
       return NextResponse.json(
         { error: "Invalid path format" },
@@ -28,26 +28,32 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Check if env vars are set
-    if (!process.env.IMAGEKIT_PRIVATE_KEY) {
-      console.error("Missing IMAGEKIT_PRIVATE_KEY");
+    // Check required env vars
+    if (
+      !process.env.IMAGEKIT_PRIVATE_KEY ||
+      !process.env.IMAGEKIT_PUBLIC_KEY ||
+      !process.env.IMAGEKIT_URL_ENDPOINT
+    ) {
+      console.error("Missing ImageKit environment variables");
       return NextResponse.json(
         { error: "Server configuration error" },
         { status: 500 }
       );
     }
 
+    // Generate signed URL (expires in 5 minutes)
+    // Transformations keep bandwidth low → free-plan friendly
     const url = imagekit.url({
       path,
       signed: true,
-      expireSeconds: 300,
+      expireSeconds: 300, // 5 minutes
       transformation: [
         {
-          width: 800,
-          height: 1067,
+          width: 1200,        // good quality for hero
+          height: 1600,
           focus: "auto",
           quality: 80,
-          format: "webp",
+          format: "webp",     // much smaller than jpg
         },
       ],
     });
@@ -56,6 +62,7 @@ export async function GET(req: NextRequest) {
       { url },
       {
         headers: {
+          // Cache the signed URL for almost the full lifetime
           "Cache-Control": "public, max-age=250, s-maxage=250",
           "Content-Type": "application/json",
         },
@@ -64,7 +71,10 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error("ImageKit generation error:", error);
     return NextResponse.json(
-      { error: "Failed to generate signed URL", details: String(error) },
+      {
+        error: "Failed to generate signed URL",
+        details: String(error),
+      },
       { status: 500 }
     );
   }

@@ -11,42 +11,69 @@ import { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, X } from 'lucide-react';
 import MuxPlayer from '@mux/mux-player-react';
 
+interface Production {
+  playbackId: string;
+  poster: string;
+  color: string;
+  label: string;
+  token?: string;
+}
+
 const productions = [
   {
-    playbackId: 'SwU4J7c8cBQ12FzaHkNqehQPY02WbfWCLGeMe5Acw00XU',
-    poster: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=800&fit=crop',
+    playbackId: '7z9suaRTJZA40001LNJU5LfB6K602xXXNSCFdivicNs1k8',
+    poster: '',
     color: 'from-[#5a6b7d] to-[#7a8b9d]',
     label: 'Commercial'
   },
   {
-    playbackId: 'kAmgd166Ny02AUB9Gad2SbDbjmPI4x00ZsaRkkRqy5uY4',
-    poster: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=800&fit=crop',
+    playbackId: 'yI77xWfZmVNs5Hein5Yf9farU1ugL001BIa1TEPRkNqU',
+    poster: ' ',
     color: 'from-[#c4785a] to-[#b86c48]',
     label: 'Documentary'
   },
   {
-    playbackId: 'AoxCMbUmrAu3QsGG00TKT00eX00g00fAozbE3muiJidBGN8',
-    poster: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&h=800&fit=crop',
+    playbackId: 'BemUPIKGSob01qcQmJAT1qeCwlYQpJ7OZI3cdhswBREs',
+    poster: ' ',
     color: 'from-[#3a2f2a] to-[#5a4a40]',
     label: 'Editorial'
   },
   {
-    playbackId: '6K6MDZ5PONKbfdHQ7deXPwE7KcqmUizPdARQMD200bXE',
+    playbackId: 'e00bhikXWulFN00jsq432y4RrSIAjqm00Z6ZfjArY5PDGE',
     poster: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=600&h=800&fit=crop',
     color: 'from-[#6a5acd] to-[#483d8b]',
     label: 'Fashion Film'
   },
   {
-    playbackId: 'piWuLih5GvDFoKRkvUzS9DXlhPc4E8y5z241hW8HtMk',
+    playbackId: 'DxGwybWNmDx9cpvHkLtxRc75DRSJ9spDONjgj01jPwnM',
     poster: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&h=800&fit=crop',
     color: 'from-[#2f4f4f] to-[#1a2f2f]',
     label: 'Brand Story'
   },
 ];
 
+async function getSignedPlaybackToken(playbackId: string): Promise<string> {
+  try {
+    const res = await fetch("/api/mux-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ playbackId }),
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch token");
+    const data = await res.json();
+    return data.token;
+  } catch (error) {
+    console.error("Token fetch error:", error);
+    return "";
+  }
+}
+
 export default function MSReels() {
   const [modalVideo, setModalVideo] = useState<string | null>(null);
-  const [productionItems, setProductionItems] = useState(productions);
+  const [modalToken, setModalToken] = useState<string>("");
+  const [productionItems, setProductionItems] = useState<Production[]>([]);
+  const [tokenMap, setTokenMap] = useState<Record<string, string>>({});
 
   function shuffleArray<T>(source: T[]): T[] {
     const arr = [...source];
@@ -57,17 +84,38 @@ export default function MSReels() {
     return arr;
   }
 
+  // Shuffle productions and load tokens on mount
   useEffect(() => {
-    setProductionItems(shuffleArray(productions));
+    const shuffled = shuffleArray(productions);
+    setProductionItems(shuffled);
+
+    // Pre-load tokens for all videos
+    const loadTokens = async () => {
+      const tokens: Record<string, string> = {};
+      for (const prod of shuffled) {
+        const token = await getSignedPlaybackToken(prod.playbackId);
+        tokens[prod.playbackId] = token;
+      }
+      setTokenMap(tokens);
+    };
+
+    loadTokens();
   }, []);
 
-  const openModal = (playbackId: string) => {
+  const openModal = async (playbackId: string) => {
+    // Use pre-loaded token or fetch if not available
+    let token = tokenMap[playbackId];
+    if (!token) {
+      token = await getSignedPlaybackToken(playbackId);
+    }
+    setModalToken(token);
     setModalVideo(playbackId);
     document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
     setModalVideo(null);
+    setModalToken("");
     document.body.style.overflow = 'auto';
   };
 
@@ -138,27 +186,32 @@ export default function MSReels() {
                   >
                     {/* Video */}
                     <div className="relative w-full h-full overflow-hidden bg-black">
-                      <MuxPlayer
-                        playbackId={item.playbackId}
-                        poster={`https://image.mux.com/${item.playbackId}/thumbnail.jpg?width=800&height=1200&fit_mode=smartcrop`}
-                        autoPlay="muted"
-                        muted
-                        loop
-                        playsInline
-                        preload="metadata"
-                        streamType="on-demand"
-                        preferPlayback="mse"
-                        maxResolution="720p"
-                        className="absolute inset-0 w-full h-full transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
-                        style={{
-                          '--controls': 'none',
-                          '--media-object-fit': 'cover',
-                          '--media-object-position': 'top center',
-                          transform: 'translateZ(0)',
-                          willChange: 'transform',
-                          backfaceVisibility: 'hidden',
-                        }}
-                      />
+                      {tokenMap[item.playbackId] ? (
+                        <MuxPlayer
+                          playbackId={item.playbackId}
+                          poster={`https://image.mux.com/${item.playbackId}/thumbnail.jpg?width=800&height=1200&fit_mode=smartcrop`}
+                          autoPlay="muted"
+                          muted
+                          loop
+                          playsInline
+                          preload="metadata"
+                          streamType="on-demand"
+                          preferPlayback="mse"
+                          maxResolution="720p"
+                          tokens={{ playback: tokenMap[item.playbackId] }}
+                          className="absolute inset-0 w-full h-full transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+                          style={{
+                            '--controls': 'none',
+                            '--media-object-fit': 'cover',
+                            '--media-object-position': 'top center',
+                            transform: 'translateZ(0)',
+                            willChange: 'transform',
+                            backfaceVisibility: 'hidden',
+                          } }
+                        />
+                      ) : (
+                        <div className="absolute inset-0 w-full h-full bg-gray-800 animate-pulse" />
+                      )}
                     </div>
 
                     {/* Subtle gradient overlays */}
@@ -208,19 +261,26 @@ export default function MSReels() {
               className="relative w-full max-w-6xl aspect-video bg-black overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)]"
               onClick={(e) => e.stopPropagation()}
             >
-              <MuxPlayer
-                playbackId={modalVideo}
-                autoPlay
-                preload="auto"
-                streamType="on-demand"
-                preferPlayback="mse"
-                className="absolute inset-0 w-full h-full"
-                style={{
-                  transform: 'translateZ(0)',
-                  willChange: 'transform',
-                  backfaceVisibility: 'hidden',
-                }}
-              />
+              {modalToken ? (
+                <MuxPlayer
+                  playbackId={modalVideo}
+                  autoPlay
+                  preload="auto"
+                  streamType="on-demand"
+                  preferPlayback="mse"
+                  tokens={{ playback: modalToken }}
+                  className="absolute inset-0 w-full h-full"
+                  style={{
+                    transform: 'translateZ(0)',
+                    willChange: 'transform',
+                    backfaceVisibility: 'hidden',
+                  }}
+                />
+              ) : (
+                <div className="absolute inset-0 w-full h-full bg-gray-900 flex items-center justify-center">
+                  <div className="w-12 h-12 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                </div>
+              )}
 
               {/* Close Button */}
               <motion.button
