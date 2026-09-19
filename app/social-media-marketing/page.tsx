@@ -91,7 +91,7 @@ async function getSignedPlaybackToken(playbackId: string): Promise<string> {
 }
 
 const HERO_PLAYBACK_ID = "pRZzQAumc00Je9vQ5OyLh2fuU9TUQNmFsf3xlA7GjfeE";
-const SOCIAL_PLAYBACK_ID = "UpqANwpzG98MxXyKFn6fOLHgXl4RCKrIWxL9wLm9cME";
+const SOCIAL_PLAYBACK_ID = "7z9suaRTJZA40001LNJU5LfB6K602xXXNSCFdivicNs1k8";
 
 // ============ ANIMATION ============
 const fadeUp: Variants = {
