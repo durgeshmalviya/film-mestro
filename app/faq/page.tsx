@@ -70,7 +70,7 @@ export default function FAQ() {
   };
 
   return (
-    <section className="bg-[#f5f1ed] px-5 md:px-10 lg:px-12 py-5 md:py-8 ">
+    <section className="  bg-[#f5f1ed] px-5 md:px-10 lg:px-12 py-5 md:py-8 ">
       {/* Schema for Google / AI answer engines */}
       <script
         type="application/ld+json"

@@ -130,16 +130,14 @@ export default function FashionPortfolio() {
         <div className="max-w-[1400px] mx-auto">
           {/* Header */}
           <div className="mb-8 md:mb-10 max-w-3xl">
-            <p className="text-[13px] md:text-sm font-medium text-center md:text-left tracking-[0.32em] px-2 uppercase text-gold mb-2">
+            <p className="text-[11px] md:text-sm font-medium text-center md:text-left tracking-[0.32em] px-2 uppercase text-gold mb-2">
               Selected Showcase
             </p>
             <h2 className="font-body text-4xl md:text-5xl lg:text-[3.4rem] text-center md:text-left font-light text-gold leading-[1.1] mb-2">
               The <span className="font-medium">Maestro</span> Shoots
             </h2>
-            <p className="text-[15px] px-2 text-center md:text-left md:text-base text-gold leading-relaxed max-w-xl font-base tracking-wide">
-              Powerful fashion photography that sells the story. Striking
-              editorials, lookbooks, and commercial campaigns crafted to
-              captivate and convert.
+            <p className="text-[15px] px-2 text-center md:text-left md:text-base text-gold leading-relaxed max-w-3xl font-base tracking-wide">
+              Timeless fashion photography, Striking editorials, lookbooks & campaigns — crafted to captivate.
             </p>
           </div>
 
@@ -183,24 +181,23 @@ export default function FashionPortfolio() {
             ))}
           </div>
         </div>
-      </section>
-
-      <div className="bg-[#f5f1ed] px-5 md:px-10 lg:px-16 pb-10 md:pb-12 pt-3 select-none">
-        <div className="max-w-[1400px] mx-auto text-center">
-          <div className="w-10 h-px bg-[#c9a86c]/50 mx-auto mb-6" />
-          <p className="text-[10px] sm:text-[13px] tracking-[0.35em] uppercase text-gold mb-4">
-            Next Steps
-          </p>
-          <p className="text-gold text-sm sm:text-[15px] tracking-wide max-w-xl mx-auto leading-relaxed font-medium">
-            “Maestro is focused to coordinate with truthfulness, passion, & a
-            commitment to Excellence”
-          </p>
-          <p className="text-gold text-xs sm:text-sm mt-4 tracking-[0.12em]">
-            Let’s create something exceptional together
-          </p>
+        <div className="bg-[#f5f1ed] px-5 md:px-10 lg:px-16 pb-5 md:pb-4 pt-3 select-none">
+          <div className="max-w-[1400px] mx-auto text-center">
+            <p className="text-[10px] sm:text-[13px] tracking-[0.35em] uppercase text-gold mb-3">
+              Exclusively for the Fashion Industry
+            </p>
+            <p className="text-gold text-sm sm:text-[15px] tracking-[0.18em] max-w-xl mx-auto leading-relaxed font-medium uppercase">
+              Fashion • Beauty • Jewellery
+            </p>
+            <p className="text-gold text-xs sm:text-sm mt-2 tracking-[0.15em] uppercase opacity-80">
+              Nothing Else.
+            </p>
+            <p className="text-gold text-xs sm:text-sm mt-1 tracking-[0.12em]">
+              Let’s create something exceptional together.
+            </p>
+          </div>
         </div>
-      </div>
-
+      </section>
       <style jsx>{`
         @keyframes arrowNudge {
           0%,

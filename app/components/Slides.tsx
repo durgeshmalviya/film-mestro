@@ -10,7 +10,7 @@ const getOptimizedImageUrl = (url: string, width?: number): string => {
   if (url.includes('imagekit.io')) {
     return `${url}${url.includes('?') ? '&' : '?'}tr=w-${width || 1200},q-90,f-auto`;
   }
- 
+
   return url;
 };
 
@@ -112,7 +112,7 @@ export default function SlidesMF({
         right: '/editorial/maestrofilms-1.JPG', // ImageKit path
         title: 'Maestro',
         subtitle: 'Films',
-        tagline: 'EXCLUSIVELY FOR THE FASHION INDUSTRY'
+        tagline: 'EXCLUSIVELY FOR '
 
       },
       {
@@ -120,28 +120,28 @@ export default function SlidesMF({
         right: '/editorial/maestrofilms-2.JPG',
         title: 'Maestro',
         subtitle: 'Films',
-        tagline: 'FASHION • BEAUTY • JEWELLERY' ,
+        tagline: 'THE FASHION INDUSTRY',
       },
       {
         left: '/editorial/maestrofilms-18.JPG',
         right: '/editorial/maestrofilms-3.JPG',
         title: 'Maestro',
         subtitle: 'Films',
-        tagline:'NOTHING ELSE.',
+        tagline: 'FASHION • BEAUTY • JEWELLERY ',
       },
       {
         left: '/DSC02019.JPG',
         right: '/editorial/maestrofilms-4.JPG',
         title: 'Maestro',
         subtitle: 'Films',
-        tagline: 'Stories That Moves You',
+        tagline: 'NOTHING ELSE.',
       },
       {
         left: '/editorial/maestrofilms-10.jpg',
         right: '/editorial/maestrofilms-11.jpg',
         title: 'Maestro',
         subtitle: 'Films',
-        tagline: 'Stories That Moves You',
+        tagline: 'Fashion That Moves You',
       },
     ],
     []
@@ -236,12 +236,9 @@ export default function SlidesMF({
     );
   }, [currentSlide, resolvedSlides.length, goToSlide]);
 
-  // ============ RENDER ============
+    
   return (
     <section className="relative w-full h-screen overflow-hidden bg-[#1f1a16]">
-      <Navbar />
-
-      {/* Grain Overlay */}
       <div
         className="absolute inset-0 z-[15] pointer-events-none opacity-[0.04] mix-blend-overlay"
         style={{
@@ -257,20 +254,18 @@ export default function SlidesMF({
         return (
           <div
             key={index}
-            className={`capture-guard ${tabHidden ? 'is-hidden' : ''} absolute inset-0 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              isActive
-                ? 'opacity-100 z-10 scale-100'
-                : 'opacity-0 z-0 scale-[1.03]'
-            }`}
+            className={`capture-guard ${tabHidden ? 'is-hidden' : ''} absolute inset-0 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isActive
+              ? 'opacity-100 z-10 scale-100'
+              : 'opacity-0 z-0 scale-[1.03]'
+              }`}
           >
             {/* Left Image */}
             <div className="absolute left-0 top-0 w-full md:w-1/2 h-full hidden md:block overflow-hidden group">
               <img
                 src={slide.left}
                 alt="Maestro Films portfolio"
-                className={`protected-image w-full h-full object-cover object-top will-change-transform ${
-                  isActive ? 'hero-left-active' : 'hero-left-inactive'
-                }`}
+                className={`protected-image w-full h-full object-cover object-top will-change-transform ${isActive ? 'hero-left-active' : 'hero-left-inactive'
+                  }`}
                 loading={index === 0 ? 'eager' : 'lazy'}
                 decoding="async"
                 onContextMenu={(e) => e.preventDefault()}
@@ -290,9 +285,8 @@ export default function SlidesMF({
               <img
                 src={slide.right}
                 alt="Maestro Films portfolio"
-                className={`protected-image w-full h-full object-cover object-top will-change-transform ${
-                  isActive ? 'hero-right-active' : 'hero-right-inactive'
-                }`}
+                className={`protected-image w-full h-full object-cover object-top will-change-transform ${isActive ? 'hero-right-active' : 'hero-right-inactive'
+                  }`}
                 loading={index === 0 ? 'eager' : 'lazy'}
                 decoding="async"
                 onContextMenu={(e) => e.preventDefault()}
@@ -305,72 +299,68 @@ export default function SlidesMF({
             {/* ============ TEXT OVERLAY ============ */}
             <div className="absolute inset-0 flex items-center justify-center z-10 bg-gradient-to-b from-black/25 via-transparent to-black/35">
               <div
-                className={`text-center px-5 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                  isActive
-                    ? 'opacity-100 translate-y-0 scale-100'
-                    : 'opacity-0 translate-y-10 scale-95'
-                }`}
+                className={`text-center px-5 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${isActive
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-10 scale-95'
+                  }`}
               >
-                {/* Title */}
-                <h1
-                  className="relative font-body text-5xl md:text-7xl lg:text-8xl leading-none tracking-tight text-transparent bg-clip-text select-none mb-1"
-                  style={{
-                    backgroundImage: `
-                      linear-gradient(
-                        105deg,
-                        #3a2f1f 0%,
-                        #C9A86C 18%,
-                        #F5F1ED 32%,
-                        #E8D5A8 48%,
-                        #C9A86C 62%,
-                        #F5F1ED 78%,
-                        #3a2f1f 100%
-                      )
-                    `,
-                    backgroundSize: '250% 100%',
-                    animation:
-                      'eclipseSweep 7s ease-in-out infinite, floatSmooth 9s ease-in-out infinite',
-                    filter: 'drop-shadow(0 4px 20px rgba(201,168,108,0.4))',
-                    transform: 'translateZ(0)',
-                  }}
-                >
-                  {slide.title}
-                </h1>
+                <div className="flex flex-col items-center justify-center text-center select-none">
 
-                {/* Subtitle */}
-                <p
-                  className="font-body font-medium text-2xl md:text-4xl lg:text-5xl tracking-[0.22em] mb-3 uppercase leading-none text-transparent bg-clip-text select-none"
-                  style={{
-                    backgroundImage: `
-                      linear-gradient(
-                        105deg,
-                        #3a2f1f 0%,
-                        #C9A86C 18%,
-                        #F5F1ED 32%,
-                        #E8D5A8 48%,
-                        #C9A86C 62%,
-                        #F5F1ED 78%,
-                        #3a2f1f 100%
-                      )
-                    `,
-                    backgroundSize: '250% 100%',
-                    animation:
-                      'eclipseSweep 7s ease-in-out infinite, floatSmooth 9s ease-in-out infinite',
-                    filter: 'drop-shadow(0 4px 20px rgba(201,168,108,0.4))',
-                    transform: 'translateZ(0)',
-                  }}
-                >
-                  {slide.subtitle}
-                </p>
+                  {/* Title */}
+                  <h1
+                    className="
+      font-serif
+      text-5xl sm:text-6xl md:text-7xl lg:text-8xl
+      leading-none
+      tracking-tight
+      text-[#E8D5A8]
+      mb-1
+      drop-shadow-[0_4px_18px_rgba(201,168,108,0.4)]
+    "
+                  >
+                    {slide.title}
+                  </h1>
 
-                {/* Tagline */}
-                <p
-                  className="text-[11px] md:text-sm font-semibold tracking-[0.39em] uppercase text-[#8E5C5C]  opacity-90 select-none"
-                   
-                
-                >
-                  {slide.tagline}
-                </p>
+                  {/* Subtitle */}
+                  <p
+                    className="
+      font-serif
+      text-lg sm:text-xl md:text-2xl lg:text-3xl
+      tracking-[0.45em]
+      uppercase
+      leading-none
+      text-[#E8D5A8]
+      mb-5
+      drop-shadow-[0_4px_18px_rgba(201,168,108,0.4)]
+    "
+                  >
+                    {slide.subtitle}
+                  </p>
+
+                  {/* Decorative Divider */}
+                  <div className="flex items-center justify-center gap-3 mb-4">
+                    <div className="h-[1px] w-12 md:w-16 bg-[#C9A86C]" />
+                    <div className="w-2 h-2 rotate-45 bg-[#C9A86C]" />
+                    <div className="h-[1px] w-12 md:w-16 bg-[#C9A86C]" />
+                  </div>
+
+                  {/* Tagline */}
+                  <p
+                    className="
+      text-[10px] sm:text-[11px] md:text-xs
+      font-medium
+      tracking-[0.42em]
+      uppercase
+      text-white
+      opacity-90
+      
+    "
+                  >
+                    {slide.tagline}
+                  </p>
+
+                </div>
+
               </div>
             </div>
           </div>
@@ -399,11 +389,10 @@ export default function SlidesMF({
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`relative size-2 rounded-full transition-all duration-400 ${
-                index === currentSlide
-                  ? 'bg-[#c9a86c] scale-125'
-                  : 'bg-[#c9a86c]/35 hover:bg-[#c9a86c]/60'
-              }`}
+              className={`relative size-2 rounded-full transition-all duration-400 ${index === currentSlide
+                ? 'bg-[#c9a86c] scale-125'
+                : 'bg-[#c9a86c]/35 hover:bg-[#c9a86c]/60'
+                }`}
             >
               {index === currentSlide && (
                 <span className="absolute inset-0 rounded-full bg-[#c9a86c]/30 animate-ping" />

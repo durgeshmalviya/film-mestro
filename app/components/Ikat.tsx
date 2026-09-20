@@ -242,38 +242,7 @@ export default function EditorialsSection() {
           ) : (
             <div className="h-[420px] md:h-[540px] bg-[#e8e2d9]/60 rounded-sm animate-pulse" />
           )}
-        </div>
-
-        {/* Bottom Stories Section */}
-        <div className="text-center md:text-left">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
-            <div>
-              <h2 className="font-body text-3xl md:text-4xl lg:text-[2.75rem] font-light text-gold leading-[1.15] mb-5">
-                Latest <span className="font-medium">stories</span> &{' '}
-                <span className="font-medium">collaborations</span>
-              </h2>
-              <p className="text-[15px] md:text-base text-gold leading-relaxed font-light max-w-md mb-8">
-                Each editorial begins as a whisper—an idea, a glance, a mood waiting
-                to be revealed. Through our images, we chase the fleeting, the honest,
-                and the elegantly imperfect.
-              </p>
-              <Link
-                href="#reels"
-                className="inline-block px-7 py-3 border border-[#c9a86c]/60 text-gold text-[11px] tracking-[0.2em] uppercase font-light hover:bg-[#c9a86c] hover:text-[#f5f1ed] hover:border-[#c9a86c] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
-              >
-                Learn more
-              </Link>
-            </div>
-
-            <div className="hidden md:flex justify-end">
-              <div className="w-32 h-32 border border-[#c9a86c]/25 rounded-full flex items-center justify-center">
-                <div className="w-22 h-22 border border-[#c9a86c]/40 rounded-full flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 bg-[#c9a86c]/70 rounded-full" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        </div>      
       </div>
     </section>
   );

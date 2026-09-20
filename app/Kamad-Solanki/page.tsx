@@ -153,7 +153,7 @@ export default function AboutPage() {
 
               <div className="space-y-3">
                 <p className="text-sm text-[#2a2a2a] font-light">+91 75818 00555</p>
-                <p className="text-sm text-[#2a2a2a] font-light">+91 75820 05558</p>
+                
                 <p className="text-sm text-[#2a2a2a] font-light">Officialmaestrofilm@gmail.com</p>
               </div>
 
@@ -168,7 +168,7 @@ export default function AboutPage() {
             </motion.div>
 
             <motion.div variants={fadeUp} className="relative h-72 md:h-96 rounded-sm overflow-hidden shadow-2xl group">
-              <img src="https://ik.imagekit.io/maestrofilms/kamad.jpeg?updatedAt=null&ik-s=06d3abf59044976c606e39b01186d5bf045c2aec" alt="Studio" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src="https://bitbucket.org/maestrofilms/filmmaestro/raw/4352d232517887dfe8153d0061ab218247e18648/src/assets/kamad.jpeg" alt="Studio" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
               <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8">
                 <p className="text-gold text-[12px] tracking-[0.2em] uppercase font-bold mb-1 -ml-5 mb-6 ">Kamad solanki</p>

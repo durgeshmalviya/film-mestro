@@ -71,7 +71,13 @@ async function getImageKitUrl(path: string): Promise<string> {
     return path; // fallback
   }
 }
-
+const brands = [
+  { logo: "https://i.ibb.co/dwTb4sCt/Illyas.jpg", name: "LLYSAS’S" },
+  { logo: "https://i.ibb.co/67RfHSnN/Untitled-300-x-300-px-e1740134537181.jpg", name: "" },
+  { logo: "https://i.ibb.co/6RymwLKy/Ecoholics-horiz-white.png", name: "" },
+  { logo: "https://i.ibb.co/C3dvmzQ8/Eventra-logo-1-01-removebg-preview.png", name: "" },
+  { logo: "https://i.ibb.co/nMTJKKjx/hpcllogo.jpg", name: "" },
+];
 // ============ MUX SIGNED TOKEN ============
 async function getSignedPlaybackToken(playbackId: string): Promise<string> {
   try {
@@ -422,7 +428,34 @@ export default function AdvancedWorkPage() {
             </div>
           </div>
         </section>
-
+<div className="relative w-full overflow-hidden py-8 bg-[#f0ebe4]">
+      <motion.div
+        className="flex gap-12"
+        animate={{ x: ["0%", "-100%"] }}
+        transition={{
+          repeat: Infinity,
+          repeatType: "loop",
+          duration: 20,
+          ease: "linear",
+        }}
+      >
+        {/* Repeat list for infinite scroll */}
+        {[...brands, ...brands].map((item, i) => (
+          <div key={i} className="flex items-center gap-3 min-w-max">
+            <img
+              src={item.logo}
+              alt={item.name || "Brand logo"}
+              className="h-12 w-auto object-contain"
+            />
+            {item.name && (
+              <span className="text-white text-lg font-semibold whitespace-nowrap">
+                {item.name}
+              </span>
+            )}
+          </div>
+        ))}
+      </motion.div>
+    </div>
         {/* SOCIAL + MOTION */}
         <section className="py-10 md:py-5 px-5 md:px-10 bg-[#f5f1ed]">
           <div className="max-w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">

@@ -123,21 +123,23 @@ export default function MSReels() {
     <>
       <section
         id="productions"
-        className="relative py-5 md:py-2 px-5 md:px-10 lg:px-16 bg-[#f5f1ed]"
+        className="relative py-2 md:py-1 px-5 md:px-10 lg:px-16 bg-[#f5f1ed]"
       >
         <div className="max-w-[1400px] mx-auto">
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-end items-start md:items-end mb-12 md:mb-16 gap-4">
-            <div className="text-center md:text-right max-w-2xl ml-auto">
+            <div className="text-center md:text-right max-w-xl ml-auto">
               <p className="text-[11px] md:text-xs font-medium tracking-[0.32em] uppercase text-[#a68b6a] mb-3">
-                Cinematic Showcase
+                Fashion in Motion
               </p>
-              <h2 className="font-body text-4xl md:text-5xl lg:text-[3.25rem] font-light text-gold leading-[1.1] mb-4">
+
+              <h2 className="font-body text-4xl md:text-4xl lg:text-[3.25rem] font-light text-gold leading-[1.1] mb-3">
                 The <span className="font-medium">Maestro</span> Reels
               </h2>
+
               <p className="text-[15px] md:text-base text-gold leading-relaxed font-light tracking-wide">
-                Every frame tells a story. From commercial campaigns to documentary
-                films, our productions capture the essence of emotion and authenticity.
+                Every frame captures elegance in motion. From editorial films to brand campaigns,
+
               </p>
             </div>
           </div>
@@ -207,7 +209,7 @@ export default function MSReels() {
                             transform: 'translateZ(0)',
                             willChange: 'transform',
                             backfaceVisibility: 'hidden',
-                          } }
+                          }}
                         />
                       ) : (
                         <div className="absolute inset-0 w-full h-full bg-gray-800 animate-pulse" />

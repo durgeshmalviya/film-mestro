@@ -112,8 +112,7 @@ export default function Home() {
         <FashionPortfolio />
         <BookStudioCTA />
         <AboutUs />
-        <ContactForm />
-        <FAQ/>
+        <ContactForm />       
       </div>
     </>
   );
