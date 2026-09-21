@@ -299,7 +299,7 @@ export default function SendEmail() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="group relative w-full overflow-hidden rounded-sm bg-[#c9a86c] py-3.5 text-[12px] font-medium uppercase tracking-[0.2em] text-[#0a0a0a] transition-all duration-500 hover:bg-[#e0c48a] hover:shadow-[0_0_32px_rgba(201,168,108,0.3)] disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="group relative w-full overflow-hidden rounded-sm bg-[#c9a86c] py-3.5 text-[12px] font-medium uppercase tracking-[0.2em]  text-transparent transition-all duration-500 hover:bg-[#e0c48a] hover:shadow-[0_0_32px_rgba(201,168,108,0.3)] disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       <span>{loading ? 'Sending...' : 'Send Inquiry'}</span>
                       {!loading && (
