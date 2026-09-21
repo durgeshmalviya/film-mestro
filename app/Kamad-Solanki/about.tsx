@@ -10,7 +10,7 @@ const brands = [
   { logo: "https://i.ibb.co/nMTJKKjx/hpcllogo.jpg", name: "" },
 ];
 export default function AboutUs() {
-  return (
+  return (<>
     <section id="about" className="md:py-5 px-4 md:px-6 bg-[#f5f1ed]  ">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-center">
@@ -90,37 +90,62 @@ export default function AboutUs() {
 
         </div>
       </div>
-      <div className="relative w-full overflow-hidden py-3 bg-[#c9a86c] rounded-b-xl">
-        <p className="md:text-left text-[#f5f1ed] text-center font-medium tracking-[0.29em] px-5 text-gold uppercase mb-1 "> our clients</p>
-      <motion.div
-        className="flex gap-12"
-        animate={{ x: ["0%", "-100%"] }}
-        transition={{
-          repeat: Infinity,
-          repeatType: "loop",
-          duration: 20,
-          ease: "linear",
-        }}
-      >
-        {/* Repeat list for infinite scroll */}
-        {[...brands, ...brands].map((item, i) => (
-          <div key={i} className="flex items-center gap-3 min-w-max">
-            <img
-              src={item.logo}
-              alt={item.name || "Brand logo"}
-              className="h-12 w-auto object-contain"
-            />
-            {item.name && (
-              <span className="text-white text-lg font-semibold whitespace-nowrap">
-                {item.name}
-              </span>
-            )}
+
+    </section><section className="relative w-full overflow-hidden  py-8 md:py-12">
+      
+      <div className="relative z-10 max-w-[1600px] mx-auto px-4 md:px-8">
+        {/* Compact Header */}
+        <div className="text-center mb-8">
+          <p className="text-[10px] tracking-[0.3em] uppercase text-gold font-light">
+            Trusted by leading brands
+          </p>
+        </div>
+ 
+        {/* Carousel */}
+        <div className="relative group">
+          <div className="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-white via-white/50 to-transparent z-20 pointer-events-none"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-white via-white/50 to-transparent z-20 pointer-events-none"></div>
+ 
+          <div className="overflow-hidden">
+            <motion.div
+              className="flex gap-12 md:gap-16"
+              animate={{ x: ["0%", "-50%"] }}
+              transition={{
+                repeat: Infinity,
+                repeatType: "loop",
+                duration: 30,
+                ease: "linear",
+              }}
+            >
+              {[...brands, ...brands].map((item, i) => (
+                <motion.div
+                  key={i}
+                  className="flex items-center gap-4 min-w-max group/item"
+                  whileHover={{ y: -2 }}
+                >
+                  <motion.img
+                    src={item.logo}
+                    alt={item.name || "Brand logo"}
+                    className="h-12 md:h-14 w-auto object-contain    transition-all duration-300"
+                    whileHover={{ scale: 1.06 }}
+                  />
+ 
+                  {item.name && (
+                    <>
+                   
+                      <span className="text-[19px] text-gold font-base tracking-wide   group-hover/item:text-gold transition-colors duration-300">
+                        {item.name}
+                      </span>
+                    </>
+                  )}
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
-        ))}
-      </motion.div>
-    </div>
+        </div>
+      </div>
     </section>
-  )
+  </>)
 }
 
 function CornerMark() {

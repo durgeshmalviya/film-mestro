@@ -20,7 +20,7 @@ export default function AboutPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (<>
-  <Navbar/>
+ 
     <motion.div
       variants={staggerContainer}
       initial="initial"
