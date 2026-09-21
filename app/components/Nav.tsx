@@ -127,10 +127,11 @@ export default function Navbar() {
 
         <nav className="text-center space-y-8 md:space-y-10 relative z-10">
           {[
-            { label: "Fashion Photography", href: "/Kamad-Solanki" },
+           
             { label: "Studio & Work", href: "/work-studio" },
             { label: "Campaigns", href: "/social-media-marketing" },
             { label: "Production", href: "/service" },
+             { label: "About", href: "/Kamad-Solanki" },
             { label: "Contact", href: "/contact" },
           ].map((item, index) => (
             <Link

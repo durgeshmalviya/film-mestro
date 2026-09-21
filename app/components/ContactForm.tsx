@@ -74,7 +74,6 @@ const initialFormData = {
 
 type TextFieldId = "name" | "email" | "address" | "phone";
 
-// What happened on the last submit, including which messages actually went out
 interface SubmitOutcome {
   ok: boolean;
   message: string;
@@ -88,8 +87,6 @@ interface SubmitOutcome {
 
 /* ------------------------------------------------------------------ */
 /*  FormInput lives OUTSIDE the main component.                        */
-/*  If it is defined inside, React creates a new component type on     */
-/*  every keystroke, remounts the <input>, and focus is lost.          */
 /* ------------------------------------------------------------------ */
 interface FormInputProps {
   id: string;
@@ -117,10 +114,10 @@ function FormInput({
   error,
 }: FormInputProps) {
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       <label
         htmlFor={id}
-        className="block text-[9px] tracking-[0.2em] uppercase text-[#a68b6a] font-thin"
+        className="block text-[11px] tracking-[0.18em] uppercase text-[#5c4a3a] font-medium"
       >
         {label} {required && <span className="text-[#c9a86c]">•</span>}
       </label>
@@ -135,17 +132,17 @@ function FormInput({
           onBlur={onBlur}
           placeholder="Your answer"
           aria-invalid={!!error}
-          className={`w-full bg-[#f5f1ed]/40 border transition-all duration-300 py-3.5 px-4 text-[#3d3d3a] placeholder-[#a68b6a]/40 focus:outline-none text-base font-thin tracking-wide rounded-xl ${
+          className={`w-full bg-white/90 border transition-all duration-300 py-3.5 px-4 text-[#1f1f1c] placeholder:text-[#8a7a68]/70 focus:outline-none text-[15px] font-light tracking-wide rounded-xl shadow-sm ${
             isFocused
-              ? "border-[#c9a86c] bg-[#f5f1ed]/70 shadow-lg shadow-[#c9a86c]/10"
+              ? "border-[#c9a86c] bg-white shadow-md shadow-[#c9a86c]/15 ring-1 ring-[#c9a86c]/30"
               : error
-              ? "border-amber-600/50 bg-[#f5f1ed]/50"
-              : "border-[#c9a86c]/20 hover:border-[#c9a86c]/40 hover:bg-[#f5f1ed]/55"
+              ? "border-amber-600/60 bg-white"
+              : "border-[#d4c4b0] hover:border-[#c9a86c]/70 hover:bg-white"
           }`}
         />
       </div>
       {error && (
-        <p className="text-[10px] text-amber-700 font-light tracking-wide">
+        <p className="text-[11px] text-amber-700 font-medium tracking-wide">
           {error}
         </p>
       )}
@@ -155,12 +152,10 @@ function FormInput({
 
 export default function ModernPremiumForm() {
   const [formData, setFormData] = useState(initialFormData);
-
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  // Stays visible until the next submit or "Clear Form"
   const [outcome, setOutcome] = useState<SubmitOutcome | null>(null);
 
   const handleFormChange = (
@@ -185,13 +180,11 @@ export default function ModernPremiumForm() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = "Required";
-
     if (!formData.email.trim()) {
       newErrors.email = "Required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Invalid";
     }
-
     if (!formData.address.trim()) newErrors.address = "Required";
     if (!formData.phone.trim()) newErrors.phone = "Required";
     if (!formData.shootType) newErrors.shootType = "Required";
@@ -201,7 +194,6 @@ export default function ModernPremiumForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Shared props for the four text inputs
   const inputProps = (id: TextFieldId) => ({
     id,
     value: formData[id],
@@ -240,9 +232,7 @@ export default function ModernPremiumForm() {
     try {
       const response = await fetch("/api/send-inquiry", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
@@ -252,8 +242,6 @@ export default function ModernPremiumForm() {
         throw new Error(result.error || "Failed to submit form");
       }
 
-      // The inquiry only counts as received if the business got its email.
-      // Details for the developer go to the console, not to the customer.
       if (!result.sent?.businessEmail) {
         console.error("Inquiry was not delivered:", result.errors);
         throw new Error(
@@ -268,7 +256,6 @@ export default function ModernPremiumForm() {
         console.warn("WhatsApp not sent:", result.errors.whatsapp);
       }
 
-      // Success
       setSubmitted(true);
       setOutcome({
         ok: true,
@@ -281,7 +268,6 @@ export default function ModernPremiumForm() {
         },
       });
 
-      // Reset the fields after 3 seconds (the result message stays visible)
       setTimeout(() => {
         setFormData(initialFormData);
         setSubmitted(false);
@@ -309,53 +295,53 @@ export default function ModernPremiumForm() {
   return (
     <section
       id="contact"
-      className="relative min-h-screen py-12 md:py-20 px-4 md:px-6 lg:px-8 bg-gradient-to-br from-[#f5f1ed] via-yellow-50 to-[#f5f1ed] overflow-hidden"
+      className="relative min-h-screen py-12 md:py-20 px-4 md:px-6 lg:px-8 bg-gradient-to-br from-[#f8f4ef] via-[#f5f0e8] to-[#f8f4ef] overflow-hidden"
     >
-      {/* Background Effects */}
+      {/* Soft gold ambient glows */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-1/3 -right-64 w-96 h-96 bg-[#c9a86c] rounded-full blur-3xl opacity-[0.08]"></div>
-        <div className="absolute bottom-1/3 -left-64 w-96 h-96 bg-[#c9a86c] rounded-full blur-3xl opacity-[0.08]"></div>
+        <div className="absolute top-1/3 -right-64 w-[28rem] h-[28rem] bg-[#c9a86c] rounded-full blur-3xl opacity-[0.07]" />
+        <div className="absolute bottom-1/3 -left-64 w-[28rem] h-[28rem] bg-[#c9a86c] rounded-full blur-3xl opacity-[0.07]" />
       </div>
 
       <div className="relative z-10 max-w-[1000px] mx-auto">
         {/* Premium Header */}
-        <div className="text-center mb-16 md:mb-24 space-y-6">
-          <div className="inline-flex items-center justify-center gap-3 px-4 py-2 rounded-full border border-[#c9a86c]/30 bg-[#c9a86c]/[0.08]">
-            <div className="w-2 h-2 rounded-full bg-[#c9a86c] animate-pulse"></div>
-            <p className="text-[8px] tracking-[0.3em] uppercase text-[#c9a86c] font-thin">
+        <div className="text-center mb-14 md:mb-20 space-y-5">
+          <div className="inline-flex items-center justify-center gap-2.5 px-5 py-2 rounded-full border border-[#c9a86c]/40 bg-[#c9a86c]/10 shadow-sm">
+            <div className="w-2 h-2 rounded-full bg-[#c9a86c] animate-pulse" />
+            <p className="text-[10px] tracking-[0.28em] uppercase text-[#8a6d4a] font-medium">
               Premium Service
             </p>
           </div>
 
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-thin text-[#1a1a1a] leading-tight tracking-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-[#1a1814] leading-tight tracking-tight">
             Let&apos;s Create{" "}
-            <span className="text-[#c9a86c] font-extralight">Your Vision</span>
+            <span className="text-[#b8955a] font-extralight">Your Vision</span>
           </h1>
 
-          <p className="text-sm text-[#a68b6a] font-thin tracking-wide max-w-2xl mx-auto leading-relaxed">
+          <p className="text-[15px] text-[#6b5a48] font-light tracking-wide max-w-xl mx-auto leading-relaxed">
             Tell us about your project and we&apos;ll craft a tailored solution
           </p>
         </div>
 
-        {/* Form Container */}
+        {/* Form */}
         <form
           onSubmit={handleFormSubmit}
           noValidate
-          className="space-y-8"
+          className="space-y-10"
           aria-label="Contact form"
         >
-          {/* Step 1: Contact Info */}
-          <div className="group/section space-y-5">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#c9a86c] to-[#b8975a] flex items-center justify-center">
-                <span className="text-[#f5f1ed] font-thin text-sm">1</span>
+          {/* ── Step 1: Contact Info ── */}
+          <div className="space-y-5">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#c9a86c] to-[#b8975a] flex items-center justify-center shadow-md shadow-[#c9a86c]/25">
+                <span className="text-white font-medium text-sm">1</span>
               </div>
-              <h2 className="text-xs tracking-[0.25em] uppercase text-[#c9a86c] font-thin">
+              <h2 className="text-[13px] tracking-[0.22em] uppercase text-[#8a6d4a] font-medium">
                 Contact Information
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <FormInput label="Full Name" required {...inputProps("name")} />
               <FormInput
                 label="Email Address"
@@ -365,7 +351,7 @@ export default function ModernPremiumForm() {
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <FormInput label="Location" required {...inputProps("address")} />
               <FormInput
                 label="Phone Number"
@@ -376,26 +362,24 @@ export default function ModernPremiumForm() {
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="h-px bg-gradient-to-r from-transparent via-[#c9a86c]/15 to-transparent"></div>
+          <div className="h-px bg-gradient-to-r from-transparent via-[#c9a86c]/25 to-transparent" />
 
-          {/* Step 2: Service Selection */}
-          <div className="group/section space-y-5">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#c9a86c] to-[#b8975a] flex items-center justify-center">
-                <span className="text-[#f5f1ed] font-thin text-sm">2</span>
+          {/* ── Step 2: Package ── */}
+          <div className="space-y-5">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#c9a86c] to-[#b8975a] flex items-center justify-center shadow-md shadow-[#c9a86c]/25">
+                <span className="text-white font-medium text-sm">2</span>
               </div>
-              <h2 className="text-xs tracking-[0.25em] uppercase text-[#c9a86c] font-thin">
+              <h2 className="text-[13px] tracking-[0.22em] uppercase text-[#8a6d4a] font-medium">
                 Choose Your Package
               </h2>
             </div>
 
-            {/* Shoot Type Tabs */}
-            <div className="space-y-2">
-              <label className="block text-[9px] tracking-[0.2em] uppercase text-[#a68b6a] font-thin">
+            <div className="space-y-2.5">
+              <label className="block text-[11px] tracking-[0.18em] uppercase text-[#5c4a3a] font-medium">
                 Service Type <span className="text-[#c9a86c]">•</span>
               </label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
                 {products.map((prod) => (
                   <button
                     key={prod.value}
@@ -409,30 +393,29 @@ export default function ModernPremiumForm() {
                       if (errors.shootType)
                         setErrors((prev) => ({ ...prev, shootType: "" }));
                     }}
-                    className={`relative px-3 py-3 rounded-lg text-[11px] font-thin tracking-wide uppercase transition-all duration-300 overflow-hidden group ${
+                    className={`relative px-3 py-3.5 rounded-xl text-[12px] font-medium tracking-wide uppercase transition-all duration-300 ${
                       formData.shootType === prod.value
-                        ? "bg-[#c9a86c] text-[#f5f1ed] shadow-lg shadow-[#c9a86c]/20"
-                        : "bg-[#f5f1ed]/60 border border-[#c9a86c]/20 text-[#c9a86c] hover:border-[#c9a86c]/50 hover:bg-[#f5f1ed]/80"
+                        ? "bg-[#c9a86c] text-white shadow-lg shadow-[#c9a86c]/30"
+                        : "bg-white/80 border border-[#d4c4b0] text-[#5c4a3a] hover:border-[#c9a86c] hover:bg-white hover:shadow-sm"
                     }`}
                   >
-                    <span className="relative z-10">{prod.label}</span>
+                    {prod.label}
                   </button>
                 ))}
               </div>
               {errors.shootType && (
-                <p className="text-[10px] text-amber-700 font-light">
+                <p className="text-[11px] text-amber-700 font-medium">
                   {errors.shootType}
                 </p>
               )}
             </div>
 
-            {/* Package Cards */}
             {formData.shootType && (
-              <div className="space-y-3 pt-4">
-                <label className="block text-[9px] tracking-[0.2em] uppercase text-[#a68b6a] font-thin">
+              <div className="space-y-3 pt-3">
+                <label className="block text-[11px] tracking-[0.18em] uppercase text-[#5c4a3a] font-medium">
                   Select Package <span className="text-[#c9a86c]">•</span>
                 </label>
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   {currentSubProducts.map((subProd) => (
                     <button
                       key={subProd.value}
@@ -445,30 +428,30 @@ export default function ModernPremiumForm() {
                         if (errors.selectedProduct)
                           setErrors((prev) => ({ ...prev, selectedProduct: "" }));
                       }}
-                      className={`relative w-full p-4 rounded-xl border transition-all duration-300 text-left group ${
+                      className={`relative w-full p-4 rounded-xl border transition-all duration-300 text-left ${
                         formData.selectedProduct === subProd.value
-                          ? "bg-[#c9a86c]/15 border-[#c9a86c] shadow-lg shadow-[#c9a86c]/15"
-                          : "bg-[#f5f1ed]/60 border-[#c9a86c]/20 hover:border-[#c9a86c]/50 hover:bg-[#f5f1ed]/80"
+                          ? "bg-[#c9a86c]/12 border-[#c9a86c] shadow-md shadow-[#c9a86c]/15"
+                          : "bg-white/80 border-[#d4c4b0] hover:border-[#c9a86c]/80 hover:bg-white hover:shadow-sm"
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3 flex-1">
+                        <div className="flex items-center gap-3.5 flex-1">
                           <div
-                            className={`w-5 h-5 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${
+                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
                               formData.selectedProduct === subProd.value
-                                ? "border-[#c9a86c] bg-[#c9a86c]/20"
-                                : "border-[#c9a86c]/40 group-hover:border-[#c9a86c]/70"
+                                ? "border-[#c9a86c] bg-[#c9a86c]"
+                                : "border-[#c9a86c]/50"
                             }`}
                           >
                             {formData.selectedProduct === subProd.value && (
-                              <div className="w-2 h-2 rounded-full bg-[#c9a86c]"></div>
+                              <div className="w-2 h-2 rounded-full bg-white" />
                             )}
                           </div>
-                          <span className="text-sm text-[#3d3d3a] font-thin tracking-wide">
+                          <span className="text-[15px] text-[#1f1f1c] font-light tracking-wide">
                             {subProd.label}
                           </span>
                         </div>
-                        <span className="text-sm text-[#c9a86c] font-thin tracking-wide ml-4">
+                        <span className="text-[15px] text-[#b8955a] font-medium tracking-wide ml-4">
                           ₹{subProd.rate.toLocaleString("en-IN")}
                         </span>
                       </div>
@@ -476,7 +459,7 @@ export default function ModernPremiumForm() {
                   ))}
                 </div>
                 {errors.selectedProduct && (
-                  <p className="text-[10px] text-amber-700 font-light">
+                  <p className="text-[11px] text-amber-700 font-medium">
                     {errors.selectedProduct}
                   </p>
                 )}
@@ -484,13 +467,13 @@ export default function ModernPremiumForm() {
             )}
           </div>
 
-          {/* Step 3: Add-ons */}
-          <div className="group/section space-y-5">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#c9a86c] to-[#b8975a] flex items-center justify-center">
-                <span className="text-[#f5f1ed] font-thin text-sm">3</span>
+          {/* ── Step 3: Add-ons ── */}
+          <div className="space-y-5">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#c9a86c] to-[#b8975a] flex items-center justify-center shadow-md shadow-[#c9a86c]/25">
+                <span className="text-white font-medium text-sm">3</span>
               </div>
-              <h2 className="text-xs tracking-[0.25em] uppercase text-[#c9a86c] font-thin">
+              <h2 className="text-[13px] tracking-[0.22em] uppercase text-[#8a6d4a] font-medium">
                 Add-on Services
               </h2>
             </div>
@@ -501,24 +484,24 @@ export default function ModernPremiumForm() {
                   key={service.value}
                   type="button"
                   onClick={() => handleServiceChange(service.value)}
-                  className={`relative p-4 rounded-xl border transition-all duration-300 text-left group ${
+                  className={`relative p-4 rounded-xl border transition-all duration-300 text-left ${
                     formData.services.includes(service.value)
-                      ? "bg-[#c9a86c]/15 border-[#c9a86c] shadow-lg shadow-[#c9a86c]/15"
-                      : "bg-[#f5f1ed]/60 border-[#c9a86c]/20 hover:border-[#c9a86c]/50 hover:bg-[#f5f1ed]/80"
+                      ? "bg-[#c9a86c]/12 border-[#c9a86c] shadow-md shadow-[#c9a86c]/15"
+                      : "bg-white/80 border-[#d4c4b0] hover:border-[#c9a86c]/80 hover:bg-white hover:shadow-sm"
                   }`}
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="pt-1">
+                  <div className="flex items-start gap-3.5">
+                    <div className="pt-0.5">
                       <div
-                        className={`w-5 h-5 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${
+                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
                           formData.services.includes(service.value)
-                            ? "border-[#c9a86c] bg-[#c9a86c]/20"
-                            : "border-[#c9a86c]/40 group-hover:border-[#c9a86c]/70"
+                            ? "border-[#c9a86c] bg-[#c9a86c]"
+                            : "border-[#c9a86c]/50"
                         }`}
                       >
                         {formData.services.includes(service.value) && (
                           <svg
-                            className="w-2.5 h-2.5 text-[#c9a86c]"
+                            className="w-3 h-3 text-white"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
@@ -532,10 +515,10 @@ export default function ModernPremiumForm() {
                       </div>
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm text-[#3d3d3a] font-thin tracking-wide">
+                      <p className="text-[15px] text-[#1f1f1c] font-light tracking-wide">
                         {service.label}
                       </p>
-                      <p className="text-[10px] text-[#c9a86c] font-thin">
+                      <p className="text-[13px] text-[#b8955a] font-medium mt-0.5">
                         ₹{service.rate.toLocaleString("en-IN")}
                       </p>
                     </div>
@@ -545,22 +528,22 @@ export default function ModernPremiumForm() {
             </div>
           </div>
 
-          {/* Step 4: Preferences */}
-          <div className="group/section space-y-5">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#c9a86c] to-[#b8975a] flex items-center justify-center">
-                <span className="text-[#f5f1ed] font-thin text-sm">4</span>
+          {/* ── Step 4: Frequency ── */}
+          <div className="space-y-5">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#c9a86c] to-[#b8975a] flex items-center justify-center shadow-md shadow-[#c9a86c]/25">
+                <span className="text-white font-medium text-sm">4</span>
               </div>
-              <h2 className="text-xs tracking-[0.25em] uppercase text-[#c9a86c] font-thin">
+              <h2 className="text-[13px] tracking-[0.22em] uppercase text-[#8a6d4a] font-medium">
                 Final Details
               </h2>
             </div>
 
-            <div className="space-y-3">
-              <label className="block text-[9px] tracking-[0.2em] uppercase text-[#a68b6a] font-thin">
+            <div className="space-y-2.5">
+              <label className="block text-[11px] tracking-[0.18em] uppercase text-[#5c4a3a] font-medium">
                 Frequency <span className="text-[#c9a86c]">•</span>
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2.5">
                 {[
                   { value: "single-shoot", label: "Single Shoot" },
                   { value: "monthly-shoot", label: "Monthly Shoot" },
@@ -573,20 +556,20 @@ export default function ModernPremiumForm() {
                       if (errors.lookingFor)
                         setErrors((prev) => ({ ...prev, lookingFor: "" }));
                     }}
-                    className={`relative px-4 py-3 rounded-lg border transition-all duration-300 text-left group ${
+                    className={`relative px-4 py-3.5 rounded-xl border transition-all duration-300 text-left ${
                       formData.lookingFor === opt.value
-                        ? "bg-[#c9a86c] text-[#f5f1ed] shadow-lg shadow-[#c9a86c]/20"
-                        : "bg-[#f5f1ed]/60 border-[#c9a86c]/20 text-[#3d3d3a] hover:border-[#c9a86c]/50 hover:bg-[#f5f1ed]/80"
+                        ? "bg-[#c9a86c] text-white shadow-lg shadow-[#c9a86c]/30"
+                        : "bg-white/80 border-[#d4c4b0] text-[#5c4a3a] hover:border-[#c9a86c] hover:bg-white hover:shadow-sm"
                     }`}
                   >
-                    <span className="text-[11px] font-thin tracking-wide uppercase">
+                    <span className="text-[13px] font-medium tracking-wide uppercase">
                       {opt.label}
                     </span>
                   </button>
                 ))}
               </div>
               {errors.lookingFor && (
-                <p className="text-[10px] text-amber-700 font-light">
+                <p className="text-[11px] text-amber-700 font-medium">
                   {errors.lookingFor}
                 </p>
               )}
@@ -594,64 +577,62 @@ export default function ModernPremiumForm() {
           </div>
 
           {/* Price Summary */}
-          <div className="p-4 rounded-xl bg-[#c9a86c]/10 border border-[#c9a86c]/30">
+          <div className="p-5 rounded-2xl bg-white/90 border border-[#c9a86c]/30 shadow-sm">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-[#a68b6a] font-thin tracking-wide">
+              <span className="text-[15px] text-[#5c4a3a] font-medium tracking-wide">
                 Estimated Total
               </span>
-              <span className="text-xl text-[#c9a86c] font-thin">
+              <span className="text-2xl text-[#b8955a] font-light tracking-tight">
                 ₹{total.toLocaleString("en-IN")}
               </span>
             </div>
           </div>
 
-          {/* Submit Section */}
-          <div className="pt-8 space-y-4">
+          {/* Actions */}
+          <div className="pt-4 space-y-3">
             <button
               type="submit"
               disabled={submitted || loading}
-              className={`relative w-full px-8 py-4 text-[11px] tracking-[0.25em] uppercase font-thin rounded-xl transition-all duration-300 overflow-hidden group ${
+              className={`relative w-full px-8 py-4 text-[13px] tracking-[0.22em] uppercase font-medium rounded-xl transition-all duration-300 ${
                 submitted
-                  ? "bg-green-600/80 text-[#f5f1ed]"
+                  ? "bg-emerald-600 text-white"
                   : loading
-                  ? "bg-[#c9a86c]/50 text-[#f5f1ed]"
-                  : "bg-[#c9a86c] text-[#f5f1ed] hover:shadow-xl hover:shadow-[#c9a86c]/20 active:scale-[0.98]"
+                  ? "bg-[#c9a86c]/60 text-white cursor-wait"
+                  : "bg-[#c9a86c] text-white hover:bg-[#b8955a] hover:shadow-xl hover:shadow-[#c9a86c]/25 active:scale-[0.99]"
               }`}
             >
-              <span className="relative z-10">
-                {loading
-                  ? "Sending..."
-                  : submitted
-                  ? "✓ Message Sent"
-                  : "Submit Inquiry"}
-              </span>
+              {loading
+                ? "Sending..."
+                : submitted
+                ? "✓ Message Sent"
+                : "Submit Inquiry"}
             </button>
 
             <button
               type="button"
               onClick={handleClear}
-              className="w-full px-8 py-3 text-[10px] tracking-[0.2em] uppercase font-thin text-[#c9a86c] border border-[#c9a86c]/30 rounded-xl hover:border-[#c9a86c]/60 hover:bg-[#c9a86c]/[0.08] transition-all duration-300"
+              className="w-full px-8 py-3.5 text-[12px] tracking-[0.18em] uppercase font-medium text-[#8a6d4a] border border-[#d4c4b0] rounded-xl hover:border-[#c9a86c] hover:bg-white/60 transition-all duration-300"
             >
               Clear Form
             </button>
           </div>
 
           {outcome && (
-            <div role="status" className="space-y-2 text-center">
+            <div role="status" className="space-y-2 text-center pt-2">
               <p
-                className={`text-xs font-light tracking-wider ${
-                  outcome.ok ? "text-green-700" : "text-amber-700"
+                className={`text-sm font-medium tracking-wide ${
+                  outcome.ok ? "text-emerald-700" : "text-amber-700"
                 }`}
               >
                 {outcome.message}
               </p>
 
               {outcome.delivery && (
-                <ul className="space-y-1 text-[11px] font-light tracking-wide">
+                <ul className="space-y-1.5 text-[13px] font-light tracking-wide">
                   <li
                     className={
                       outcome.delivery.clientEmail
-                        ? "text-green-700"
+                        ? "text-emerald-700"
                         : "text-amber-700"
                     }
                   >
@@ -662,7 +643,7 @@ export default function ModernPremiumForm() {
                   <li
                     className={
                       outcome.delivery.whatsapp
-                        ? "text-green-700"
+                        ? "text-emerald-700"
                         : "text-amber-700"
                     }
                   >

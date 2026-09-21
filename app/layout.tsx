@@ -170,7 +170,9 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    ><head><meta name="google-site-verification" content="_-1gHTUFcWg_33_XZpZl4IfpUI7z6lcvD2H2U5x3xvQ" /></head>
+    ><head>
+      <meta name="google-site-verification" content="_-1gHTUFcWg_33_XZpZl4IfpUI7z6lcvD2H2U5x3xvQ" />
+    </head>
       <body className="min-h-full flex flex-col bg-[#f5f1ed] text-[#1a1a1a]">
         <SecurityGuard />
         <Navbar />

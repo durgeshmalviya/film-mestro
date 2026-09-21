@@ -52,16 +52,23 @@ export default function SendEmail() {
     setMessage(null)
 
     try {
-      const res = await fetch('/api/sendEmail', {
+      const res = await fetch('/api/sendmail', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       })
 
       const data = await res.json()
+
       if (res.ok) {
         setMessage('Thank you. We will get back to you shortly.')
-        setFormData({ name: '', email: '', contact: '', projectType: '', message: '' })
+        setFormData({
+          name: '',
+          email: '',
+          contact: '',
+          projectType: '',
+          message: '',
+        })
       } else {
         setMessage(`Error: ${data.error || 'Something went wrong'}`)
       }
@@ -86,7 +93,6 @@ export default function SendEmail() {
               transition={{ duration: 0.9 }}
               className="text-center mb-5 md:mb-2"
             >
-               
               <div className="font-script text-5xl md:text-6xl text-[#a68b6a] mb-3 leading-none">
                 Maestro
               </div>
@@ -95,8 +101,7 @@ export default function SendEmail() {
               </p>
 
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-gold mb-6 tracking-tight">
-                Cinematic{' '}
-                <span className="font-semibold">Fashion Vision</span>
+                Cinematic <span className="font-semibold">Fashion Vision</span>
               </h1>
               <p className="text-base md:text-lg text-gold max-w-2xl mx-auto leading-relaxed font-light">
                 Serving fashion brands, editorial publications, and luxury campaigns
@@ -104,9 +109,6 @@ export default function SendEmail() {
                 creative excellence.
               </p>
             </motion.div>
-
-          
-            
           </div>
         </div>
 
@@ -124,7 +126,7 @@ export default function SendEmail() {
                 <p className="text-[11px] tracking-[0.32em] uppercase text-gold mb-3 font-light">
                   Why Maestro
                 </p>
-                <h2 className="text-3xl md:text-4xl font-light text-gold  mb-8">
+                <h2 className="text-3xl md:text-4xl font-light text-gold mb-8">
                   Why Choose Maestro
                 </h2>
 
@@ -155,9 +157,7 @@ export default function SendEmail() {
                           strokeWidth={1.6}
                         />
                         <div>
-                          <h3 className="font-medium text-gold mb-1.5">
-                            {item.title}
-                          </h3>
+                          <h3 className="font-medium text-gold mb-1.5">{item.title}</h3>
                           <p className="text-gold text-sm leading-relaxed font-light">
                             {item.desc}
                           </p>
@@ -167,22 +167,21 @@ export default function SendEmail() {
                   })}
                 </div>
 
-                {/* Studio info */}
                 <div className="mt-10 pt-10 border-t border-[#e0d6c8]">
-                  <p className="text-[11px] uppercase tracking-[0.25em] text-gold  mb-4">
+                  <p className="text-[11px] uppercase tracking-[0.25em] text-gold mb-4">
                     Studio Info
                   </p>
-                  <div className="space-y-3 text-sm text-gold  font-light">
+                  <div className="space-y-3 text-sm text-gold font-light">
                     <p>
-                      <span className="text-gold  font-medium">Years of Experience:</span>{' '}
+                      <span className="text-gold font-medium">Years of Experience:</span>{' '}
                       40+ years in fashion & commercial production
                     </p>
                     <p>
-                      <span className="text-gold  font-medium">Service Areas:</span>{' '}
+                      <span className="text-gold font-medium">Service Areas:</span>{' '}
                       Bhopal, Mumbai, Pan India
                     </p>
                     <p>
-                      <span className="text-gold  font-medium">Specialization:</span>{' '}
+                      <span className="text-gold font-medium">Specialization:</span>{' '}
                       Fashion photography, editorial shoots, brand films, commercial
                       campaigns, social & ads
                     </p>
@@ -198,7 +197,7 @@ export default function SendEmail() {
                 transition={{ duration: 0.8 }}
                 className="rounded-sm border border-[#e0d6c8] bg-[#f0ebe4] p-7 md:p-8 shadow-[0_16px_48px_-16px_rgba(201,168,108,0.12)]"
               >
-                <h3 className="text-xl md:text-2xl font-light text-gold  mb-6">
+                <h3 className="text-xl md:text-2xl font-light text-gold mb-6">
                   Get in Touch
                 </h3>
 
@@ -218,7 +217,7 @@ export default function SendEmail() {
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div>
-                    <label className="block text-[11px] font-medium uppercase tracking-[0.18em] text-gold  mb-2">
+                    <label className="block text-[11px] font-medium uppercase tracking-[0.18em] text-gold mb-2">
                       Full Name
                     </label>
                     <input
@@ -262,7 +261,7 @@ export default function SendEmail() {
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-medium uppercase  bg-[#f5f1ed]  tracking-[0.18em] text-gold  mb-2">
+                    <label className="block text-[11px] font-medium uppercase tracking-[0.18em] text-gold mb-2">
                       Project Type
                     </label>
                     <select
@@ -272,9 +271,9 @@ export default function SendEmail() {
                       required
                       className="w-full border-b border-[#d9cfc3] bg-[#f5f1ed] py-2.5 text-[#1a1a1a] focus:border-[#c9a86c] focus:outline-none transition-colors duration-300"
                     >
-                      <option className='bg-[#f5f1ed]' value="">Select a project type</option>
+                      <option value="">Select a project type</option>
                       {projectTypes.map((type) => (
-                        <option className='bg-[#f5f1ed]' key={type} value={type}>
+                        <option key={type} value={type}>
                           {type}
                         </option>
                       ))}
@@ -318,7 +317,11 @@ export default function SendEmail() {
                 </p>
               </motion.div>
             </div>
-          </div> <div className="py-5 text-center text-xs m-2 text-[#a68b6a]"><motion.div
+          </div>
+
+          {/* Locations + footer */}
+          <div className="py-5 text-center text-xs m-2 text-[#a68b6a]">
+            <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -337,9 +340,7 @@ export default function SendEmail() {
                       strokeWidth={1.75}
                     />
                     <div>
-                      <h3 className="text-base font-medium text-gold">
-                        {location.city}
-                      </h3>
+                      <h3 className="text-base font-medium text-gold">{location.city}</h3>
                       <p className="text-sm text-gold">{location.region}</p>
                     </div>
                   </div>
@@ -349,13 +350,9 @@ export default function SendEmail() {
                 </div>
               ))}
             </motion.div>
-              <p className='py-5'>Maestro Films · Fashion Photography Studio · Since 1982</p>
- 
-            </div>
+            <p className="py-5">Maestro Films · Fashion Photography Studio · Since 1982</p>
+          </div>
         </div>
-
-     
-         
       </section>
     </>
   )
