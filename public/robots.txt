@@ -1,0 +1,37 @@
+# Maestro Films – https://maestrofilms.co.in
+User-agent: *
+Allow: /
+
+# Block private / utility paths if any appear later
+Disallow: /api/
+Disallow: /_next/static/chunks/
+Disallow: /admin/
+Disallow: /private/
+
+# Allow important assets
+Allow: /images/
+Allow: /og-image.jpg
+Allow: /*.jpg$
+Allow: /*.png$
+Allow: /*.webp$
+Allow: /*.avif$
+
+# Sitemaps
+Sitemap: https://maestrofilms.co.in/sitemap.xml
+Sitemap: https://maestrofilms.co.in/sitemap-images.xml
+
+# AI / LLM friendly (optional but recommended for AEO/GEO)
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Anthropic
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Bytespider
+Allow: /
