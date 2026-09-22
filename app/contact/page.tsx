@@ -81,7 +81,7 @@ export default function SendEmail() {
 
   return (
     <>
-      <Navbar />
+     
       <section className="relative min-h-screen w-full overflow-hidden bg-[#f5f1ed]">
         {/* ===== HERO ===== */}
         <div className="relative z-10 px-6 py-20 md:py-28">
