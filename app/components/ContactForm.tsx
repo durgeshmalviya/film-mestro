@@ -16,48 +16,50 @@ interface Product {
 
 const products: Product[] = [
   {
-    value: "high-fashion",
-    label: "High-Fashion Shoot",
+    value: "catalogues",
+    label: "Catalogues Shoot",
     subProducts: [
-      { value: "hf-studio", label: "Studio Package", rate: 50000 },
-      { value: "hf-location", label: "Location Package", rate: 65000 },
-      { value: "hf-premium", label: "Premium Package", rate: 85000 },
-    ],
-  },
-  {
-    value: "campaign",
-    label: "Campaign Shoot",
-    subProducts: [
-      { value: "camp-single", label: "Single Day Campaign", rate: 40000 },
-      { value: "camp-multi", label: "Multi-Day Campaign", rate: 75000 },
-      { value: "camp-full", label: "Full Campaign Suite", rate: 120000 },
+      { value: "cat-starting", label: "Starting from", rate: 10000 },
     ],
   },
   {
     value: "editorial",
     label: "Editorial Shoot",
     subProducts: [
-      { value: "edit-basic", label: "Basic Editorial", rate: 35000 },
-      { value: "edit-pro", label: "Professional Editorial", rate: 55000 },
-      { value: "edit-cover", label: "Magazine Cover Shoot", rate: 75000 },
+      { value: "edit-starting", label: "Starting from", rate: 4500 },
     ],
   },
   {
-    value: "catalogues",
-    label: "Catalogues Shoot",
+    value: "campaign",
+    label: "Campaign Shoot",
     subProducts: [
-      { value: "cat-small", label: "Small Catalogue (10-20 items)", rate: 25000 },
-      { value: "cat-medium", label: "Medium Catalogue (20-50 items)", rate: 45000 },
-      { value: "cat-large", label: "Large Catalogue (50+ items)", rate: 75000 },
+      { value: "camp-starting", label: "Starting from", rate: 4500 },
+    ],
+  },
+  {
+    value: "high-fashion",
+    label: "High-Fashion Shoot",
+    subProducts: [
+      { value: "hf-starting", label: "Starting from", rate: 25000 },
+    ],
+  },
+  {
+    value: "monthly",
+    label: "Monthly Package",
+    subProducts: [
+      {
+        value: "monthly-starting",
+        label: "Starting from (includes Social Media Handling)",
+        rate: 50000,
+      },
     ],
   },
 ];
 
 const additionalServices = [
   { value: "social-media", label: "Social Media Handling", rate: 15000 },
-  { value: "editing", label: "Professional Editing", rate: 10000 },
-  { value: "drone", label: "Drone Coverage", rate: 20000 },
-  { value: "styling", label: "Styling & Direction", rate: 12000 },
+  { value: "model", label: "Model", rate: 3000 },
+  { value: "makeup", label: "Makeup", rate: 3000 },
 ];
 
 const initialFormData = {
@@ -159,7 +161,9 @@ export default function ModernPremiumForm() {
   const [outcome, setOutcome] = useState<SubmitOutcome | null>(null);
 
   const handleFormChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -379,7 +383,7 @@ export default function ModernPremiumForm() {
               <label className="block text-[11px] tracking-[0.18em] uppercase text-[#5c4a3a] font-medium">
                 Service Type <span className="text-[#c9a86c]">•</span>
               </label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5">
                 {products.map((prod) => (
                   <button
                     key={prod.value}
@@ -426,7 +430,10 @@ export default function ModernPremiumForm() {
                           selectedProduct: subProd.value,
                         }));
                         if (errors.selectedProduct)
-                          setErrors((prev) => ({ ...prev, selectedProduct: "" }));
+                          setErrors((prev) => ({
+                            ...prev,
+                            selectedProduct: "",
+                          }));
                       }}
                       className={`relative w-full p-4 rounded-xl border transition-all duration-300 text-left ${
                         formData.selectedProduct === subProd.value
@@ -434,10 +441,10 @@ export default function ModernPremiumForm() {
                           : "bg-white/80 border-[#d4c4b0] hover:border-[#c9a86c]/80 hover:bg-white hover:shadow-sm"
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3.5 flex-1">
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3.5 flex-1 min-w-0">
                           <div
-                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                            className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
                               formData.selectedProduct === subProd.value
                                 ? "border-[#c9a86c] bg-[#c9a86c]"
                                 : "border-[#c9a86c]/50"
@@ -451,8 +458,8 @@ export default function ModernPremiumForm() {
                             {subProd.label}
                           </span>
                         </div>
-                        <span className="text-[15px] text-[#b8955a] font-medium tracking-wide ml-4">
-                          ₹{subProd.rate.toLocaleString("en-IN")}
+                        <span className="text-[15px] text-[#b8955a] font-medium tracking-wide whitespace-nowrap">
+                          ₹{subProd.rate.toLocaleString("en-IN")}*
                         </span>
                       </div>
                     </button>
@@ -463,6 +470,9 @@ export default function ModernPremiumForm() {
                     {errors.selectedProduct}
                   </p>
                 )}
+                <p className="text-[11px] text-[#8a6d4a] mt-1 tracking-wide">
+                  * Starting prices. Final quote may vary based on requirements.
+                </p>
               </div>
             )}
           </div>
@@ -519,13 +529,16 @@ export default function ModernPremiumForm() {
                         {service.label}
                       </p>
                       <p className="text-[13px] text-[#b8955a] font-medium mt-0.5">
-                        ₹{service.rate.toLocaleString("en-IN")}
+                        ₹{service.rate.toLocaleString("en-IN")}*
                       </p>
                     </div>
                   </div>
                 </button>
               ))}
             </div>
+            <p className="text-[11px] text-[#8a6d4a] tracking-wide">
+              * Starting prices. Final quote may vary based on requirements.
+            </p>
           </div>
 
           {/* ── Step 4: Frequency ── */}
@@ -552,7 +565,10 @@ export default function ModernPremiumForm() {
                     key={opt.value}
                     type="button"
                     onClick={() => {
-                      setFormData((prev) => ({ ...prev, lookingFor: opt.value }));
+                      setFormData((prev) => ({
+                        ...prev,
+                        lookingFor: opt.value,
+                      }));
                       if (errors.lookingFor)
                         setErrors((prev) => ({ ...prev, lookingFor: "" }));
                     }}
@@ -583,9 +599,12 @@ export default function ModernPremiumForm() {
                 Estimated Total
               </span>
               <span className="text-2xl text-[#b8955a] font-light tracking-tight">
-                ₹{total.toLocaleString("en-IN")}
+                ₹{total.toLocaleString("en-IN")}*
               </span>
             </div>
+            <p className="text-[11px] text-[#8a6d4a] mt-2 tracking-wide">
+              * Starting prices. Final quote may vary based on requirements.
+            </p>
           </div>
 
           {/* Actions */}
