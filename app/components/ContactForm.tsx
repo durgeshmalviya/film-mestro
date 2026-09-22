@@ -49,8 +49,9 @@ const products: Product[] = [
     subProducts: [
       {
         value: "monthly-starting",
-        label: "Starting from (includes Social Media Handling)",
-        rate: 50000,
+        label:
+          "Starting from — Includes: 5 Dress Catalogues + 1 Campaign + 1 Editorial + Social Media Handling",
+        rate: 25000,
       },
     ],
   },
@@ -151,6 +152,15 @@ function FormInput({
     </div>
   );
 }
+
+// Helper to format price as K
+const formatPrice = (rate: number) => {
+  if (rate >= 1000) {
+    const kValue = rate / 1000;
+    return kValue % 1 === 0 ? `${kValue}K` : `${kValue}K`;
+  }
+  return rate.toString();
+};
 
 export default function ModernPremiumForm() {
   const [formData, setFormData] = useState(initialFormData);
@@ -263,7 +273,7 @@ export default function ModernPremiumForm() {
       setSubmitted(true);
       setOutcome({
         ok: true,
-        message: `✓ Inquiry sent! Total: ₹${result.total.toLocaleString("en-IN")}`,
+        message: `✓ Inquiry sent! Total: ₹${formatPrice(result.total)}`,
         delivery: {
           clientEmail: !!result.sent.clientEmail,
           whatsapp: !!result.sent.whatsapp,
@@ -368,11 +378,64 @@ export default function ModernPremiumForm() {
 
           <div className="h-px bg-gradient-to-r from-transparent via-[#c9a86c]/25 to-transparent" />
 
-          {/* ── Step 2: Package ── */}
+          {/* ── Step 2: Frequency (moved up) ── */}
           <div className="space-y-5">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#c9a86c] to-[#b8975a] flex items-center justify-center shadow-md shadow-[#c9a86c]/25">
                 <span className="text-white font-medium text-sm">2</span>
+              </div>
+              <h2 className="text-[13px] tracking-[0.22em] uppercase text-[#8a6d4a] font-medium">
+                Frequency
+              </h2>
+            </div>
+
+            <div className="space-y-2.5">
+              <label className="block text-[11px] tracking-[0.18em] uppercase text-[#5c4a3a] font-medium">
+                Choose Frequency <span className="text-[#c9a86c]">•</span>
+              </label>
+              <div className="grid grid-cols-2 gap-2.5">
+                {[
+                  { value: "single-shoot", label: "Single Shoot" },
+                  { value: "monthly-shoot", label: "Monthly Shoot" },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        lookingFor: opt.value,
+                      }));
+                      if (errors.lookingFor)
+                        setErrors((prev) => ({ ...prev, lookingFor: "" }));
+                    }}
+                    className={`relative px-4 py-3.5 rounded-xl border transition-all duration-300 text-left ${
+                      formData.lookingFor === opt.value
+                        ? "bg-[#c9a86c] text-white shadow-lg shadow-[#c9a86c]/30"
+                        : "bg-white/80 border-[#d4c4b0] text-[#5c4a3a] hover:border-[#c9a86c] hover:bg-white hover:shadow-sm"
+                    }`}
+                  >
+                    <span className="text-[13px] font-medium tracking-wide uppercase">
+                      {opt.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              {errors.lookingFor && (
+                <p className="text-[11px] text-amber-700 font-medium">
+                  {errors.lookingFor}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="h-px bg-gradient-to-r from-transparent via-[#c9a86c]/25 to-transparent" />
+
+          {/* ── Step 3: Package ── */}
+          <div className="space-y-5">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#c9a86c] to-[#b8975a] flex items-center justify-center shadow-md shadow-[#c9a86c]/25">
+                <span className="text-white font-medium text-sm">3</span>
               </div>
               <h2 className="text-[13px] tracking-[0.22em] uppercase text-[#8a6d4a] font-medium">
                 Choose Your Package
@@ -441,10 +504,10 @@ export default function ModernPremiumForm() {
                           : "bg-white/80 border-[#d4c4b0] hover:border-[#c9a86c]/80 hover:bg-white hover:shadow-sm"
                       }`}
                     >
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-3.5 flex-1 min-w-0">
                           <div
-                            className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
+                            className={`w-5 h-5 mt-0.5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
                               formData.selectedProduct === subProd.value
                                 ? "border-[#c9a86c] bg-[#c9a86c]"
                                 : "border-[#c9a86c]/50"
@@ -454,12 +517,12 @@ export default function ModernPremiumForm() {
                               <div className="w-2 h-2 rounded-full bg-white" />
                             )}
                           </div>
-                          <span className="text-[15px] text-[#1f1f1c] font-light tracking-wide">
+                          <span className="text-[15px] text-[#1f1f1c] font-light tracking-wide leading-snug">
                             {subProd.label}
                           </span>
                         </div>
                         <span className="text-[15px] text-[#b8955a] font-medium tracking-wide whitespace-nowrap">
-                          ₹{subProd.rate.toLocaleString("en-IN")}*
+                          ₹{formatPrice(subProd.rate)}*
                         </span>
                       </div>
                     </button>
@@ -477,11 +540,13 @@ export default function ModernPremiumForm() {
             )}
           </div>
 
-          {/* ── Step 3: Add-ons ── */}
+          <div className="h-px bg-gradient-to-r from-transparent via-[#c9a86c]/25 to-transparent" />
+
+          {/* ── Step 4: Add-ons ── */}
           <div className="space-y-5">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#c9a86c] to-[#b8975a] flex items-center justify-center shadow-md shadow-[#c9a86c]/25">
-                <span className="text-white font-medium text-sm">3</span>
+                <span className="text-white font-medium text-sm">4</span>
               </div>
               <h2 className="text-[13px] tracking-[0.22em] uppercase text-[#8a6d4a] font-medium">
                 Add-on Services
@@ -529,7 +594,7 @@ export default function ModernPremiumForm() {
                         {service.label}
                       </p>
                       <p className="text-[13px] text-[#b8955a] font-medium mt-0.5">
-                        ₹{service.rate.toLocaleString("en-IN")}*
+                        ₹{formatPrice(service.rate)}*
                       </p>
                     </div>
                   </div>
@@ -541,57 +606,6 @@ export default function ModernPremiumForm() {
             </p>
           </div>
 
-          {/* ── Step 4: Frequency ── */}
-          <div className="space-y-5">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#c9a86c] to-[#b8975a] flex items-center justify-center shadow-md shadow-[#c9a86c]/25">
-                <span className="text-white font-medium text-sm">4</span>
-              </div>
-              <h2 className="text-[13px] tracking-[0.22em] uppercase text-[#8a6d4a] font-medium">
-                Final Details
-              </h2>
-            </div>
-
-            <div className="space-y-2.5">
-              <label className="block text-[11px] tracking-[0.18em] uppercase text-[#5c4a3a] font-medium">
-                Frequency <span className="text-[#c9a86c]">•</span>
-              </label>
-              <div className="grid grid-cols-2 gap-2.5">
-                {[
-                  { value: "single-shoot", label: "Single Shoot" },
-                  { value: "monthly-shoot", label: "Monthly Shoot" },
-                ].map((opt) => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        lookingFor: opt.value,
-                      }));
-                      if (errors.lookingFor)
-                        setErrors((prev) => ({ ...prev, lookingFor: "" }));
-                    }}
-                    className={`relative px-4 py-3.5 rounded-xl border transition-all duration-300 text-left ${
-                      formData.lookingFor === opt.value
-                        ? "bg-[#c9a86c] text-white shadow-lg shadow-[#c9a86c]/30"
-                        : "bg-white/80 border-[#d4c4b0] text-[#5c4a3a] hover:border-[#c9a86c] hover:bg-white hover:shadow-sm"
-                    }`}
-                  >
-                    <span className="text-[13px] font-medium tracking-wide uppercase">
-                      {opt.label}
-                    </span>
-                  </button>
-                ))}
-              </div>
-              {errors.lookingFor && (
-                <p className="text-[11px] text-amber-700 font-medium">
-                  {errors.lookingFor}
-                </p>
-              )}
-            </div>
-          </div>
-
           {/* Price Summary */}
           <div className="p-5 rounded-2xl bg-white/90 border border-[#c9a86c]/30 shadow-sm">
             <div className="flex items-center justify-between">
@@ -599,7 +613,7 @@ export default function ModernPremiumForm() {
                 Estimated Total
               </span>
               <span className="text-2xl text-[#b8955a] font-light tracking-tight">
-                ₹{total.toLocaleString("en-IN")}*
+                ₹{formatPrice(total)}*
               </span>
             </div>
             <p className="text-[11px] text-[#8a6d4a] mt-2 tracking-wide">
