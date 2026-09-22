@@ -107,7 +107,6 @@ export default function Home() {
           setIsMenuOpen={setIsMenuOpen}
           tabHidden={tabHidden}
         />
-        <EditorialsSection />
         <MSReels />
         <FashionPortfolio />
         <BookStudioCTA />
