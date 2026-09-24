@@ -53,10 +53,10 @@ export default function Navbar() {
             className={`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a86c]/60 focus-visible:ring-offset-2 transition-colors duration-500 ${scrolled || isMenuOpen ? "text-[#a68b6a]" : "text-[#c9a86c]"
               }`}
           >
-               <p
-                  className="text-[11px] md:text-sm font-semibold tracking-[0.29em] uppercase text-transparent bg-clip-text opacity-90 select-none"
-                  style={{
-                    backgroundImage: `
+            <p
+              className="text-[11px] md:text-sm font-semibold tracking-[0.29em] uppercase text-transparent bg-clip-text opacity-90 select-none"
+              style={{
+                backgroundImage: `
                       linear-gradient(
                         105deg,
                         #3a2f1f 0%,
@@ -68,15 +68,15 @@ export default function Navbar() {
                         #3a2f1f 100%
                       )
                     `,
-                    backgroundSize: '250% 100%',
-                    animation:
-                      'eclipseSweep 7s ease-in-out infinite, floatSmooth 9s ease-in-out infinite',
-                    filter: 'drop-shadow(0 4px 20px rgba(201,168,108,0.4))',
-                    transform: 'translateZ(0)',
-                  }}
-                >
-                 Maestro Films  
-                </p>
+                backgroundSize: '250% 100%',
+                animation:
+                  'eclipseSweep 7s ease-in-out infinite, floatSmooth 9s ease-in-out infinite',
+                filter: 'drop-shadow(0 4px 20px rgba(201,168,108,0.4))',
+                transform: 'translateZ(0)',
+              }}
+            >
+              Maestro Films
+            </p>
           </Link>
 
           {/* Hamburger */}
@@ -127,12 +127,14 @@ export default function Navbar() {
 
         <nav className="text-center space-y-8 md:space-y-10 relative z-10">
           {[
-           
+
             { label: "Studio & Work", href: "/work-studio" },
             { label: "Campaigns", href: "/social-media-marketing" },
             { label: "Production", href: "/service" },
-             { label: "About", href: "/Kamad-Solanki" },
             { label: "Contact", href: "/contact" },
+            { label: "About", href: "/Kamad-Solanki" },
+            { label: "Blog", href: "/blog" },
+
           ].map((item, index) => (
             <Link
               key={item.label}
@@ -152,8 +154,8 @@ export default function Navbar() {
         </nav>
 
         {/* Bottom subtle text */}
-        <div className="absolute bottom-10 left-0 right-0 text-center">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-[#c9a86c]/60 font-light">
+        <div className="absolute bottom-10 left-0 right-0 text-left px-10">
+          <p className="text-[15px] tracking-[0.3em] uppercase text-[#c9a86c]/60 font-light">
             Fashion Photography · Bhopal & Mumbai
           </p>
         </div>
