@@ -143,7 +143,7 @@ export default function WorkStudioPage() {
 
   return (
     <>
-      <Navbar />
+    
       {/* ════════════════════════════════════════
           HERO SECTION
       ════════════════════════════════════════ */}
@@ -154,10 +154,10 @@ export default function WorkStudioPage() {
               playbackId={HERO_PLAYBACK_ID}
               streamType="on-demand"
               autoPlay
+              maxResolution="2160p"
               muted
               loop
-              playsInline
-              poster={HERO_PLAYBACK_ID}
+              playsInline             
               metadata={{
                 video_title: "Maestro Films — Studio Hero",
                 video_id: "hero-studio",
@@ -447,12 +447,13 @@ export default function WorkStudioPage() {
           {ctaToken ? (
             <MuxPlayer
               playbackId={CTA_PLAYBACK_ID}
-              streamType="on-demand"
+              streamType="live:dvr"
               autoPlay="muted"
               muted
               loop
               playsInline
               tokens={{ playback: ctaToken }}
+              maxResolution="1440p"
               style={
                 {
                   "--controls": "none",

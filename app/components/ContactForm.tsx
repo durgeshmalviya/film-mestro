@@ -133,7 +133,7 @@ function FormInput({
           onChange={onChange}
           onFocus={onFocus}
           onBlur={onBlur}
-          placeholder="Your answer"
+          placeholder={id}
           aria-invalid={!!error}
           className={`w-full bg-white/90 border transition-all duration-300 py-3.5 px-4 text-[#1f1f1c] placeholder:text-[#8a7a68]/70 focus:outline-none text-[15px] font-light tracking-wide rounded-xl shadow-sm ${
             isFocused
@@ -360,6 +360,7 @@ export default function ModernPremiumForm() {
               <FormInput
                 label="Email Address"
                 type="email"
+     
                 required
                 {...inputProps("email")}
               />

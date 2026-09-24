@@ -244,7 +244,7 @@ export default function AdvancedWorkPage() {
 
   return (
     <>
-      <Navbar />
+
       <motion.div
         variants={stagger}
         initial="initial"
@@ -257,7 +257,7 @@ export default function AdvancedWorkPage() {
             {heroToken ? (
               <MuxPlayer
                 playbackId={HERO_PLAYBACK_ID}
-                streamType="on-demand"
+                streamType="live"
                 autoPlay
                 muted
                 loop
@@ -370,9 +370,8 @@ export default function AdvancedWorkPage() {
                 {introImages.map((src, i) => (
                   <div
                     key={i}
-                    className={`relative aspect-[3/4] overflow-hidden rounded-sm group ${
-                      i === 1 ? "mt-8 md:mt-12" : ""
-                    }`}
+                    className={`relative aspect-[3/4] overflow-hidden rounded-sm group ${i === 1 ? "mt-8 md:mt-12" : ""
+                      }`}
                   >
                     <img
                       src={src}
@@ -428,34 +427,34 @@ export default function AdvancedWorkPage() {
             </div>
           </div>
         </section>
-<div className="relative w-full overflow-hidden py-8 bg-[#f0ebe4]">
-      <motion.div
-        className="flex gap-12"
-        animate={{ x: ["0%", "-100%"] }}
-        transition={{
-          repeat: Infinity,
-          repeatType: "loop",
-          duration: 20,
-          ease: "linear",
-        }}
-      >
-        {/* Repeat list for infinite scroll */}
-        {[...brands, ...brands].map((item, i) => (
-          <div key={i} className="flex items-center gap-3 min-w-max">
-            <img
-              src={item.logo}
-              alt={item.name || "Brand logo"}
-              className="h-12 w-auto object-contain"
-            />
-            {item.name && (
-              <span className="text-white text-lg font-semibold whitespace-nowrap">
-                {item.name}
-              </span>
-            )}
-          </div>
-        ))}
-      </motion.div>
-    </div>
+        <div className="relative w-full overflow-hidden py-8 bg-[#f0ebe4]">
+          <motion.div
+            className="flex gap-12"
+            animate={{ x: ["0%", "-100%"] }}
+            transition={{
+              repeat: Infinity,
+              repeatType: "loop",
+              duration: 20,
+              ease: "linear",
+            }}
+          >
+            {/* Repeat list for infinite scroll */}
+            {[...brands, ...brands].map((item, i) => (
+              <div key={i} className="flex items-center gap-3 min-w-max">
+                <img
+                  src={item.logo}
+                  alt={item.name || "Brand logo"}
+                  className="h-12 w-auto object-contain"
+                />
+                {item.name && (
+                  <span className="text-white text-lg font-semibold whitespace-nowrap">
+                    {item.name}
+                  </span>
+                )}
+              </div>
+            ))}
+          </motion.div>
+        </div>
         {/* SOCIAL + MOTION */}
         <section className="py-10 md:py-5 px-5 md:px-10 bg-[#f5f1ed]">
           <div className="max-w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -464,7 +463,8 @@ export default function AdvancedWorkPage() {
                 {socialToken ? (
                   <MuxPlayer
                     playbackId={SOCIAL_PLAYBACK_ID}
-                    streamType="on-demand"
+                    streamType="live"
+                    maxResolution="1440p"
                     muted
                     loop
                     autoPlay
@@ -682,8 +682,8 @@ export default function AdvancedWorkPage() {
             ) : (
               <div className="absolute inset-0 bg-black" />
             )}
-            <div className="absolute inset-0 bg-black/55" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.55)_70%)]" />
+            <div className="absolute inset-0 bg-black/25" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(246, 218, 35, 0.96)_70%)]" />
           </div>
 
           <div className="relative z-10 max-w-[1400px] mx-auto text-center">

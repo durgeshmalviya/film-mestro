@@ -8,7 +8,7 @@ import AboutUs from "./Kamad-Solanki/about";
 import dynamic from "next/dynamic";
 import BookStudioCTA from "./components/ReadtBook";
 import ContactForm from "./components/ContactForm";
-import FAQ from "./faq/page";
+ 
 
 const MSReels = dynamic(() => import("./components/MSReels"), {
   ssr: false,
@@ -97,9 +97,8 @@ export default function Home() {
       {loading && <Spinner onComplete={() => setLoading(false)} />}
 
       <div
-        className={`transition-opacity duration-700 ${
-          loading ? "opacity-0 pointer-events-none" : "opacity-100"
-        }`}
+        className={`transition-opacity duration-700 ${loading ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
       >
         <SlidesMF
           scrolled={scrolled}
@@ -107,11 +106,12 @@ export default function Home() {
           setIsMenuOpen={setIsMenuOpen}
           tabHidden={tabHidden}
         />
+
         <MSReels />
         <FashionPortfolio />
         <BookStudioCTA />
         <AboutUs />
-        <ContactForm />       
+        <ContactForm />
       </div>
     </>
   );

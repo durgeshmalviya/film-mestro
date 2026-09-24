@@ -10,26 +10,21 @@ experimental: {
   },
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "i.ibb.co",
-      },
+    
       {
         protocol: "https",
         hostname: "bitbucket.org",
       },
-      {
+       
+       {
         protocol: "https",
-        hostname: "images.unsplash.com",
+        hostname: "res.cloudinary.com",
       },
-      {
-        protocol: "https",
-        hostname: "cdn.shopify.com",
-      },
+      
       {
         protocol: "https",
         hostname: "ik.imagekit.io",
-      },
+      }, 
     ],
   },
 };

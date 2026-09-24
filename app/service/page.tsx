@@ -372,7 +372,7 @@ export default function ServicesShowcase() {
           </div>
         </section>
       </div>
-      <Footer />
+   
     </>
   );
 }

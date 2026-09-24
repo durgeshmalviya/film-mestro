@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     "social media fashion content",
     "Meta ads fashion",
     "Google ads fashion",
-    // Local / Geo (high priority)
+    
     "fashion photography Bhopal",
     "fashion photographer Bhopal",
     "model photoshoot Bhopal",

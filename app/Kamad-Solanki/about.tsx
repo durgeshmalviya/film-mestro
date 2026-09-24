@@ -48,7 +48,7 @@ export default function AboutUs() {
             <div className="grid grid-cols-2 gap-2.5 md:gap-3">
               <div className="col-span-2 relative h-40 md:h-56 overflow-hidden rounded-sm shadow-md hover-lift group">
                 <img
-                  src="https://6a8930a197833836f65581d4.imgix.net/sandbox/onepic.jpeg"
+                  src="https://res.cloudinary.com/dpgnhczzz/image/upload/v1790253465/Editorial/lpoqj752ynth030ndhtg.jpg"
                   alt="Maestro Films production work"
                   className="protected-image w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
                   loading="lazy"
@@ -62,7 +62,7 @@ export default function AboutUs() {
 
               <div className="relative h-36 md:h-44 overflow-hidden rounded-sm shadow-md hover-lift group">
                 <img
-                  src="https://6a8930a197833836f65581d4.imgix.net/sandbox/twpic.jpeg"
+                  src="https://res.cloudinary.com/dpgnhczzz/image/upload/v1790263186/HFashion/nmjhhqfhi9qjmsfkca5l.jpg"
                   alt="Maestro Films production work"
                   className="protected-image w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
                   loading="lazy"
@@ -75,7 +75,7 @@ export default function AboutUs() {
 
               <div className="relative h-36 md:h-44 overflow-hidden rounded-sm shadow-md hover-lift group">
                 <img
-                  src="https://6a8930a197833836f65581d4.imgix.net/sandbox/thrpic.jpeg"
+                  src="https://res.cloudinary.com/dpgnhczzz/image/upload/v1790263186/HFashion/nxdz5cl9jctfbeapnyc2.jpg"
                   alt="Maestro Films production work"
                   className="protected-image w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
                   loading="lazy"

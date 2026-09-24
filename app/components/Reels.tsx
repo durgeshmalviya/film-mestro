@@ -277,8 +277,7 @@ export default function ReelsSection() {
                       {token ? (
                         <MuxPlayer
                           playbackId={reel.playbackId}
-                          poster={`https://image.mux.com/${reel.playbackId}/thumbnail.jpg?width=800&height=1200&fit_mode=smartcrop`}
-                          autoPlay="muted"
+                             autoPlay="muted"
                           muted
                           loop
                           playsInline
