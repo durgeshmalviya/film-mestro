@@ -464,7 +464,7 @@ export default function AdvancedWorkPage() {
                   <MuxPlayer
                     playbackId={SOCIAL_PLAYBACK_ID}
                     streamType="live"
-                    maxResolution="1440p"
+                    maxResolution="720p"
                     muted
                     loop
                     autoPlay
@@ -671,7 +671,7 @@ export default function AdvancedWorkPage() {
                 muted
                 loop
                 playsInline
-                maxResolution="2160p"
+                maxResolution="720p"
                 tokens={{ playback: heroToken }}
                 style={{
                   "--controls": "none",

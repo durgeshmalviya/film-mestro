@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import SlidesMF from "./components/Slides";
 import FashionPortfolio from "./components/FashionShoots";
-import EditorialsSection from "./components/Ikat";
 import AboutUs from "./Kamad-Solanki/about";
 import dynamic from "next/dynamic";
 import BookStudioCTA from "./components/ReadtBook";

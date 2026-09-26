@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 
 import ReelsSection from "@/app/components/Reels";
-import Navbar from "@/app/components/Nav";
+ 
 import BTSSection from "@/app/components/BTSReels";
 
 // Unsigned playback IDs that will be signed server-side
@@ -143,7 +143,7 @@ export default function WorkStudioPage() {
 
   return (
     <>
-    
+
       {/* ════════════════════════════════════════
           HERO SECTION
       ════════════════════════════════════════ */}
@@ -154,10 +154,10 @@ export default function WorkStudioPage() {
               playbackId={HERO_PLAYBACK_ID}
               streamType="on-demand"
               autoPlay
-              maxResolution="2160p"
+              maxResolution="720p"
               muted
               loop
-              playsInline             
+              playsInline
               metadata={{
                 video_title: "Maestro Films — Studio Hero",
                 video_id: "hero-studio",
@@ -166,7 +166,7 @@ export default function WorkStudioPage() {
               tokens={{ playback: heroToken }}
               style={{
                 "--controls": "none",
-              } }
+              }}
             />
           ) : (
             <div className="w-full h-full bg-gray-900 animate-pulse" />
@@ -177,9 +177,8 @@ export default function WorkStudioPage() {
           className={`relative z-10 m-3 max-w-[1400px] mx-auto w-full px-5 sm:px-6 md:px-10 
       pb-12 sm:pb-16 md:pb-28 
       pt-[calc(72px+2.5rem)] sm:pt-[calc(72px+4rem)] md:pt-[calc(72px+5rem)]
-      transition-all duration-1000 ${
-        mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-      }`}
+      transition-all duration-1000 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
         >
           <div className="flex items-center gap-3 mb-4 sm:mb-5">
             <span className="h-px w-7 sm:w-10 bg-[#c9a86c]" />
@@ -233,9 +232,8 @@ export default function WorkStudioPage() {
       <section className="relative text-gold py-10 sm:py-12 md:py-16 px-5 sm:px-6 md:px-10 max-w-[1400px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-20 items-center">
           <div
-            className={`transition-all duration-1000 delay-100 ${
-              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-            }`}
+            className={`transition-all duration-1000 delay-100 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+              }`}
           >
             <div className="flex items-center gap-3 mb-4">
               <span className="h-px w-8 bg-[#c9a86c]" />
@@ -265,11 +263,10 @@ export default function WorkStudioPage() {
             {tech.map((t, i) => (
               <div
                 key={t.label}
-                className={`group relative bg-[#f8f4ee] rounded-lg p-4 sm:p-6 border border-black/[0.04] overflow-hidden transition-all duration-500 hover:border-[#c9a86c]/30 hover:shadow-[0_8px_30px_rgba(201,168,108,0.12)] ${
-                  mounted
+                className={`group relative bg-[#f8f4ee] rounded-lg p-4 sm:p-6 border border-black/[0.04] overflow-hidden transition-all duration-500 hover:border-[#c9a86c]/30 hover:shadow-[0_8px_30px_rgba(201,168,108,0.12)] ${mounted
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-6"
-                }`}
+                  }`}
                 style={{ transitionDelay: `${150 + i * 80}ms` }}
               >
                 <div className="absolute inset-0 text-gold bg-gradient-to-br from-[#c9a86c]/0 to-[#c9a86c]/0 group-hover:from-[#c9a86c]/5 group-hover:to-transparent transition-all duration-500" />
@@ -292,9 +289,8 @@ export default function WorkStudioPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-10 items-center">
           {/* LEFT TEXT */}
           <div
-            className={`lg:col-span-5 transition-all duration-1000 ${
-              mounted ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
-            }`}
+            className={`lg:col-span-5 transition-all duration-1000 ${mounted ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
+              }`}
           >
             <p className="text-[0.65rem] sm:text-[0.7rem] tracking-[0.28em] sm:tracking-[0.32em] uppercase text-gold mb-4 sm:mb-5 font-medium">
               Editorial · Fashion Photography
@@ -449,11 +445,12 @@ export default function WorkStudioPage() {
               playbackId={CTA_PLAYBACK_ID}
               streamType="live:dvr"
               autoPlay="muted"
+              maxResolution="720p"
               muted
               loop
               playsInline
               tokens={{ playback: ctaToken }}
-              maxResolution="1440p"
+
               style={
                 {
                   "--controls": "none",
@@ -461,7 +458,7 @@ export default function WorkStudioPage() {
                   "--media-object-position": "center",
                   width: "100%",
                   height: "100%",
-                } 
+                }
               }
               className="absolute inset-0 w-full h-full"
             />

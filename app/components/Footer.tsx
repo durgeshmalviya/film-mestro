@@ -11,12 +11,12 @@ export default function Footer() {
     "@graph": [
       {
         "@type": "LocalBusiness",
-        "@id": "https://maestrofilms.in/#business",
+        "@id": "https://maestrofilms.co.in/#business",
         name: "Maestro Films",
         alternateName: "Croma Shoot",
         description:
           "Premier fashion photography and cinematic film production house in Bhopal and Mumbai. Specializing in editorial shoots, portfolio development, brand campaigns, and commercial filmmaking since 1982.",
-        url: "https://maestrofilms.in",
+        url: "https://maestrofilms.co.in",
         telephone: ["+91-75818-00555", "+91-75820-05558"],
         email: "Officialmaestrofilm@gmail.com",
         address: {
@@ -59,7 +59,7 @@ export default function Footer() {
         "@type": "Organization",
         name: "Maestro Films",
         sameAs: [
-          "https://www.instagram.com/maestrofilms.in/",
+          "https://www.instagram.com/maestrofilms.co.in/",
           "https://www.facebook.com/profile.php?id=61577981519394",
           "https://youtube.com/@maestrofilms-u8e",
         ],
@@ -102,7 +102,7 @@ export default function Footer() {
 
               <div className="flex gap-3 justify-center md:justify-start">
                 {[
-                  { href: "https://www.instagram.com/maestrofilms.in/", icon: FaInstagram, label: "Instagram" },
+                  { href: "https://www.instagram.com/maestrofilms.co.in/", icon: FaInstagram, label: "Instagram" },
                   { href: "https://www.facebook.com/profile.php?id=61577981519394", icon: FaFacebook, label: "Facebook" },
                   { href: "https://youtube.com/@maestrofilms-u8e", icon: FaYoutube, label: "YouTube" },
                 ].map((s) => (

@@ -413,6 +413,7 @@ export default function ReelsSection() {
                 poster={getMuxThumbnail(selectedReel.playbackId, 1, modalToken)}
                 streamType="on-demand"
                 autoPlay
+                maxResolution="720p"
                 muted={isMuted}
                 loop
                 playsInline

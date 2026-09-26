@@ -385,7 +385,7 @@ export default function ModernPremiumForm() {
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#c9a86c] to-[#b8975a] flex items-center justify-center shadow-md shadow-[#c9a86c]/25">
                 <span className="text-white font-medium text-sm">2</span>
               </div>
-              <h2 className="text-[13px] tracking-[0.22em] uppercase text-[#8a6d4a] font-medium">
+              <h2 className="text-[13px] tracking-[0.22em] uppercase text-gold font-medium">
                 Frequency
               </h2>
             </div>
@@ -518,7 +518,7 @@ export default function ModernPremiumForm() {
                               <div className="w-2 h-2 rounded-full bg-white" />
                             )}
                           </div>
-                          <span className="text-[15px] text-[#1f1f1c] font-light tracking-wide leading-snug">
+                          <span className="text-[15px] text-gold font-base tracking-wide leading-snug">
                             {subProd.label}
                           </span>
                         </div>

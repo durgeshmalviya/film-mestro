@@ -7,15 +7,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const staticPages = [
     "",
-    "/about",
-    "/services",
-    "/portfolio",
+    "/Kamad-Solanki",
+    "/service",
+    "/work-studio",
     "/fashion-photography",
-    "/model-portfolio",
+    "/social-media-marketing",
     "/editorial-lookbook",
     "/catalogue-commercial",
-    "/reels-influencer",
+    "/blog",
+    "/catalog",
+    "/editorial-campaign",
+    "/high-fashion",
+    "/product-commercial",
+    "/fashion-photography-bhopal",
     "/contact",
+    "/faq",
     "/locations/bhopal",
     "/locations/indore",
     "/locations/mumbai",
@@ -23,6 +29,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/locations/jaipur",
     "/locations/hoshangabad-narmadapuram",
     "/locations/sehore-vidisha-dewas",
+    "/privacy-policy",
+    "/terms",
   ];
 
   return staticPages.map((path) => ({

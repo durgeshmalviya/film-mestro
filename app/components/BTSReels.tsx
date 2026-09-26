@@ -13,14 +13,14 @@ interface BTSItem {
   poster?: string;
 }
 
-const originalBTS: BTSItem[] = [
+ const originalBTS: BTSItem[] = [
   {
     id: 1,
     title: "STUDIO LIGHTING",
     subtitle: "Behind the Scenes • Editorial",
     duration: "01:05",
     videoUrl:
-      "https://res.cloudinary.com/dpgnhczzz/video/upload/v1789825831/h9q617tldsdpfx1pa6r0.mp4",
+      "https://res.cloudinary.com/dpgnhczzz/video/upload/w_720,q_auto:eco/v1789825831/h9q617tldsdpfx1pa6r0.mp4",
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const originalBTS: BTSItem[] = [
     subtitle: "On Set • Portfolio Session",
     duration: "00:52",
     videoUrl:
-      "https://res.cloudinary.com/dpgnhczzz/video/upload/v1789825817/gdplsufzda6xusfkzb4z.mp4",
+      "https://res.cloudinary.com/dpgnhczzz/video/upload/w_720,q_auto:eco/v1789825817/gdplsufzda6xusfkzb4z.mp4",
   },
   {
     id: 3,
@@ -36,7 +36,7 @@ const originalBTS: BTSItem[] = [
     subtitle: "Fashion Shoot • Process",
     duration: "01:18",
     videoUrl:
-      "https://res.cloudinary.com/dpgnhczzz/video/upload/v1789825831/h9q617tldsdpfx1pa6r0.mp4",
+      "https://res.cloudinary.com/dpgnhczzz/video/upload/w_720,q_auto:eco/v1789825831/h9q617tldsdpfx1pa6r0.mp4",
   },
   {
     id: 4,
@@ -44,7 +44,7 @@ const originalBTS: BTSItem[] = [
     subtitle: "Brand Shoot • BTS",
     duration: "01:30",
     videoUrl:
-      "https://res.cloudinary.com/dpgnhczzz/video/upload/v1789825858/g0os0itvinkkubr0m391.mp4",
+      "https://res.cloudinary.com/dpgnhczzz/video/upload/w_720,q_auto:eco/v1789825858/g0os0itvinkkubr0m391.mp4",
   },
   {
     id: 5,
@@ -52,7 +52,7 @@ const originalBTS: BTSItem[] = [
     subtitle: "Location Shoot • Editorial",
     duration: "00:48",
     videoUrl:
-      "https://res.cloudinary.com/dpgnhczzz/video/upload/v1789825838/vpqsfvthdo4hoag6oenp.mp4",
+      "https://res.cloudinary.com/dpgnhczzz/video/upload/w_720,q_auto:eco/v1789825838/vpqsfvthdo4hoag6oenp.mp4",
   },
   {
     id: 6,
@@ -60,10 +60,9 @@ const originalBTS: BTSItem[] = [
     subtitle: "Fashion Photography • Process",
     duration: "01:10",
     videoUrl:
-      "https://res.cloudinary.com/dpgnhczzz/video/upload/v1789825832/djs4dyizrzxfwkzdryrl.mp4",
+      "https://res.cloudinary.com/dpgnhczzz/video/upload/w_720,q_auto:eco/v1789825832/djs4dyizrzxfwkzdryrl.mp4",
   },
 ];
-
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -316,6 +315,7 @@ export default function BTSSection() {
                       }}
                       src={item.videoUrl}
                       muted
+
                       loop
                       playsInline
                       preload={index === 0 ? "auto" : "metadata"}
@@ -446,6 +446,7 @@ export default function BTSSection() {
                 autoPlay
                 muted={isMuted}
                 loop
+                
                 playsInline
                 className="absolute inset-0 w-full h-full object-cover"
                 style={{ borderRadius: "1rem" }}

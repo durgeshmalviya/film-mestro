@@ -7,7 +7,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import Link from 'next/link';
 
-import { ArrowUpRight } from "lucide-react";
+import { ArrowBigRight, ArrowRightCircleIcon, ArrowUpRight, ArrowUpRightIcon } from "lucide-react";
 // ============ IMAGEKIT RESOLVER (same as hero – free plan friendly) ============
 const imageCache = new Map<string, string>();
 const CACHE_TTL = 4 * 60 * 1000; // 4 minutes
@@ -171,9 +171,8 @@ export default function FashionPortfolio() {
                     </span>
 
                     {/* Theme underline */}
-                    <span className="block h-px p-0.2 w-20 bg-[#d9cfc3]/90 rotate-90 group-hover:w-14 transition-all duration-500" />
-                    <ArrowUpRight
-                      className="w-3.5 h-3.5 text-white transition-transform  -mt-13 -rotate-45 duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 max-sm:animate-[arrowNudge_1.6s_ease-in-out_infinite]"
+                       <ArrowRightCircleIcon
+                      className="w-8.5 h-6.5 text-white transition-transform  -mt-13 -rotate-45 duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 max-sm:animate-[arrowNudge_1.6s_ease-in-out_infinite]"
                       strokeWidth={1.75}
                     /></div>
                 </div>

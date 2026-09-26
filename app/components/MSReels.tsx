@@ -291,11 +291,7 @@ export default function MSReels() {
                           }}
                         />
                       ) : (
-                        <img
-                          src={getMuxThumbnail(item.playbackId)}
-                          alt={item.label}
-                          className="absolute inset-0 w-full h-full object-cover object-top"
-                        />
+                         <></>
                       )}
                     </div>
 
@@ -366,6 +362,7 @@ export default function MSReels() {
                     playsInline
                     loop
                     preload="auto"
+                     maxResolution="720p"
                     streamType="on-demand"
                     preferPlayback="mse"
                     tokens={{ playback: modalToken }}

@@ -5,8 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, useMotionValue, useTransform, Variants } from "framer-motion";
 import { ArrowUpRight, X, ChevronLeft, ChevronRight } from "lucide-react";
-import Navbar from "@/app/components/Nav";
-import Footer from "@/app/components/Footer";
 
 /* -------------------------------------------------------------------------- */
 /*  Theme – Warm Beige Luxury                                                 */
@@ -27,6 +25,7 @@ type LookbookImage = {
   alt: string;
   width: number;
   height: number;
+  tags?: string[];
 };
 
 /* -------------------------------------------------------------------------- */
@@ -306,18 +305,43 @@ export default function CatalogPage() {
     );
   }, [images.length]);
 
+  // ---------- GROUPING BY TAG ----------
+  const groups: Record<string, LookbookImage[]> = {};
+
+  images.forEach((img) => {
+    const tags = img.tags || [];
+    let key = "other";
+
+    if (tags.includes("catalouge-1")) {
+      key = "Catalogue 1";
+    } else if (tags.includes("catalouge-2")) {
+      key = "Catalogue 2";
+    } else if (tags.includes("catalouge-3")) {
+      key = "Catalogue 3";
+    } else if (tags.includes("catalouge-4")) {
+      key = "Catalogue 4";
+    } else if (tags.includes("catalouge-5")) {
+      key = "Catalogue 5";
+    } else if (tags.length > 0) {
+      key = tags[0];
+    }
+
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(img);
+  });
+
+  const sortedLooks = Object.entries(groups).sort(([a], [b]) =>
+    a.localeCompare(b, undefined, { numeric: true })
+  );
+
   return (
     <>
-
       <main style={{ backgroundColor: colors.bg, color: colors.text }}>
-        {/* ========== HERO – Magazine Style ========== */}
-        <section className="relative pt-10 md:pt-16 pb-6 md:pb-14 px-6 md:px-10 overflow-hidden">
+ 
+        <section className="relative  py-18 px-6 md:px-10 overflow-hidden">
           <div className="max-w-[1400px] mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end">
-              {/* Left Text */}
               <div className="lg:col-span-7">
-               
-
                 <motion.h1
                   variants={fadeUp}
                   initial="hidden"
@@ -344,8 +368,6 @@ export default function CatalogPage() {
                 </motion.p>
               </div>
 
-              {/* Right Accent */}
-              {/* Right Accent - Random Image */}
               <motion.div
                 variants={fadeUp}
                 initial="hidden"
@@ -365,7 +387,7 @@ export default function CatalogPage() {
                       >
                         <SecureImage
                           path={randomImage.path}
-                          alt={randomImage.alt || "Catalog Photography – Maestro Films"}
+                          alt={randomImage.alt || "High Fashion Photography – Maestro Films"}
                           width={randomImage.width}
                           height={randomImage.height}
                           priority
@@ -381,70 +403,154 @@ export default function CatalogPage() {
                     );
                   })()
                 ) : (
-                  <div
-                    className="h-[420px] rounded-sm"
-                    style={{ backgroundColor: "#e8dfd4" }}
-                  />
+                  <div className="h-[420px] rounded-sm" style={{ backgroundColor: "#e8dfd4" }} />
                 )}
               </motion.div>
             </div>
           </div>
         </section>
- 
-          
 
-        {/* ========== MASONRY GALLERY ========== */}
-        <section className="px-5 md:px-8 lg:px-10 pb-24 md:pb-32">
-          <div className="max-w-[1400px] mx-auto mb-12 md:mb-16">
-            
+        {/* ========== CENTER HERO + LEFT/RIGHT STACKS ========== */}
+        <section className="px-4 md:px-6 lg:px-8 pb-24 md:pb-32">
+          <div className="max-w-[1400px] mx-auto">
+            {loading ? (
+              <div className="grid grid-cols-12 gap-3 md:gap-4 h-[500px]">
+                <div className="col-span-3"><ImageSkeleton /></div>
+                <div className="col-span-6"><ImageSkeleton /></div>
+                <div className="col-span-3"><ImageSkeleton /></div>
+              </div>
+            ) : images.length === 0 ? (
+              <p className="text-center py-20 font-light" style={{ color: colors.muted }}>
+                No images found in this collection.
+              </p>
+            ) : (
+              <div className="space-y-20 md:space-y-28">
+                {sortedLooks.map(([lookId, lookImages], lookIndex) => {
+                  const centerImage = lookImages[0];
+                  const remaining = lookImages.slice(1);
+                  const leftImages = remaining.filter((_, i) => i % 2 === 0);
+                  const rightImages = remaining.filter((_, i) => i % 2 === 1);
+
+                  return (
+                    <motion.div
+                      key={lookId}
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
+                    >
+                      {/* Look header */}
+                      <div className="mb-6 md:mb-8 flex items-end justify-between">
+                        <div>
+                          <p
+                            className="text-[11px] tracking-[0.35em] uppercase font-light mb-1"
+                            style={{ color: colors.accent }}
+                          >
+                            Look {String(lookIndex + 1).padStart(2, "0")}
+                          </p>
+                          <h3 className="text-xl md:text-2xl font-light tracking-tight capitalize">
+                            {lookId}
+                          </h3>
+                        </div>
+                        <span className="text-sm font-light" style={{ color: colors.muted }}>
+                          {lookImages.length} images
+                        </span>
+                      </div>
+
+                      {/* Album Layout */}
+                      <div className="grid grid-cols-12 gap-3 md:gap-4">
+                        {/* LEFT STACK */}
+                        <div className="col-span-12 md:col-span-3 flex flex-col gap-3 md:gap-4">
+                          {leftImages.map((img) => {
+                            const globalIndex = images.findIndex((x) => x.path === img.path);
+                            return (
+                              <motion.figure
+                                key={img.path}
+                                variants={itemVariants}
+                                className="relative overflow-hidden cursor-pointer group flex-1 min-h-[180px] md:min-h-[220px]"
+                                onClick={() => openGallery(globalIndex)}
+                                whileHover={{ scale: 1.02 }}
+                                transition={{ type: "spring", stiffness: 280, damping: 24 }}
+                                style={{
+                                  border: "4px solid #ffffff",
+                                  boxShadow: "0 4px 18px rgba(0,0,0,0.07)",
+                                }}
+                              >
+                                <SecureImage
+                                  path={img.path}
+                                  alt={img.alt || `Catalog – ${lookId}`}
+                                  width={img.width}
+                                  height={img.height}
+                                  className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.05]"
+                                />
+                              </motion.figure>
+                            );
+                          })}
+                        </div>
+
+                        {/* CENTER HERO */}
+                        {centerImage && (
+                          <motion.figure
+                            variants={itemVariants}
+                            className="col-span-12 md:col-span-6 relative overflow-hidden cursor-pointer group min-h-[420px] md:min-h-[560px]"
+                            onClick={() => {
+                              const globalIndex = images.findIndex(
+                                (x) => x.path === centerImage.path
+                              );
+                              openGallery(globalIndex);
+                            }}
+                            whileHover={{ scale: 1.015 }}
+                            transition={{ type: "spring", stiffness: 280, damping: 24 }}
+                            style={{
+                              border: "5px solid #ffffff",
+                              boxShadow: "0 8px 30px rgba(0,0,0,0.1)",
+                            }}
+                          >
+                            <SecureImage
+                              path={centerImage.path}
+                              alt={centerImage.alt || `Catalog – ${lookId}`}
+                              width={centerImage.width}
+                              height={centerImage.height}
+                              priority={lookIndex === 0}
+                              className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
+                            />
+                          </motion.figure>
+                        )}
+
+                        {/* RIGHT STACK */}
+                        <div className="col-span-12 md:col-span-3 flex flex-col gap-3 md:gap-4">
+                          {rightImages.map((img) => {
+                            const globalIndex = images.findIndex((x) => x.path === img.path);
+                            return (
+                              <motion.figure
+                                key={img.path}
+                                variants={itemVariants}
+                                className="relative overflow-hidden cursor-pointer group flex-1 min-h-[180px] md:min-h-[220px]"
+                                onClick={() => openGallery(globalIndex)}
+                                whileHover={{ scale: 1.02 }}
+                                transition={{ type: "spring", stiffness: 280, damping: 24 }}
+                                style={{
+                                  border: "4px solid #ffffff",
+                                  boxShadow: "0 4px 18px rgba(0,0,0,0.07)",
+                                }}
+                              >
+                                <SecureImage
+                                  path={img.path}
+                                  alt={img.alt || `Catalog – ${lookId}`}
+                                  width={img.width}
+                                  height={img.height}
+                                  className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.05]"
+                                />
+                              </motion.figure>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
           </div>
-
-          {loading ? (
-            <div className="max-w-[1400px] mx-auto columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
-              {Array.from({ length: 9 }).map((_, i) => (
-                <ImageSkeleton key={i} />
-              ))}
-            </div>
-          ) : images.length === 0 ? (
-            <p className="text-center py-20 font-light" style={{ color: colors.muted }}>
-              No images found in this collection.
-            </p>
-          ) : (
-            <motion.div
-              className="max-w-[1400px] mx-auto columns-1 sm:columns-2 lg:columns-3 gap-5 md:gap-6 space-y-5 md:space-y-6"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              {images.map((img, i) => (
-                <motion.figure
-                  key={img.path}
-                  variants={itemVariants}
-                  className="break-inside-avoid overflow-hidden rounded-sm cursor-pointer group"
-                  onClick={() => openGallery(i)}
-                  whileHover={{ y: -4 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                >
-                  <div className="relative overflow-hidden h-95 ">
-                    <SecureImage
-                      path={img.path}
-                      alt={img.alt || `Catalog photography ${i + 1} – Maestro Films`}
-                      width={img.width}
-                      height={img.height}
-                      priority={i < 4}
-                      className="transition-transform object-cover object-top duration-700 ease-out group-hover:scale-[1.04]"
-                    />
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                      style={{
-                        background: "linear-gradient(to top, rgba(26,26,26,0.15) 0%, transparent 40%)",
-                      }}
-                    />
-                  </div>
-                </motion.figure>
-              ))}
-            </motion.div>
-          )}
         </section>
 
         {/* ========== BOTTOM CTA ========== */}
@@ -457,17 +563,21 @@ export default function CatalogPage() {
               className="text-[11px] tracking-[0.35em] uppercase mb-6 font-light"
               style={{ color: colors.accent }}
             >
-              Begin Your Collection
+              Create Something Bold
             </p>
             <h2 className="text-3xl md:text-4xl font-light mb-8 tracking-tight">
-              Ready to create your next catalog?
+              Ready for your next catalog shoot?
             </h2>
             <Link
               href="/contact"
               className="inline-flex items-center gap-3 px-12 py-4 text-[12px] tracking-[0.2em] uppercase font-medium transition-all duration-500"
               style={{ backgroundColor: colors.accent, color: colors.dark }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = colors.accentHover)}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = colors.accent)}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = colors.accentHover)
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = colors.accent)
+              }
             >
               Inquire Now
               <ArrowUpRight className="w-4 h-4" />
@@ -476,7 +586,6 @@ export default function CatalogPage() {
         </section>
       </main>
 
-      {/* Gallery Modal */}
       <AnimatePresence mode="wait">
         {activeIndex !== null && (
           <GalleryModal
@@ -488,7 +597,6 @@ export default function CatalogPage() {
           />
         )}
       </AnimatePresence>
-
     </>
   );
 }

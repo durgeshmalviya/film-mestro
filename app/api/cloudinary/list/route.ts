@@ -13,7 +13,6 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const folder = searchParams.get("folder") || "Catalogues";
 
-    // Exact folder names from your Cloudinary
     const allowed = [
       "Catalogues",
       "Editorial",
@@ -28,6 +27,7 @@ export async function GET(req: NextRequest) {
     const result = await cloudinary.search
       .expression(`folder:${folder}`)
       .with_field("context")
+      .with_field("tags")                 // ← added: returns tags
       .sort_by("created_at", "desc")
       .max_results(80)
       .execute();
@@ -37,6 +37,7 @@ export async function GET(req: NextRequest) {
       alt: r.context?.custom?.alt || r.filename || r.public_id.split("/").pop(),
       width: r.width || 1200,
       height: r.height || 1600,
+      tags: r.tags || [],                 // ← added
     }));
 
     return NextResponse.json(

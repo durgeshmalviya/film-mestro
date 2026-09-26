@@ -45,6 +45,7 @@ export default function BookStudioCTA() {
             autoPlay
             muted
             loop
+            maxResolution="720p"
             playsInline
             poster={PLAYBACK_ID}
             metadata={{
