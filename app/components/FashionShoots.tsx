@@ -81,12 +81,12 @@ export default function FashionPortfolio() {
         href: '/editorial-campaign',
       },
       {
-        img: '/editorial/maestrofilms-20.JPG',
+        img: '/editorial/maestrofilms-24.jpg',
         title: 'High Fashion',
         href: '/high-fashion',
       },
       {
-        img: '/editorial/maestrofilms-24.jpg',
+        img: '/editorial/ maestrofilms-30.JPG',
         title: 'Product & Commercial',
         href: '/product-commercial',
       },

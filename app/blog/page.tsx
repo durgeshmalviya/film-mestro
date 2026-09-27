@@ -737,7 +737,7 @@ export default function BlogPage() {
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
-              href="/portfolio"
+              href="/Kamad-Solanki"
               className="rounded-full border border-[#c9a86c] bg-[#c9a86c] px-6 py-3 text-[9px] uppercase tracking-[0.26em] text-[#fffaf3] transition hover:bg-[#b58c4e]"
             >
               View Portfolio
