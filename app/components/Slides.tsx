@@ -417,7 +417,7 @@ export default function SlidesMF({
         className="absolute bottom-1/2 left-0 md:-left-4 z-20 transform translate-y-1/2 hidden md:block"
       >
         <a
-          href="/about"
+          href="/Kamad-Solanki"
           className="flex items-center h-14 px-7 bg-black/35 hover:bg-black/55 backdrop-blur-md rounded-r-full border border-[#c9a86c]/50 text-[#c9a86c] text-[12px] font-medium tracking-[0.22em] uppercase transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:tracking-[0.28em] hover:border-[#c9a86c]"
         >
           Portfolio
@@ -441,7 +441,7 @@ export default function SlidesMF({
       {/* ============ MOBILE BUTTONS ============ */}
       <div className="absolute bottom-24 left-0 right-0 flex justify-center gap-3 md:hidden z-20 px-6">
         <a
-          href="/about"
+          href="/Kamad-Solanki"
           className="flex-1 py-3 bg-black/40 backdrop-blur-sm rounded-full text-[#c9a86c] text-[11px] font-light tracking-[0.18em] uppercase border border-[#c9a86c]/40 text-center hover:bg-black/55 transition-all"
         >
           Portfolio
