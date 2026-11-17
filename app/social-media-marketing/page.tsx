@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import MuxPlayer from "@mux/mux-player-react";
 import type { Variants } from "framer-motion";
@@ -13,15 +13,14 @@ import {
 } from "react-icons/bs";
 import { GiClapperboard } from "react-icons/gi";
 import { HiSparkles } from "react-icons/hi";
-import { ArrowUpRight, Target, BarChart3, Layers } from "lucide-react";
+import { ArrowUpRight, Target, BarChart3, Layers, X, Cross } from "lucide-react";
 import Navbar from "@/app/components/Nav";
 
-// ============ IMAGEKIT RESOLVER (same as SlidesMF) ============
+// ============ IMAGEKIT RESOLVER ============
 const imageCache = new Map<string, string>();
-const CACHE_TTL = 4 * 60 * 1000; // 4 minutes
+const CACHE_TTL = 4 * 60 * 1000;
 
 async function getImageKitUrl(path: string): Promise<string> {
-  // Already a full URL or local public asset → return as-is
   if (
     path.startsWith("http") ||
     path.startsWith("/DSC") ||
@@ -30,11 +29,9 @@ async function getImageKitUrl(path: string): Promise<string> {
     return path;
   }
 
-  // 1. In-memory cache
   const cached = imageCache.get(path);
   if (cached) return cached;
 
-  // 2. localStorage
   const storageKey = `ik_${path}`;
   try {
     const stored = localStorage.getItem(storageKey);
@@ -45,11 +42,8 @@ async function getImageKitUrl(path: string): Promise<string> {
         return url;
       }
     }
-  } catch {
-    // ignore
-  }
+  } catch {}
 
-  // 3. Fetch signed URL from your API
   try {
     const res = await fetch(`/api/imagekit?path=${encodeURIComponent(path)}`);
     if (!res.ok) throw new Error("ImageKit failed");
@@ -57,20 +51,16 @@ async function getImageKitUrl(path: string): Promise<string> {
 
     imageCache.set(path, url);
     try {
-      localStorage.setItem(
-        storageKey,
-        JSON.stringify({ url, ts: Date.now() })
-      );
-    } catch {
-      // ignore quota errors
-    }
+      localStorage.setItem(storageKey, JSON.stringify({ url, ts: Date.now() }));
+    } catch {}
 
     return url;
   } catch (err) {
     console.error("ImageKit resolve error:", path, err);
-    return path; // fallback
+    return path;
   }
 }
+
 const brands = [
   { logo: "https://i.ibb.co/dwTb4sCt/Illyas.jpg", name: "LLYSAS’S" },
   { logo: "https://i.ibb.co/67RfHSnN/Untitled-300-x-300-px-e1740134537181.jpg", name: "" },
@@ -78,6 +68,7 @@ const brands = [
   { logo: "https://i.ibb.co/C3dvmzQ8/Eventra-logo-1-01-removebg-preview.png", name: "" },
   { logo: "https://i.ibb.co/nMTJKKjx/hpcllogo.jpg", name: "" },
 ];
+
 // ============ MUX SIGNED TOKEN ============
 async function getSignedPlaybackToken(playbackId: string): Promise<string> {
   try {
@@ -181,7 +172,6 @@ const adCapabilities = [
   },
 ];
 
-// ============ CLEAN PATHS ONLY (no signed URLs) ============
 const introImagePaths = [
   "/editorial/maestrofilms-12.jpg",
   "/editorial/maestrofilms-1.JPG",
@@ -198,8 +188,8 @@ export default function AdvancedWorkPage() {
   const [tokenMap, setTokenMap] = useState<Record<string, string>>({});
   const [introImages, setIntroImages] = useState<string[]>(introImagePaths);
   const [stripImages, setStripImages] = useState<string[]>(stripImagePaths);
+  const [showOfferModal, setShowOfferModal] = useState(true); // Instant show
 
-  // Resolve ImageKit paths via API
   useEffect(() => {
     let cancelled = false;
 
@@ -221,7 +211,6 @@ export default function AdvancedWorkPage() {
     };
   }, []);
 
-  // Load Mux tokens
   useEffect(() => {
     const loadTokens = async () => {
       const ids = [HERO_PLAYBACK_ID, SOCIAL_PLAYBACK_ID];
@@ -244,7 +233,95 @@ export default function AdvancedWorkPage() {
 
   return (
     <>
+      {/* ===================== OFFER MODAL ===================== */}
+      <AnimatePresence>
+        {showOfferModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 8 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-full max-w-lg bg-[#0c0c0c] border border-[#c9a86c]/30 rounded-sm overflow-hidden shadow-2xl"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setShowOfferModal(false)}
+                className="absolute top-3 right-3 z-20 p-1.5 rounded-full bg-black/50 text-white/80 hover:text-white hover:bg-black/70 transition-colors"
+                aria-label="Close offer"
+              >
+                <Cross className="w-4 h-4 rotate-45 cursor-pointer" />
+              </button>
 
+              {/* Offer Image */}
+              <div className="relative aspect-[16/10] overflow-hidden">
+                <img
+                  src="https://i.ibb.co/4ZMRX44b/one.png"
+                  alt="High-Fashion Calendar 2027 Offer"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c0c] via-transparent to-transparent" />
+              </div>
+
+              {/* Content */}
+              <div className="p-6 md:p-7">
+                <p className="text-[11px] tracking-[0.28em] uppercase text-[#c9a86c] mb-2">
+                  Maestro Films · 2027
+                </p>
+
+                <h3 className="text-2xl md:text-[1.7rem] font-light text-[#f5f1ed] leading-tight mb-3">
+                  High-Fashion Calendar 2027
+                </h3>
+
+                <p className="text-[14px] text-[#c9c4bb] font-light leading-relaxed mb-6">
+                  Exclusive brand collaboration packages for Fashion, Beauty & Jewellery brands.
+                  Stunning photography + short films + year-round visibility.
+                </p>
+
+                {/* Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {/* CALL BUTTON */}
+                  <a
+                    href="tel:+919876543210" // ← Change to your real number
+                    className="flex-1 inline-flex items-center justify-center gap-2 bg-[#c9a86c] text-white px-5 py-3.5 text-[12px] tracking-[0.15em] uppercase font-semibold hover:bg-[#e0c48a] transition-colors"
+                  >
+                    Call Now
+                  </a>
+
+                  {/* CONTACT BUTTON */}
+                  <Link
+                    href="/contact"
+                    onClick={() => setShowOfferModal(false)}
+                    className="flex-1 inline-flex items-center justify-center border border-[#c9a86c]/50 text-[#c9a86c] px-5 py-3.5 text-[12px] tracking-[0.15em] uppercase hover:bg-[#c9a86c]/10 transition-colors"
+                  >
+                    Contact
+                  </Link>
+                </div>
+
+                {/* Know More - PDF */}
+                <div className="mt-5 pt-4 border-t border-white/10 text-center">
+                  <a
+                    href="https://go.fliplink.me/view/CDD52E80-BB4D-45FF-9383-B309A72BC979?utm_campaign=Drip+101&utm_content=notifications&utm_medium=MyLeadFox&utm_source=Drip&utm_term=SaaS"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-[12px] text-[#c9a86c]/80 hover:text-[#c9a86c] transition-colors"
+                  >
+                    Know More (View Proposal PDF)
+                    <ArrowUpRight className="w-3 h-3" />
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ===================== PAGE CONTENT ===================== */}
       <motion.div
         variants={stagger}
         initial="initial"
@@ -316,7 +393,7 @@ export default function AdvancedWorkPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center gap-3 bg-[#c9a86c] text-transparent px-8 py-4 text-[12px] tracking-[0.2em] uppercase font-medium transition-all duration-500 hover:bg-[#e0c48a] hover:shadow-[0_0_40px_rgba(201,168,108,0.35)]"
+                  className="inline-flex items-center justify-center gap-3 bg-[#c9a86c] text-black px-8 py-4 text-[12px] tracking-[0.2em] uppercase font-medium transition-all duration-500 hover:bg-[#e0c48a] hover:shadow-[0_0_40px_rgba(201,168,108,0.35)]"
                 >
                   Book a Session
                   <BsArrowUpRight className="w-4 h-4" />
@@ -370,16 +447,13 @@ export default function AdvancedWorkPage() {
                 {introImages.map((src, i) => (
                   <div
                     key={i}
-                    className={`relative aspect-[3/4] overflow-hidden rounded-sm group ${i === 1 ? "mt-8 md:mt-12" : ""
-                      }`}
+                    className={`relative aspect-[3/4] overflow-hidden rounded-sm group ${
+                      i === 1 ? "mt-8 md:mt-12" : ""
+                    }`}
                   >
                     <img
                       src={src}
-                      alt={
-                        i === 0
-                          ? "Fashion editorial photography"
-                          : "Model portfolio shoot"
-                      }
+                      alt={i === 0 ? "Fashion editorial photography" : "Model portfolio shoot"}
                       className="w-full h-full object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
                       loading="lazy"
                       onContextMenu={(e) => e.preventDefault()}
@@ -427,6 +501,8 @@ export default function AdvancedWorkPage() {
             </div>
           </div>
         </section>
+
+        {/* BRANDS MARQUEE */}
         <div className="relative w-full overflow-hidden py-8 bg-[#f0ebe4]">
           <motion.div
             className="flex gap-12"
@@ -438,7 +514,6 @@ export default function AdvancedWorkPage() {
               ease: "linear",
             }}
           >
-            {/* Repeat list for infinite scroll */}
             {[...brands, ...brands].map((item, i) => (
               <div key={i} className="flex items-center gap-3 min-w-max">
                 <img
@@ -455,6 +530,7 @@ export default function AdvancedWorkPage() {
             ))}
           </motion.div>
         </div>
+
         {/* SOCIAL + MOTION */}
         <section className="py-10 md:py-5 px-5 md:px-10 bg-[#f5f1ed]">
           <div className="max-w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -563,10 +639,7 @@ export default function AdvancedWorkPage() {
                   variants={fadeUp}
                   className="p-6 md:p-8 border border-[#e0d6c8] rounded-sm bg-[#f5f1ed] hover:border-[#c9a86c]/40 transition-all duration-500"
                 >
-                  <item.icon
-                    className="w-5 h-5 text-[#c9a86c] mb-5"
-                    strokeWidth={1.5}
-                  />
+                  <item.icon className="w-5 h-5 text-[#c9a86c] mb-5" strokeWidth={1.5} />
                   <h3 className="text-[15px] md:text-base font-medium text-[#1a1a1a] tracking-wide mb-3">
                     {item.title}
                   </h3>
@@ -717,7 +790,7 @@ export default function AdvancedWorkPage() {
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center gap-3 bg-[#c9a86c] text-transparent px-10 py-4 text-[12px] tracking-[0.2em] uppercase font-medium transition-all duration-500 hover:bg-[#e0c48a] hover:shadow-[0_0_50px_rgba(201,168,108,0.35)]"
+                  className="inline-flex items-center justify-center gap-3 bg-[#c9a86c] text-black px-10 py-4 text-[12px] tracking-[0.2em] uppercase font-medium transition-all duration-500 hover:bg-[#e0c48a] hover:shadow-[0_0_50px_rgba(201,168,108,0.35)]"
                 >
                   Start a Project
                   <ArrowUpRight className="w-4 h-4" />
