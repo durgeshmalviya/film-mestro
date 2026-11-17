@@ -16,7 +16,7 @@ export default function NewYearOfferBanner() {
           
           {/* Center Content */}
           <Link
-            href="/advanced-work"
+            href="/social-media-marketing"
             className="flex items-center justify-center gap-3 group"
           >
             <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#c9a86c]/15 text-[#c9a86c] text-[10px] font-medium tracking-[0.15em] uppercase">
