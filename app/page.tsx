@@ -7,6 +7,7 @@ import AboutUs from "./Kamad-Solanki/about";
 import dynamic from "next/dynamic";
 import BookStudioCTA from "./components/ReadtBook";
 import ContactForm from "./components/ContactForm";
+import NewYearOfferBanner from "./components/OfferBanner";
  
 
 const MSReels = dynamic(() => import("./components/MSReels"), {
@@ -98,7 +99,7 @@ export default function Home() {
       <div
         className={`transition-opacity duration-700 ${loading ? "opacity-0 pointer-events-none" : "opacity-100"
           }`}
-      >
+      ><NewYearOfferBanner/>
         <SlidesMF
           scrolled={scrolled}
           isMenuOpen={isMenuOpen}
